@@ -1,0 +1,95 @@
+
+/******************************
+ 
+    baseline
+ 
+******************************/
+
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+
+/******************************
+ 
+    ids
+ 
+******************************/
+
+body {
+    background-color: beige;
+}
+
+/*#rootContainer {
+    position: absolute;
+    top: 0%;
+    height:100%;
+    bottom: 100%;
+    left: 10%;
+    right: 10%;
+    max-width: 900px;
+    min-width: 100px;
+}*/
+
+#page {
+    width:80%;
+    min-height: 95vh;
+    margin: 0 auto;
+    padding: 5px 0;
+    max-width: 900px;
+    min-width: 100px;
+}
+
+
+#history {
+    height: 40vh;
+    overflow-y: scroll;
+    background-color: lightgray;
+}
+
+#mid-frame {
+    height: 150px;
+}
+
+#bottom-frame {
+}
+
+#history {
+}
+
+#quipText {
+    width: 100%;
+    margin: 50px 0;
+    padding: 10px;
+    font-size: 14pt;
+    background-color: beige;
+}
+
+#history quip {
+    margin: 20px;
+    font-size: 13pt;
+}
+
+/******************************
+ 
+    classes
+ 
+******************************/
+
+.center-x {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 40%;
+}
+
+.center-y {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    height: 50%;
+}

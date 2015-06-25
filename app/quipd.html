@@ -1,0 +1,43 @@
+<head>
+  <title>quipd</title>
+</head>
+
+<body>
+
+    <div id="page">
+        
+        <div id="header">
+            <h1>quipd</h1>
+        </div>
+
+        <div id="history">
+
+            <div >
+                  {{#each quips}}
+                    {{> quip}}
+                  {{/each}}
+            </div>
+
+        </div>
+
+        <div id="mid-frame">
+
+          <form class="new-quip">
+            <input type="text" name="quipText" id="quipText" placeholder="Quip it good" />
+          </form>
+
+        </div>
+
+        <div id="bottom-frame">
+
+            I see your bottom.
+
+        </div> <!-- bottomFrame -->
+
+    </div> <!-- page -->
+    
+</body>
+
+<template name="quip">
+  <p class="quip">{{text}}</p>
+</template>
