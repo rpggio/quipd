@@ -24,6 +24,11 @@ body {
     background-color: beige;
 }
 
+li {
+    padding: 30px;
+    font-size: 24pt;
+}
+
 /*#rootContainer {
     position: absolute;
     top: 0%;
@@ -69,9 +74,18 @@ body {
     background-color: beige;
 }
 
-#history quip {
+#history .quip {
     margin: 20px;
     font-size: 13pt;
+
+}
+
+#resetQuips {
+    padding: 8px;
+    margin: 6px;
+    cursor: default;
+    width:100px;
+    border: 1px solid black;
 }
 
 /******************************

@@ -4,6 +4,14 @@
 
 <body>
 
+
+   {{> quipdMain }}
+
+    
+</body>
+
+<template name="quipdMain">
+
     <div id="page">
         
         <div id="header">
@@ -14,8 +22,17 @@
 
             <div >
                   {{#each quips}}
-                    {{> quip}}
+                    <p class="quip">{{text}}</p>
                   {{/each}}
+
+
+                    {{#if moreResults}}
+                        <div style="margin: 10px;">
+                        <a id="showMore">
+                            Show more
+                        </a>
+                        </div>
+                    {{/if}}
             </div>
 
         </div>
@@ -23,21 +40,20 @@
         <div id="mid-frame">
 
           <form class="new-quip">
-            <input type="text" name="quipText" id="quipText" placeholder="Quip it good" />
+            <input type="text" name="quipText" id="quipText"
+                placeholder="Quip it good">
+            <!-- <input type="submit" value="Quip"> -->
           </form>
 
         </div>
 
         <div id="bottom-frame">
 
-            I see your bottom.
+            <div id="resetQuips">Reset quips</div>
 
         </div> <!-- bottomFrame -->
 
-    </div> <!-- page -->
-    
-</body>
 
-<template name="quip">
-  <p class="quip">{{text}}</p>
+    </div> <!-- page -->
+
 </template>
