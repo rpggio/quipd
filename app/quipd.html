@@ -1,59 +1,41 @@
 <head>
-  <title>quipd</title>
+    <title>quipd</title>
 </head>
 
 <body>
-
-
-   {{> quipdMain }}
-
-    
+    {{> quipdMain }}
 </body>
 
 <template name="quipdMain">
-
     <div id="page">
-        
         <div id="header">
             <h1>quipd</h1>
         </div>
-
         <div id="history">
+            <div>
+                {{#if moreResults}}
+                <div style="margin: 10px;">
+                    <a id="showMore">
+                        Show more
+                    </a>
+                </div>
+                {{/if}} 
 
-            <div >
-                  {{#each quips}}
-                    <p class="quip">{{text}}</p>
-                  {{/each}}
-
-
-                    {{#if moreResults}}
-                        <div style="margin: 10px;">
-                        <a id="showMore">
-                            Show more
-                        </a>
-                        </div>
-                    {{/if}}
+                {{#each quips}}
+                <p class="quip">{{text}} [{{createdAt}}]</p>
+                {{/each}}
             </div>
-
         </div>
-
         <div id="mid-frame">
-
-          <form class="new-quip">
-            <input type="text" name="quipText" id="quipText"
-                placeholder="Quip it good">
-            <!-- <input type="submit" value="Quip"> -->
-          </form>
-
+            <form class="new-quip">
+                <input type="text" name="quipText" id="quipText" placeholder="Quip it good">
+                <!-- <input type="submit" value="Quip"> -->
+            </form>
         </div>
-
         <div id="bottom-frame">
-
             <div id="resetQuips">Reset quips</div>
-
-        </div> <!-- bottomFrame -->
-
-
-    </div> <!-- page -->
-
+        </div>
+        <!-- bottomFrame -->
+    </div>
+    <!-- page -->
 </template>
