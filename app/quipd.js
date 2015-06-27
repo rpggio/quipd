@@ -53,7 +53,7 @@ if (Meteor.isServer) {
         }
       });
     },
-    moreResults: function() {
+    areMoreQuips: function() {
       var quipsCount = Quips.find().count();
       var limit = Session.get("quipsLimit");
       var result = !(quipsCount < limit);
