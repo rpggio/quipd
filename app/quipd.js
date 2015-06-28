@@ -1,59 +1,69 @@
 Quips = new Mongo.Collection("quips");
+
 var sly;
+var activeIndex;
 
 var initScroll = function() {
-    var $frame  = $('#smart');
-    var $slidee = $frame.children('ul').eq(0);
-    var $wrap   = $frame.parent();
+  var $frame = $('#smart');
+  var $slidee = $frame.children('ul').eq(0);
+  var $wrap = $frame.parent();
 
-    if(sly){
-      sly.destroy();
+  if (sly) {
+    sly.destroy();
+  }
+
+  // Call Sly on frame
+  sly = new Sly($frame, {
+    itemNav: 'forceCentered',
+    activateMiddle: true,
+    smart: true,
+    activateOn: 'click',
+    touchDragging: true,
+    releaseSwing: true,
+    startAt: 3,
+    scrollBy: 1,
+    activatePageOn: 'click',
+    speed: 300,
+    elasticBounds: false,
+    scrollTrap: true
+
+    // prev: $wrap.find('.prev'),
+    // next: $wrap.find('.next'),
+  }, {
+    active: function(method, index) {
+      activeIndex = index;
     }
-
-    // Call Sly on frame
-    sly = new Sly($frame, {
-      itemNav: 'forceCentered',
-      activateMiddle: true,
-      smart: true,
-      activateOn: 'click',
-      touchDragging: true,
-      releaseSwing: true,
-      startAt: 3,
-      scrollBy: 1,
-      activatePageOn: 'click',
-      speed: 300,
-      elasticBounds: false,
-      scrollTrap: true
-
-      // prev: $wrap.find('.prev'),
-      // next: $wrap.find('.next'),
-    }).init();
+  }).init();
 }
 
 var initKeyhandler = function() {
   $(document).keydown(function(e) {
-        switch(e.which) {
-            case 37: // left
-            return;
-
-            case 38: // up
-            sly.prev();
-            break;
-
-            case 39: // right
-            return;
-
-            case 40: // down
-            sly.next();
-            break;
-
-            default: return;
-        }
-        e.preventDefault();
-    });
+    console.log(e.which);
+    switch (e.which) {
+      case 35: // end
+        sly.toEnd();
+        break;
+      case 36: // start
+        sly.toStart();
+        break;
+      case 37: // left
+        // no-op
+        return;
+      case 38: // up
+        sly.prev();
+        break;
+      case 39: // right
+        // no-op
+        return;
+      case 40: // down
+        sly.next();
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+  });
 }
-
-var browseMode = false;
 
 if (Meteor.isServer) {
 
@@ -107,12 +117,10 @@ if (Meteor.isServer) {
 
   Template.quipdMain.events({
     'click #showMore': function() {
-      browseMode = true;
       Session.set("quipsLimit",
         Session.get("quipsLimit") + QUIPS_INCREMENT);
     },
     'submit .new-quip': function(event) {
-      browseMode = false;
       var text = event.target.quipText.value;
       console.log('creating ' + text);
       Quips.insert({
@@ -126,7 +134,7 @@ if (Meteor.isServer) {
     'click #resetQuips': function() {
       Meteor.call('resetQuips');
     },
-    'click #nextQuip': function(){
+    'click #nextQuip': function() {
       sly.next();
     }
   });
@@ -134,7 +142,7 @@ if (Meteor.isServer) {
 
   Template.quipdMain.rendered = function() {
     Session.set("quipsLimit", QUIPS_INCREMENT);
-    
+
     initScroll();
 
     initKeyhandler();
@@ -145,11 +153,11 @@ if (Meteor.isServer) {
 
 
 
-var insert = function(text){
-          return Quips.insert({
-          text: text,
-          createdAt: Date()
-        });
+var insert = function(text) {
+  return Quips.insert({
+    text: text,
+    createdAt: Date()
+  });
 }
 
 var initData = function() {
