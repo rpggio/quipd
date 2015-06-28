@@ -70,13 +70,12 @@ if (Meteor.isServer) {
   Session.setDefault('quipsLimit', QUIPS_INCREMENT);
   Deps.autorun(function() {
     Meteor.subscribe('quipsPub', Session.get('quipsLimit'), function(e) {
-      
-      console.log('reloading');
-      sly.reload();
-
       // if (!browseMode) {
       //   scrollHistory();
       // }
+
+      console.log('reloading');
+      sly.reload();
     });
   });
 
@@ -116,6 +115,9 @@ if (Meteor.isServer) {
     },
     'click #resetQuips': function() {
       Meteor.call('resetQuips');
+    },
+    'click #nextQuip': function(){
+      sly.next();
     }
   });
 

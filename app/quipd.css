@@ -68,7 +68,7 @@ li {
 #footer {
     height: 60px;
     background-color: lightgray;
-    opacity: 0.2;
+    display: inline-block;
 }
 
 #main {
@@ -82,12 +82,13 @@ li {
     font-size: 13pt;
 }
 
-#resetQuips {
+.footerButton {
     padding: 8px;
     margin: 6px;
     cursor: default;
     width: 100px;
     border: 1px solid black;
+    float: left;
 }
 /*
 .frame {
@@ -142,7 +143,7 @@ li {
 /* Frame */
 .frame {
     width: 510px;
-    height: 100%;
+    height: 600px;
     overflow: hidden;
     border: 1px solid #444;
 }
@@ -172,4 +173,27 @@ li {
 .frame ul.items li.active {
     color: #fff;
     background: #a03232;
+}
+
+/* Scrollbar */
+.scrollbar {
+    position: absolute;
+    right: 10px;
+    width: 2px;
+    height: 600px;
+    background: #ccc;
+    line-height: 0;
+}
+.scrollbar .handle {
+    width: 100%;
+    height: 100px;
+    background: #292a33;
+    cursor: pointer;
+}
+.scrollbar .handle .mousearea {
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 22px;
+    height: 100%;
 }

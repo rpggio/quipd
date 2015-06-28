@@ -27,21 +27,25 @@
                 <div class="handle"></div>
             </div>
 
+            {{#each quips}}
+                <li class="quip">{{text}} [{{createdAt}}]</li>
+            {{/each}}
  -->
 
             <div class="frame smart" id="smart">
                 <ul class="items">
-
-                {{#each quips}}
+                    {{#each quips}}
                     <li class="quip">{{text}} [{{createdAt}}]</li>
                     {{/each}}
+
                 </ul>
             </div>
 
         </div>
 
         <div id="footer">
-            <div id="resetQuips">Reset quips</div>
+            <div id="resetQuips" class="footerButton">Reset quips</div>
+            <div id="nextQuip" class="footerButton">Nex quip</div>
         </div>
     </div>
 </template>
