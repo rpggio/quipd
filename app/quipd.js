@@ -30,6 +30,29 @@ var initScroll = function() {
     }).init();
 }
 
+var initKeyhandler = function() {
+  $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37: // left
+            return;
+
+            case 38: // up
+            sly.prev();
+            break;
+
+            case 39: // right
+            return;
+
+            case 40: // down
+            sly.next();
+            break;
+
+            default: return;
+        }
+        e.preventDefault();
+    });
+}
+
 var browseMode = false;
 
 if (Meteor.isServer) {
@@ -108,9 +131,14 @@ if (Meteor.isServer) {
     }
   });
 
+
   Template.quipdMain.rendered = function() {
     Session.set("quipsLimit", QUIPS_INCREMENT);
+    
     initScroll();
+
+    initKeyhandler();
+
   };
 
 }

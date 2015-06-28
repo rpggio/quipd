@@ -77,11 +77,7 @@ li {
     overflow-y: hidden;
 }
 
-.quip {
-    font-size: 13pt;
-    height: 100px;
-    vertical-align: top;
-}
+
 
 .footerButton {
     padding: 8px;
@@ -99,6 +95,7 @@ li {
     height: 100%;
     overflow: hidden;
     padding: 0;
+    line-height: 20pt;
 }
 
 .frame ul.items {
@@ -111,7 +108,9 @@ li {
 .frame ul.items li {
     width: 100%;
     margin: 0 0 1px;
-    padding: 0;
+    padding: 20px 5px;
+    display: block;
+    font-size: 13pt;
 }
 .frame ul.items li.active {
     font-weight: bold;
