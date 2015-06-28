@@ -35,7 +35,7 @@
 ******************************/
 
 body {
-    background-color: beige;
+    background-color: #fbfdfe;
     margin: 0;
 }
 
@@ -56,7 +56,7 @@ li {
 
 #header {
     height: 40px;
-    background-color: lightgray;
+    background-color: #EEEEEE;
     vertical-align: middle;
 }
 
@@ -67,7 +67,7 @@ li {
 
 #footer {
     height: 60px;
-    background-color: lightgray;
+    background-color: #EEEEEE;
     display: inline-block;
 }
 
@@ -142,58 +142,23 @@ li {
 
 /* Frame */
 .frame {
-    width: 510px;
-    height: 600px;
+    height: 100%;
     overflow: hidden;
-    border: 1px solid #444;
 }
-.frame .slidee {
-    padding: 20px 25px;
-    background: #fff;
-}
+
 .frame ul.items {
     list-style: none;
     margin: 0;
     padding: 0;
     width: 100%;
     font-size: 24px;
-    line-height: 100px;
 }
 .frame ul.items li {
-    float: left;
     width: 100%;
-    height: 100px;
     margin: 0 0 1px;
-    padding: 0;
-    background: #333;
-    color: #ddd;
-    text-align: center;
-    cursor: pointer;
+    padding: 30px 10px;
 }
 .frame ul.items li.active {
     color: #fff;
     background: #a03232;
-}
-
-/* Scrollbar */
-.scrollbar {
-    position: absolute;
-    right: 10px;
-    width: 2px;
-    height: 600px;
-    background: #ccc;
-    line-height: 0;
-}
-.scrollbar .handle {
-    width: 100%;
-    height: 100px;
-    background: #292a33;
-    cursor: pointer;
-}
-.scrollbar .handle .mousearea {
-    position: absolute;
-    top: 0;
-    left: -10px;
-    width: 22px;
-    height: 100%;
 }

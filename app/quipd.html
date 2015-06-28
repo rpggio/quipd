@@ -35,7 +35,9 @@
             <div class="frame smart" id="smart">
                 <ul class="items">
                     {{#each quips}}
-                    <li class="quip">{{text}} [{{createdAt}}]</li>
+                    <li class="quip">
+                    {{text}} [{{createdAt}}]
+                    </li>
                     {{/each}}
 
                 </ul>
@@ -45,7 +47,7 @@
 
         <div id="footer">
             <div id="resetQuips" class="footerButton">Reset quips</div>
-            <div id="nextQuip" class="footerButton">Nex quip</div>
+            <div id="nextQuip" class="footerButton">Next quip</div>
         </div>
     </div>
 </template>

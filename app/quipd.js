@@ -13,6 +13,10 @@ var initScroll = function() {
     var $slidee = $frame.children('ul').eq(0);
     var $wrap   = $frame.parent();
 
+    if(sly){
+      sly.destroy();
+    }
+
     // Call Sly on frame
     sly = new Sly($frame, {
       itemNav: 'basic',
