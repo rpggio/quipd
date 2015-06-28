@@ -1,5 +1,8 @@
 Quips = new Mongo.Collection("quips");
 
+var sly = new Sly('#frame');
+sly.init();
+
 var scrollHistory = function() {
   var history = $('#history');
   var scrollHeight = history.prop('scrollHeight');

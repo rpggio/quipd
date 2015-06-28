@@ -1,18 +1,14 @@
-
 /******************************
  
     reset
  
 ******************************/
 
-
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-
-
 /******************************
  
     common
@@ -32,8 +28,6 @@
     transform: translate(0, -50%);
     height: 50%;
 }
-
-
 /******************************
  
     model
@@ -58,7 +52,6 @@ li {
     margin: 0 auto;
     max-width: 900px;
     min-width: 200px;
-
 }
 
 #header {
@@ -78,8 +71,9 @@ li {
 }
 
 #main {
+    height: 80hv;
     flex: 1;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 .quip {
@@ -87,40 +81,45 @@ li {
     font-size: 13pt;
 }
 
-#quipText {
-    width: 100%;
-    margin: 50px 0;
-    padding: 10px;
-    font-size: 14pt;
-    background-color: beige;
-}
-
-#history .quip {
-    margin: 20px;
-    font-size: 13pt;
-
-}
-
 #resetQuips {
     padding: 8px;
     margin: 6px;
     cursor: default;
-    width:100px;
+    width: 100px;
     border: 1px solid black;
 }
 
-#quips-viewer{
+.frame {
+    margin-left: 30px;
+    padding: 0;
+    width: 300px;
+    height: 400px;
 }
 
-#current-quip {
-    background-color: yellow;
-    opacity: 0.2;
-    width: 600px;
-    height: 70px;
-    position: absolute;
-    top: 40%;
+.frame .slidee {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
 }
 
-#quips-start, #quips-end {
-    height: 40vh;
+.frame .slidee p {
+    float: left;
+    margin: 0 0 5px 0;
+    padding: 0;
+    width: 100%;
+    height: 100px;
+}
+
+.scrollbar {
+    background-color: gray;
+    width: 10px;
+    height: 400px;
+}
+
+.scrollbar .handle {
+    width: 100%;
+    height: 100px;
+    /* overriden if dynamicHandle: 1 */
+    background: #222;
 }

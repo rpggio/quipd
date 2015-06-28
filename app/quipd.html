@@ -15,19 +15,16 @@
 
         <div id="main">
 
-            <div id="quips-viewer">
-                <div id="current-quip">
-                </div>
-                
-                <div id="quips-start">
-                </div>
-                <div id="quips-container">
+            <div class="frame">
+                <div class="slidee">
                     {{#each quips}}
                     <p class="quip">{{text}} [{{createdAt}}]</p>
                     {{/each}}
                 </div>
-                <div id="quips-end">
-                </div>
+            </div>
+
+            <div class="scrollbar">
+                <div class="handle"></div>
             </div>
 
         </div>
