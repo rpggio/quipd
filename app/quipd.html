@@ -8,30 +8,31 @@
 
 <template name="quipdMain">
     <div id="page">
-        <div id="header">
-            <h1>quipd</h1>
-        </div>
-        <div id="history">
-            <div>
-                {{#if areMoreQuips}}
-                <div style="margin: 10px;">
-                    <a id="showMore">
-                        [ Show more ]
-                    </a>
-                </div>
-                {{/if}} 
 
-                {{#each quips}}
-                <p class="quip">{{text}} [{{createdAt}}]</p>
-                {{/each}}
+        <div id="header">
+            <h2>quipd</h2>
+        </div>
+
+        <div id="main">
+
+            <div id="quips-viewer">
+                <div id="current-quip">
+                </div>
+                
+                <div id="quips-start">
+                </div>
+                <div id="quips-container">
+                    {{#each quips}}
+                    <p class="quip">{{text}} [{{createdAt}}]</p>
+                    {{/each}}
+                </div>
+                <div id="quips-end">
+                </div>
             </div>
+
         </div>
-        <div id="mid-frame">
-            <form class="new-quip">
-                <input type="text" name="quipText" id="quipText" placeholder="Quip it good">
-            </form>
-        </div>
-        <div id="bottom-frame">
+
+        <div id="footer">
             <div id="resetQuips">Reset quips</div>
         </div>
     </div>

@@ -35,7 +35,7 @@ if (Meteor.isServer) {
 
 } else if (Meteor.isClient) {
 
-  var QUIPS_INCREMENT = 10;
+  var QUIPS_INCREMENT = 30;
   Session.setDefault('quipsLimit', QUIPS_INCREMENT);
   Deps.autorun(function() {
     Meteor.subscribe('quipsPub', Session.get('quipsLimit'), function(e) {

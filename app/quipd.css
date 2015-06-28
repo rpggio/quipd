@@ -1,7 +1,7 @@
 
 /******************************
  
-    baseline
+    reset
  
 ******************************/
 
@@ -13,15 +13,36 @@
 }
 
 
+/******************************
+ 
+    common
+ 
+******************************/
+
+.center-x {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 40%;
+}
+
+.center-y {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    height: 50%;
+}
+
 
 /******************************
  
-    ids
+    model
  
 ******************************/
 
 body {
     background-color: beige;
+    margin: 0;
 }
 
 li {
@@ -29,41 +50,41 @@ li {
     font-size: 24pt;
 }
 
-/*#rootContainer {
-    position: absolute;
-    top: 0%;
-    height:100%;
-    bottom: 100%;
-    left: 10%;
-    right: 10%;
-    max-width: 900px;
-    min-width: 100px;
-}*/
-
 #page {
-    width:80%;
-    min-height: 95vh;
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    width: 80%;
     margin: 0 auto;
-    padding: 5px 0;
     max-width: 900px;
-    min-width: 100px;
+    min-width: 200px;
+
 }
 
+#header {
+    height: 40px;
+    background-color: lightgray;
+    vertical-align: middle;
+}
 
-#history {
-    height: 60vh;
-    overflow-y: scroll;
+#header h2 {
+    padding: 0;
+    margin: 0;
+}
+
+#footer {
+    height: 60px;
     background-color: lightgray;
 }
 
-#mid-frame {
-    height: 150px;
+#main {
+    flex: 1;
+    overflow-y: scroll;
 }
 
-#bottom-frame {
-}
-
-#history {
+.quip {
+    margin: 60px 10px;
+    font-size: 13pt;
 }
 
 #quipText {
@@ -88,22 +109,18 @@ li {
     border: 1px solid black;
 }
 
-/******************************
- 
-    classes
- 
-******************************/
-
-.center-x {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0);
-    width: 40%;
+#quips-viewer{
 }
 
-.center-y {
+#current-quip {
+    background-color: yellow;
+    opacity: 0.2;
+    width: 600px;
+    height: 70px;
     position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-    height: 50%;
+    top: 40%;
+}
+
+#quips-start, #quips-end {
+    height: 40vh;
 }
