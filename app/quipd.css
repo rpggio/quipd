@@ -68,6 +68,7 @@ li {
 #footer {
     height: 60px;
     background-color: lightgray;
+    opacity: 0.2;
 }
 
 #main {
@@ -88,7 +89,7 @@ li {
     width: 100px;
     border: 1px solid black;
 }
-
+/*
 .frame {
     margin-left: 30px;
     padding: 0;
@@ -120,6 +121,55 @@ li {
 .scrollbar .handle {
     width: 100%;
     height: 100px;
-    /* overriden if dynamicHandle: 1 */
     background: #222;
+}
+
+*/
+
+
+
+.container { margin: 0 auto; }
+
+/* Example wrapper */
+.wrap {
+    position: relative;
+    float: left;
+    width: 550px;
+    margin: 0 40px 3em 0;
+}
+.wrap:nth-child(2n) { margin-right: 0; }
+
+/* Frame */
+.frame {
+    width: 510px;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid #444;
+}
+.frame .slidee {
+    padding: 20px 25px;
+    background: #fff;
+}
+.frame ul.items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-size: 24px;
+    line-height: 100px;
+}
+.frame ul.items li {
+    float: left;
+    width: 100%;
+    height: 100px;
+    margin: 0 0 1px;
+    padding: 0;
+    background: #333;
+    color: #ddd;
+    text-align: center;
+    cursor: pointer;
+}
+.frame ul.items li.active {
+    color: #fff;
+    background: #a03232;
 }

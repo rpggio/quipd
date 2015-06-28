@@ -1,12 +1,40 @@
 Quips = new Mongo.Collection("quips");
+var sly;
 
-var sly = new Sly('#frame');
-sly.init();
 
 var scrollHistory = function() {
   var history = $('#history');
   var scrollHeight = history.prop('scrollHeight');
   history.scrollTop(scrollHeight);
+}
+
+var initScroll = function() {
+    var $frame  = $('#smart');
+    var $slidee = $frame.children('ul').eq(0);
+    var $wrap   = $frame.parent();
+
+    // Call Sly on frame
+    sly = new Sly($frame, {
+      itemNav: 'basic',
+      smart: 1,
+      activateOn: 'click',
+      touchDragging: 1,
+      releaseSwing: 1,
+      startAt: 3,
+      scrollBy: 1,
+      activatePageOn: 'click',
+      speed: 300,
+      elasticBounds: 1,
+      //easing: 'easeOutExpo',
+
+      // // Buttons
+      // forward: $wrap.find('.forward'),
+      // backward: $wrap.find('.backward'),
+      // prev: $wrap.find('.prev'),
+      // next: $wrap.find('.next'),
+      // prevPage: $wrap.find('.prevPage'),
+      // nextPage: $wrap.find('.nextPage')
+    }).init();
 }
 
 var browseMode = false;
@@ -42,9 +70,13 @@ if (Meteor.isServer) {
   Session.setDefault('quipsLimit', QUIPS_INCREMENT);
   Deps.autorun(function() {
     Meteor.subscribe('quipsPub', Session.get('quipsLimit'), function(e) {
-      if (!browseMode) {
-        scrollHistory();
-      }
+      
+      console.log('reloading');
+      sly.reload();
+
+      // if (!browseMode) {
+      //   scrollHistory();
+      // }
     });
   });
 
@@ -89,7 +121,10 @@ if (Meteor.isServer) {
 
   Template.quipdMain.rendered = function() {
     Session.set("quipsLimit", QUIPS_INCREMENT);
-    scrollHistory();
+
+    initScroll();
+
+    //scrollHistory();
   };
 
 }
