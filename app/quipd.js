@@ -31,7 +31,7 @@ var initScroll = function() {
       activeIndex = index;
       var item = $itemsSelector.children('li:nth-child(' + (index + 1) + ')');
       var newQuip = item.find('#new-quip-text');
-      if(newQuip.length){
+      if (newQuip.length) {
         newQuip.focus();
       }
       Session.set("activeIndex", index);
@@ -42,7 +42,7 @@ var initScroll = function() {
 var initKeyhandler = function() {
   $(document).keydown(function(e) {
     //console.log('keydown: ' + e.which);
-    if(!sly){
+    if (!sly) {
       return;
     }
     switch (e.which) {
@@ -50,14 +50,14 @@ var initKeyhandler = function() {
         $('#new-quip-text').val('');
         break;
       case 35: // end
-        if(activeIndex == quipCount) {
+        if (activeIndex == quipCount) {
           // ignore if on last item
           return;
         }
         sly.toEnd();
         break;
       case 36: // home
-        if(activeIndex == quipCount) {
+        if (activeIndex == quipCount) {
           // ignore if on last item
           return;
         }
@@ -85,8 +85,8 @@ var initKeyhandler = function() {
 var updateScroll = function() {
   if (sly) {
     sly.reload();
-    if(quipCount){
-      sly.activate(quipCount, true);  // advance to new-quip at index last+1.
+    if (quipCount) {
+      sly.activate(quipCount, true); // advance to new-quip at index last+1.
     }
   }
 }
@@ -131,10 +131,10 @@ if (Meteor.isServer) {
   Template.quipdMain.helpers({
     quips: function() {
       return Quips.find({}, {
-          sort: {
-            createdAt: 1
-          }
-        });
+        sort: {
+          createdAt: 1
+        }
+      });
     },
     areMoreQuips: function() {
       var quipsCount = Quips.find().count();
