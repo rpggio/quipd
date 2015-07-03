@@ -1,8 +1,8 @@
 Quips = new Mongo.Collection("quips");
 
 var sly;
-//var activeIndex;
-var quipIndex = 0;
+var activeIndex;
+var quipCount;
 
 var initScroll = function() {
   var $frame = $('#slyFrame');
@@ -23,15 +23,12 @@ var initScroll = function() {
     releaseSwing: true,
     scrollBy: 1,
     activatePageOn: 'click',
-    speed: 100,
+    speed: 150,
     elasticBounds: false,
-    scrollTrap: true,
-    //keyboardNavBy: 'items'
-
-    // prev: $wrap.find('.prev'),
-    // next: $wrap.find('.next'),
+    scrollTrap: true
   }, {
     active: function(method, index) {
+      activeIndex = index;
       var item = $itemsSelector.children('li:nth-child(' + (index + 1) + ')');
       var newQuip = item.find('#new-quip-text');
       if(newQuip.length){
@@ -44,7 +41,7 @@ var initScroll = function() {
 
 var initKeyhandler = function() {
   $(document).keydown(function(e) {
-    console.log('keydown: ' + e.which);
+    //console.log('keydown: ' + e.which);
     if(!sly){
       return;
     }
@@ -53,9 +50,17 @@ var initKeyhandler = function() {
         $('#new-quip-text').val('');
         break;
       case 35: // end
+        if(activeIndex == quipCount) {
+          // ignore if on last item
+          return;
+        }
         sly.toEnd();
         break;
-      case 36: // start
+      case 36: // home
+        if(activeIndex == quipCount) {
+          // ignore if on last item
+          return;
+        }
         sly.toStart();
         break;
       case 37: // left
@@ -78,13 +83,12 @@ var initKeyhandler = function() {
 }
 
 var updateScroll = function() {
-        if (sly) {
-          sly.reload();
-          var count = Quips.find().count();
-          if(count){
-            sly.activate(count);  // advance to new-quip at index last+1.
-          }
-        }
+  if (sly) {
+    sly.reload();
+    if(quipCount){
+      sly.activate(quipCount, true);  // advance to new-quip at index last+1.
+    }
+  }
 }
 
 if (Meteor.isServer) {
@@ -118,6 +122,7 @@ if (Meteor.isServer) {
     Meteor.subscribe('quipsPub',
       Session.get('quipsLimit'),
       function() {
+        quipCount = Quips.find().count();
         updateScroll();
       }
     );
@@ -149,7 +154,6 @@ if (Meteor.isServer) {
     },
     'submit #new-quip': function(event) {
       var text = event.target['new-quip-text'].value;
-      console.log('creating ' + text);
       Quips.insert({
         text: text,
         createdAt: moment().toDate()

@@ -20,15 +20,19 @@
                 <ul id="quips" class="items">
                     {{#each quips}}
                     <li class="quip">
-                        {{text}} [{{createdAt}}]
-                        <div class="quip-after"></div>
+                        <div class="quip-content">{{text}} [{{createdAt}}]</div>
+                        <div class="quip-fade"></div>
+                        <div class="quip-border"></div>
                     </li>
                     {{/each}}
 
                     <li class="quip quip-draft">
-                        <form id="new-quip">
-                            <input type="text" id="new-quip-text" name="new-quip-text" placeholder="Quip it" >
-                        </form>
+                        <div class="quip-border"></div>
+                        <div class="quip-content">
+                            <form id="new-quip">
+                                <input type="text" id="new-quip-text" name="new-quip-text" placeholder="Quip it">
+                            </form>
+                        </div>
                     </li>
                 </ul>
             </div>
