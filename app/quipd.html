@@ -16,27 +16,30 @@
 
         <div id="main">
 
-            <div class="frame smart" id="smart">
-                <ul class="items">
+            <div class="frame smart" id="slyFrame">
+                <ul id="quips" class="items">
                     {{#each quips}}
                     <li class="quip">
-                    {{text}} [{{createdAt}}]
-                    <div class="quip-after"></div>
+                        {{text}} [{{createdAt}}]
+                        <div class="quip-after"></div>
                     </li>
                     {{/each}}
 
-
+                    <li class="quip quip-draft">
+                        <form id="new-quip">
+                            <input type="text" id="new-quip-text" name="new-quip-text" placeholder="Quip it" >
+                        </form>
+                    </li>
                 </ul>
             </div>
 
-<!--             <div id="quip-box">
+            <!--           <div id="quip-box">
             </div> -->
 
         </div>
 
         <div id="footer">
             <div id="resetQuips" class="footerButton">Reset quips</div>
-            <div id="nextQuip" class="footerButton">Next quip</div>
         </div>
     </div>
 </template>

@@ -1,11 +1,12 @@
 Quips = new Mongo.Collection("quips");
 
 var sly;
-var activeIndex;
+//var activeIndex;
+var quipIndex = 0;
 
 var initScroll = function() {
-  var $frame = $('#smart');
-  var $slidee = $frame.children('ul').eq(0);
+  var $frame = $('#slyFrame');
+  var $itemsSelector = $frame.children('#quips');
   var $wrap = $frame.parent();
 
   if (sly) {
@@ -20,26 +21,37 @@ var initScroll = function() {
     activateOn: 'click',
     touchDragging: true,
     releaseSwing: true,
-    startAt: 3,
     scrollBy: 1,
     activatePageOn: 'click',
-    speed: 300,
+    speed: 100,
     elasticBounds: false,
-    scrollTrap: true
+    scrollTrap: true,
+    //keyboardNavBy: 'items'
 
     // prev: $wrap.find('.prev'),
     // next: $wrap.find('.next'),
   }, {
     active: function(method, index) {
-      activeIndex = index;
+      var item = $itemsSelector.children('li:nth-child(' + (index + 1) + ')');
+      var newQuip = item.find('#new-quip-text');
+      if(newQuip.length){
+        newQuip.focus();
+      }
+      Session.set("activeIndex", index);
     }
   }).init();
 }
 
 var initKeyhandler = function() {
   $(document).keydown(function(e) {
-    console.log(e.which);
+    console.log('keydown: ' + e.which);
+    if(!sly){
+      return;
+    }
     switch (e.which) {
+      case 27: // esc
+        $('#new-quip-text').val('');
+        break;
       case 35: // end
         sly.toEnd();
         break;
@@ -65,6 +77,16 @@ var initKeyhandler = function() {
   });
 }
 
+var updateScroll = function() {
+        if (sly) {
+          sly.reload();
+          var count = Quips.find().count();
+          if(count){
+            sly.activate(count);  // advance to new-quip at index last+1.
+          }
+        }
+}
+
 if (Meteor.isServer) {
 
   Meteor.startup(function() {
@@ -82,7 +104,7 @@ if (Meteor.isServer) {
     return Quips.find({}, {
       limit: limit || 10,
       sort: {
-        createdAt: -1
+        createdAt: 1
       }
     });
   });
@@ -90,28 +112,33 @@ if (Meteor.isServer) {
 } else if (Meteor.isClient) {
 
   var QUIPS_INCREMENT = 30;
+
   Session.setDefault('quipsLimit', QUIPS_INCREMENT);
   Deps.autorun(function() {
-    Meteor.subscribe('quipsPub', Session.get('quipsLimit'), function(e) {
-
-      console.log('reloading');
-      sly.reload();
-    });
+    Meteor.subscribe('quipsPub',
+      Session.get('quipsLimit'),
+      function() {
+        updateScroll();
+      }
+    );
   });
 
   Template.quipdMain.helpers({
     quips: function() {
       return Quips.find({}, {
-        sort: {
-          createdAt: 1
-        }
-      });
+          sort: {
+            createdAt: 1
+          }
+        });
     },
     areMoreQuips: function() {
       var quipsCount = Quips.find().count();
       var limit = Session.get("quipsLimit");
       var result = !(quipsCount < limit);
       return result;
+    },
+    isSelected: function() {
+      return this.index === Session.get("activeIndex");
     }
   });
 
@@ -120,22 +147,19 @@ if (Meteor.isServer) {
       Session.set("quipsLimit",
         Session.get("quipsLimit") + QUIPS_INCREMENT);
     },
-    'submit .new-quip': function(event) {
-      var text = event.target.quipText.value;
+    'submit #new-quip': function(event) {
+      var text = event.target['new-quip-text'].value;
       console.log('creating ' + text);
       Quips.insert({
         text: text,
-        createdAt: Date()
+        createdAt: moment().toDate()
       });
-      event.target.quipText.value = "";
-      scrollHistory();
+      event.target['new-quip-text'].value = "";
+      updateScroll();
       return false;
     },
     'click #resetQuips': function() {
       Meteor.call('resetQuips');
-    },
-    'click #nextQuip': function() {
-      sly.next();
     }
   });
 
@@ -152,15 +176,19 @@ if (Meteor.isServer) {
 }
 
 
+var insertMoment;
 
 var insert = function(text) {
-  return Quips.insert({
+  Quips.insert({
     text: text,
-    createdAt: Date()
+    createdAt: insertMoment.toDate()
   });
+  insertMoment = insertMoment.add(1, 'minutes');
+
 }
 
 var initData = function() {
+  insertMoment = moment().subtract(1, 'days');
   insert('Men, it has been well said, think in herds; it will be seen that they go mad in herds, while they only recover their senses slowly, one by one.');
   insert("I never lost money by turning a profit.");
   insert("Let us not, in the pride of our superior knowledge, turn with contempt from the follies of our predecessors. The study of the errors into which great minds have fallen in the pursuit of truth can never be uninstructive. As the man looks back to the days of his childhood and his youth, and recalls to his mind the strange notions and false opinions that swayed his actions at the time, that he may wonder at them; so should society, for its edification, look back to the opinions which governed ages that fled.");
