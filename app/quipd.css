@@ -102,13 +102,16 @@ body {
     font-size: 24px;
 }
 
-.quip {
+.frame ul li {
     width: 100%;
-    margin: 4px 0px;
     display: block;
+    position: relative;
+}
+
+.quip {
+    margin: 4px 0px;
     max-height: 120px;
     transition: max-height .15s ease-out;
-    position: relative;
     overflow-y: hidden;
 }
 
@@ -146,7 +149,7 @@ body {
     font-weight: bold;
 }
 
-.quip.active .quip-border {
+.active .quip-border {
     border: 1px solid lightgray;
 }
 
@@ -160,10 +163,14 @@ body {
 .quip-draft {
     margin-top: 20px;
 }
-/*#quip-box {
-    border: 1px solid lightgray;
-    position: absolute;
-    top:50%;
-    width: 100%;
-    height: 120px
-}*/
+
+#load-more {
+    margin-bottom: 20px;
+    padding: 8px;
+}
+
+#load-more .quip-content {
+    background-color: lightblue;
+    text-align: center;
+    font-variant: small-caps;
+}

@@ -17,10 +17,19 @@
         <div id="main">
 
             <div class="frame smart" id="slyFrame">
+
                 <ul id="quips" class="items">
+
+                    {{#if areMoreQuips}}
+                    <li id="load-more">
+                        <div class="quip-border"></div>
+                        <div class="quip-content">Show more</div>
+                    </li>
+                    {{/if}}
+
                     {{#each quips}}
                     <li class="quip">
-                        <div class="quip-content">{{text}} [{{createdAt}}]</div>
+                        <div class="quip-content">{{text}}</div>
                         <div class="quip-fade"></div>
                         <div class="quip-border"></div>
                     </li>
@@ -37,13 +46,11 @@
                 </ul>
             </div>
 
-            <!--           <div id="quip-box">
-            </div> -->
-
         </div>
 
         <div id="footer">
             <div id="resetQuips" class="footerButton">Reset quips</div>
         </div>
     </div>
+
 </template>
