@@ -1,3 +1,6 @@
+
+@import "lib/semantic-ui/semantic.less";
+
 /******************************
  
     reset
@@ -65,6 +68,14 @@ body {
     margin: 0 auto;
 }
 
+#footer-content {
+    padding: 4px 0px;
+}
+
+#footer-debug {
+    text-align: right;
+}
+
 #page-body {
     height: calc(100vh - 50px - 50px);
     padding: 0 10px;
@@ -80,15 +91,6 @@ body {
 
 .pad1 {
     padding: 10px;
-}
-
-.footerButton {
-    padding: 8px;
-    margin: 6px;
-    cursor: default;
-    width: 100px;
-    border: 1px solid black;
-    float: left;
 }
 
 .container {
