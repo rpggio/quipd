@@ -9,6 +9,7 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+
 /******************************
  
     common
@@ -28,6 +29,7 @@
     transform: translate(0, -50%);
     height: 50%;
 }
+
 /******************************
  
     model
@@ -36,41 +38,48 @@
 
 body {
     background-color: #fbfdfe;
+    height: 100%;
     margin: 0;
+    padding: 0;
 }
 
-#page {
-    display: flex;
-    height: 100vh;
-    flex-direction: column;
-    width: 80%;
+#page-header,
+#page-footer {
+    padding: 5px;
+    vertical-align: middle;
+    background-color: #DDDDDD;
+}
+
+#page-header {
+    height: 50px;
+}
+
+#page-footer {
+    height: 50px;
+}
+
+#header-content,
+#footer-content {
+    min-width: 200px;
+    max-width: 1000px;
     margin: 0 auto;
-    max-width: 900px;
+}
+
+#page-body {
+    height: calc(100vh - 50px - 50px);
+    padding: 0 10px;
+    margin: 0 auto;
+    max-width: 600px;
     min-width: 200px;
 }
 
-#header {
-    height: 40px;
-    background-color: #EEEEEE;
-    vertical-align: middle;
-}
-
-#header h2 {
+.no-space {
     padding: 0;
     margin: 0;
 }
 
-#footer {
-    height: 60px;
-    background-color: #EEEEEE;
-    display: inline-block;
-}
-
-#main {
-    height: 100%;
-    flex: 1;
-    overflow-y: hidden;
-    position: relative;
+.pad1 {
+    padding: 10px;
 }
 
 .footerButton {
@@ -85,6 +94,7 @@ body {
 .container {
     margin: 0 auto;
 }
+
 /* Frame */
 
 .frame {
