@@ -107,15 +107,45 @@ if (Meteor.isServer) {
 
     return Meteor.methods({
       resetQuips: function() {
-        Quips.remove({});
-        initData();
+        Quips.remove({ownerId: Meteor.userId()});
+      },
+      seedQuips: function() {
+        seedQuips();
+      },
+      addQuip: function (text) {
+        if (! Meteor.userId()) {
+          throw new Meteor.Error("not-authorized");
+        }
+
+        Quips.insert({
+          text: text,
+          createdAt: moment().toDate(),
+          ownerId: Meteor.userId()
+        });
+      },
+      updateQuip: function(id, text){
+        throw 'not implemented';
+      },
+      deleteQuip: function (id) {
+        Quips.remove(id);
+      },
+      moveQuipsToUser: function(fromId, toId){
+        if(!fromId || !toId){
+          throw 'null argument';
+        }
+        console.log('moving quips from user ' + fromId + ' to ' + toId);
+        Quips.update({ownerId: fromId}, {$set: {ownerId: toId}}, {multi:true});
       }
     });
 
   });
 
   Meteor.publish('quipsPub', function(limit) {
-    return Quips.find({}, {
+
+    return Quips.find({
+      ownerId: this.userId
+    }, 
+    {
       limit: limit || 10,
       sort: {
         createdAt: -1
@@ -123,7 +153,9 @@ if (Meteor.isServer) {
     });
   });
 
-} else if (Meteor.isClient) {
+} 
+
+else if (Meteor.isClient) {
 
   var QUIPS_INCREMENT = 20;
 
@@ -160,16 +192,18 @@ if (Meteor.isServer) {
     },
     'submit #new-quip': function(event) {
       var text = event.target['new-quip-text'].value;
-      Quips.insert({
-        text: text,
-        createdAt: moment().toDate()
-      });
+      Meteor.call("addQuip", text);
       event.target['new-quip-text'].value = "";
       updateScroll();
       return false;
     },
     'click #resetQuips': function() {
       Meteor.call('resetQuips');
+      delayedUpdateScroll();
+    },
+    'click #seedQuips': function() {
+      Meteor.call('seedQuips');
+      delayedUpdateScroll();
     },
     'click #load-more': function() {
       showMore();
@@ -184,12 +218,36 @@ if (Meteor.isServer) {
 
     initKeyhandler();
 
+    Deps.autorun(function(){
+      if(Meteor.userId()){
+        updateScroll();
+      }     
+    });
+
+    Deps.autorun(function(){
+      var isGuest = Meteor.userId() && !Meteor.user();
+      if(isGuest){
+        // track guest user
+        Session.set("guestUserId", Meteor.userId());
+      }
+      else{
+        // move quips from guest user to real user
+        var guestUserId = Session.get("guestUserId");
+        if(guestUserId){
+          Meteor.call('moveQuipsToUser', guestUserId, Meteor.userId());
+        }
+      }
+    });
   };
 
 }
 
 
 var insertMoment;
+
+var delayedUpdateScroll = function() {
+  Meteor.setTimeout(function() { updateScroll(); }, 1000);
+}
 
 var getActiveItem = function() {
   return getItem(activeIndex);
@@ -219,16 +277,20 @@ var showMore = function() {
 }
 
 var insert = function(text) {
-  Quips.insert({
+  var quip = {
     text: text,
-    createdAt: insertMoment.toDate()
-  });
+    createdAt: insertMoment.toDate(),
+    ownerId: Meteor.userId()
+  };
+  Quips.insert(quip);
   insertMoment = insertMoment.add(1, 'minutes');
 
 }
 
-var initData = function() {
+var seedQuips = function() {
+  console.log('inserting test data for userId ' + Meteor.userId())
   insertMoment = moment().subtract(1, 'days');
+  console.log({insertAt: insertMoment});
   for(var i = 1; i < 40; i++) {
     insert('An item, #' + i);
   }
@@ -240,11 +302,6 @@ var initData = function() {
   insert("Nations, like individuals, cannot become desperate gamblers with impunity. Punishment is sure to overtake them sooner or later.");
   insert("Three causes especially have excited the discontent of mankind; and, by impelling us to seek remedies for the irremediable, have bewildered us in a maze of madness and error. These are death, toil, and the ignorance of the future..");
   insert("Much as the sage may affect to despise the opinion of the world, there are few who would not rather expose their lives a hundred times than be condemned to live on, in society, but not of it - a by-word of reproach to all who know their history, and a mark for scorn to point his finger at.");
-  insert("Dirtbag");
-  insert("Crudmiffin");
-  insert("Pie hole");
-  insert("Rat breath");
-  insert("Ear waxer");
   insert("In February 1720 an edict was published, which, instead of restoring the credit of the paper, as was intended, destroyed it irrecoverably, and drove the country to the very brink of revolution...");
   insert("We find that whole communities suddenly fix their minds upon one object, and go mad in its pursuit; that millions of people become simultaneously impressed with one delusion, and run after it, till their attention is caught by some new folly more captivating than the first.");
   insert("Thus did they nurse their folly, as the good wife of Tam O’Shanter did her wrath, “to keep it warm.”");
