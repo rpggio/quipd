@@ -180,6 +180,13 @@ body {
     font-size: 13pt;
 }
 
+#update-quip input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid lightgray;
+    font-size: 13pt;
+}
+
 .quip-draft {
     margin-top: 20px;
 }

@@ -1,12 +1,5 @@
-<head>
-    <title>quipd</title>
-</head>
 
-<body>
-    {{> quipdMain }}
-</body>
-
-<template name="quipdMain">
+<template name="main">
 
     <div id="page-header">
         <div id="header-content">
@@ -33,7 +26,11 @@
 
                 {{#each quips}}
                 <li class="quip">
-                    <div class="quip-content">{{text}}</div>
+                    {{#if areEditing}}
+                       {{> editQuip}}
+                    {{else}}
+                        <div class="quip-content">{{text}}</div>
+                    {{/if}}
                     <div class="quip-fade"></div>
                     <div class="quip-border"></div>
                 </li>
@@ -61,4 +58,10 @@
         </div>
     </div>
 
+</template>
+
+<template name="editQuip">
+   <form id="update-quip">
+        <input type="text" id="update-quip-text" name="update-quip-text" value="{{text}}">
+    </form>
 </template>

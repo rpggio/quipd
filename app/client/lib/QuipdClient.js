@@ -1,22 +1,19 @@
-Quips = new Mongo.Collection("quips");
+QuipdClient = {}
 
-var sly;
-var activeIndex;
-var quipCount;
-var showingMore;
-var $itemsSelector;
+QuipdClient.QUIPS_INCREMENT = 20;
 
-var initScroll = function() {
+Session.setDefault('quipsLimit', QuipdClient.QUIPS_INCREMENT);
+
+QuipdClient.initScroll = function() {
   var $frame = $('#slyFrame');
-  $itemsSelector = $frame.children('#quips');
+  QuipdClient.$itemsSelector = $frame.children('#quips');
   var $wrap = $frame.parent();
 
-  if (sly) {
-    sly.destroy();
+  if (QuipdClient.sly) {
+    QuipdClient.sly.destroy();
   }
 
-  // Call Sly on frame
-  sly = new Sly($frame, {
+  QuipdClient.sly = new Sly($frame, {
     itemNav: 'forceCentered',
     activateMiddle: true,
     smart: true,
@@ -30,52 +27,71 @@ var initScroll = function() {
     scrollTrap: true
   }, {
     active: function(method, index) {
-      activeIndex = index;
-      var item = getActiveItem();
+      QuipdClient.activeIndex = index;
+      var item = QuipdClient.getActiveItem();
+      var itemElement = item[0];
+      var data = itemElement && Blaze.getData(itemElement);
+      if(!data) {
+        return;
+      }
+      
+      //console.log({active: data.text});
+      
+      Session.set("activeIndex", index);
+      Session.set("activeQuipId", data._id);
+      Session.set("editingQuipId", null);
+
       var newQuip = item.find('#new-quip-text');
       if (newQuip.length) {
         newQuip.focus();
       }
-      Session.set("activeIndex", index);
-            }
+    }
   }).init();
 }
 
-var initKeyhandler = function() {
+QuipdClient.initKeyhandler = function() {
   $(document).keydown(function(e) {
     //console.log('keydown: ' + e.which);
-    if (!sly) {
+    if (!QuipdClient.sly) {
       return;
     }
     switch (e.which) {
+      case 13: // enter
+        if(!Session.get('editingQuipId') && Session.get('activeQuipId')){
+          console.log('starting edit: enter key pressed');
+          Session.set('editingQuipId', Session.get('activeQuipId'));
+          break;
+        }
+        return;
       case 27: // esc
         $('#new-quip-text').val('');
+        Session.set('editingQuipId', null);
         break;
       case 35: // end
-        if (activeIndex == quipCount) {
+        if (QuipdClient.activeIndex == QuipdClient.quipCount) {
           // ignore if on last item
           return;
         }
-        sly.toEnd();
+        QuipdClient.sly.toEnd();
         break;
       case 36: // home
-        if (activeIndex == quipCount) {
+        if (QuipdClient.activeIndex == QuipdClient.quipCount) {
           // ignore if on last item
           return;
         }
-        sly.toStart();
+        QuipdClient.sly.toStart();
         break;
       case 37: // left
         // no-op
         return;
       case 38: // up
-        sly.prev();
+        QuipdClient.sly.prev();
         break;
       case 39: // right
         // no-op
         return;
       case 40: // down
-        sly.next();
+        QuipdClient.sly.next();
         break;
       default:
         return;
@@ -84,214 +100,77 @@ var initKeyhandler = function() {
   });
 }
 
-var updateScroll = function() {
-  if (sly) {
-    sly.reload();
+QuipdClient.updateScroll = function() {
+  if (QuipdClient.sly) {
+    QuipdClient.sly.reload();
     //initScroll();
-    if (showingMore) {
-      showingMore = false;
+    if (QuipdClient.showingMore) {
+      QuipdClient.showingMore = false;
       // hack: we should figure out how many actually loaded
-      sly.set({ smart: true });
-      sly.activate(QUIPS_INCREMENT, true);
-    }
-    else if (quipCount) {
+      QuipdClient.sly.set({
+        smart: true
+      });
+      QuipdClient.sly.activate(QUIPS_INCREMENT, true);
+    } else if (QuipdClient.quipCount) {
       // advance to new-quip.
-      sly.activate(quipCount, true);
+      QuipdClient.sly.activate(QuipdClient.quipCount, true);
     }
   }
 }
 
-if (Meteor.isServer) {
-
-  Meteor.startup(function() {
-
-    return Meteor.methods({
-      resetQuips: function() {
-        Quips.remove({ownerId: Meteor.userId()});
-      },
-      seedQuips: function() {
-        seedQuips();
-      },
-      addQuip: function (text) {
-        if (! Meteor.userId()) {
-          throw new Meteor.Error("not-authorized");
-        }
-
-        Quips.insert({
-          text: text,
-          createdAt: moment().toDate(),
-          ownerId: Meteor.userId()
-        });
-      },
-      updateQuip: function(id, text){
-        throw 'not implemented';
-      },
-      deleteQuip: function (id) {
-        Quips.remove(id);
-      },
-      moveQuipsToUser: function(fromId, toId){
-        if(!fromId || !toId){
-          throw 'null argument';
-        }
-        console.log('moving quips from user ' + fromId + ' to ' + toId);
-        Quips.update({ownerId: fromId}, {$set: {ownerId: toId}}, {multi:true});
-      }
-    });
-
-  });
-
-  Meteor.publish('quipsPub', function(limit) {
-
-    return Quips.find({
-      ownerId: this.userId
-    }, 
-    {
-      limit: limit || 10,
-      sort: {
-        createdAt: -1
-      }
-    });
-  });
-
-} 
-
-else if (Meteor.isClient) {
-
-  var QUIPS_INCREMENT = 20;
-
-  Session.setDefault('quipsLimit', QUIPS_INCREMENT);
-  Deps.autorun(function() {
-    Meteor.subscribe('quipsPub',
-      Session.get('quipsLimit'),
-      function() {
-        quipCount = Quips.find().count();
-        updateScroll();
-      }
-    );
-  });
-
-  Template.quipdMain.helpers({
-    quips: function() {
-      return Quips.find({}, {
-        sort: {
-          createdAt: 1
-        }
-      });
-    },
-    areMoreQuips: function() {
-      return areMoreQuips();
-    },
-    isSelected: function() {
-      return this.index === Session.get("activeIndex");
-    }
-  });
-
-  Template.quipdMain.events({
-    'click #showMore': function() {
-      showMore();
-    },
-    'submit #new-quip': function(event) {
-      var text = event.target['new-quip-text'].value;
-      Meteor.call("addQuip", text);
-      event.target['new-quip-text'].value = "";
-      updateScroll();
-      return false;
-    },
-    'click #resetQuips': function() {
-      Meteor.call('resetQuips');
-      delayedUpdateScroll();
-    },
-    'click #seedQuips': function() {
-      Meteor.call('seedQuips');
-      delayedUpdateScroll();
-    },
-    'click #load-more': function() {
-      showMore();
-    }
-  });
-
-
-  Template.quipdMain.rendered = function() {
-    Session.set("quipsLimit", QUIPS_INCREMENT);
-
-    initScroll();
-
-    initKeyhandler();
-
-    Deps.autorun(function(){
-      if(Meteor.userId()){
-        updateScroll();
-      }     
-    });
-
-    Deps.autorun(function(){
-      var isGuest = Meteor.userId() && !Meteor.user();
-      if(isGuest){
-        // track guest user
-        Session.set("guestUserId", Meteor.userId());
-      }
-      else{
-        // move quips from guest user to real user
-        var guestUserId = Session.get("guestUserId");
-        if(guestUserId){
-          Meteor.call('moveQuipsToUser', guestUserId, Meteor.userId());
-        }
-      }
-    });
-  };
-
+QuipdClient.delayedUpdateScroll = function() {
+  Meteor.setTimeout(function() {
+    QuipdClient.updateScroll();
+  }, 1000);
 }
 
-
-var insertMoment;
-
-var delayedUpdateScroll = function() {
-  Meteor.setTimeout(function() { updateScroll(); }, 1000);
+QuipdClient.getActiveItem = function() {
+  return QuipdClient.getItem(QuipdClient.activeIndex);
 }
 
-var getActiveItem = function() {
-  return getItem(activeIndex);
-}
-
-var getItem = function(index){
-  if(!$itemsSelector){
+QuipdClient.getItem = function(index) {
+  if (!QuipdClient.$itemsSelector) {
     return null;
   }
-  return $itemsSelector.children('li:nth-child(' + (index + 1) + ')');
+  return QuipdClient.$itemsSelector.children('li:nth-child(' + (index + 2) + ')');
 }
 
-var areMoreQuips = function() {
+QuipdClient.areMoreQuips = function() {
   var quipsCount = Quips.find().count();
   var limit = Session.get("quipsLimit");
   var result = !(quipsCount < limit);
   return result;
 }
 
-var showMore = function() {
+QuipdClient.showMore = function() {
   // todo: save selected id as session valud
-  showingMore = true;
-  sly.set({ smart: false });
-  getActiveItem().removeClass('active');
+  QuipdClient.showingMore = true;
+  QuipdClient.sly.set({
+    smart: false
+  });
+  QuipdClient.getActiveItem().removeClass('active');
   Session.set("quipsLimit",
     Session.get("quipsLimit") + QUIPS_INCREMENT);
 }
 
-var insert = function(text) {
+QuipdClient.insert = function(text) {
   var quip = {
     text: text,
     createdAt: insertMoment.toDate(),
     ownerId: Meteor.userId()
   };
   Quips.insert(quip);
-  insertMoment = insertMoment.add(1, 'minutes');
+  QuipdClient.insertMoment = QuipdClient.insertMoment.add(1, 'minutes');
 
 }
 
-var seedQuips = function() {
+QuipdClient.seedQuips = function() {
   console.log('inserting test data for userId ' + Meteor.userId())
-  insertMoment = moment().subtract(1, 'days');
-  console.log({insertAt: insertMoment});
-  for(var i = 1; i < 40; i++) {
+  QuipdClient.insertMoment = moment().subtract(1, 'days');
+  console.log({
+    insertAt: insertMoment
+  });
+  for (var i = 1; i < 40; i++) {
     insert('An item, #' + i);
   }
   insert('Men, it has been well said, think in herds; it will be seen that they go mad in herds, while they only recover their senses slowly, one by one.');
