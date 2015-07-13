@@ -2,25 +2,40 @@
 
 
 Template.main.rendered = function() {
-  Session.set("quipsLimit", QuipdClient.QUIPS_INCREMENT);
 
-  QuipdClient.initScroll();
+  console.log('main.rendered');
 
-  QuipdClient.initKeyhandler();
+  Session.setDefault('quipsLimit', MainTemplate.QUIPS_INCREMENT);
+  Session.set("quipsLimit", MainTemplate.QUIPS_INCREMENT);
+  Session.set("areEditing", false);
+
+  MainTemplate.initScrollHandler();
+  MainTemplate.initKeyhandler();
+
+  MainTemplate.activeElementId('new-quip-item');
 
   Deps.autorun(function() {
     Meteor.subscribe('quipsPub',
       Session.get('quipsLimit'),
       function() {
-        QuipdClient.quipCount = Quips.find().count();
-        QuipdClient.updateScroll();
+        console.log('quipsPub callback');
+        Session.get('quipsCount', Quips.find().count());
+        MainTemplate.updateScroll();
       }
     );
   });
 
-  Deps.autorun(function(){
+  Deps.autorun(function(){   
+    var active = MainTemplate.activeElement();
+    if(active) {
+      Session.set("areEditing", false);
+      MainTemplate.scrollTo(active);
+    }
+  });
+
+  Deps.autorun(function(){   
     if(Meteor.userId()){
-      QuipdClient.updateScroll();
+      // login changed
     }     
   });
 
@@ -38,6 +53,7 @@ Template.main.rendered = function() {
       }
     }
   });
+
 };
 
 Template.editQuip.rendered = function(a) {

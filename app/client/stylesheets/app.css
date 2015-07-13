@@ -13,126 +13,20 @@
     box-sizing: border-box;
 }
 
-/******************************
- 
-    common
- 
-******************************/
-
-.center-x {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0);
-    width: 40%;
-}
-
-.center-y {
-    position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-    height: 50%;
-}
-
-/******************************
- 
-    model
- 
-******************************/
-
-body {
-    background-color: #fbfdfe;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-#page-header,
-#page-footer {
-    padding: 5px;
-    vertical-align: middle;
-    background-color: #DDDDDD;
-}
-
-#page-header {
-    height: 50px;
-}
-
-#page-footer {
-    height: 50px;
-}
-
-#header-content,
-#footer-content {
-    min-width: 200px;
-    max-width: 1000px;
-    margin: 0 auto;
-    position: relative;
-}
-
-#footer-content {
-    padding: 4px 0px;
-}
-
-#footer-debug {
-    text-align: right;
-}
-
 #page-body {
-    height: calc(100vh - 50px - 50px);
-    padding: 0 10px;
-    margin: 0 auto;
-    max-width: 600px;
-    min-width: 200px;
-}
-
-.no-space {
-    padding: 0;
-    margin: 0;
-}
-
-.pad1 {
-    padding: 10px;
-}
-
-.container {
+    max-width: 800px;
     margin: 0 auto;
 }
 
-#header-content .right {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 300px;
+#quips {
+    line-height: 1.8em;
 }
 
-/* Frame */
-
-.frame {
-    height: 100%;
-    overflow: hidden;
-    padding: 0;
-    line-height: 20pt;
-}
-
-.frame ul.items {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    font-size: 24px;
-}
-
-.frame ul li {
-    width: 100%;
-    display: block;
+.scroll-item{
     position: relative;
 }
 
 .quip {
-    margin: 4px 0px;
-    max-height: 120px;
-    transition: max-height .15s ease-out;
-    overflow-y: hidden;
 }
 
 .quip-content {
@@ -151,40 +45,24 @@ body {
     pointer-events: none
 }
 
-.quip-fade {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    margin: 0;
-    height: 20px;
-    /* "transparent" only works here because == rgba(0,0,0,0) */
-    
-    background-image: linear-gradient(to bottom, transparent, #fbfdfe);
-}
-
-.quip.active {
-    max-height: 400px;
-    transition: max-height .4s ease;
-    font-weight: bold;
-}
-
 .active .quip-border {
     border: 1px solid lightgray;
 }
 
-#new-quip input {
+#new-quip textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid lightgray;
     font-size: 13pt;
+    min-height: 6em;
 }
 
-#update-quip input {
+#update-quip textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid lightgray;
     font-size: 13pt;
+    min-height: 6em;
 }
 
 .quip-draft {

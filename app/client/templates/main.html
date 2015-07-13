@@ -1,67 +1,44 @@
-
 <template name="main">
-
-    <div id="page-header">
-        <div id="header-content">
-            
-            <h1 class="no-space">quipd</h1>
-
-            <div class="right">
-                {{> loginButtons}}
-            </div>
-        </div>
-    </div>
 
     <div id="page-body">
 
-        <div class="frame smart" id="slyFrame">
-            <ul id="quips" class="items">
+        <div id="quips">
 
-                {{#if areMoreQuips}}
-                <li id="load-more">
-                    <div class="quip-border"></div>
-                    <div class="quip-content">Show more</div>
-                </li>
-                {{/if}}
-
-                {{#each quips}}
-                <li class="quip">
-                    {{#if areEditing}}
-                       {{> editQuip}}
-                    {{else}}
-                        <div class="quip-content">{{text}}</div>
-                    {{/if}}
-                    <div class="quip-fade"></div>
-                    <div class="quip-border"></div>
-                </li>
-                {{/each}}
-
-                <li class="quip quip-draft">
-                    <div class="quip-border"></div>
-                    <div class="quip-content">
-                        <form id="new-quip">
-                            <input type="text" id="new-quip-text" name="new-quip-text" placeholder="Quip it">
-                        </form>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-    </div> <!-- page-content -->
-
-    <div id="page-footer">
-        <div id="footer-content">
-            <div id="footer-debug">
-                <button id="resetQuips">Reset quips</button>
-                <button id="seedQuips">Seed quips</button>
+            {{#if areMoreQuips}}
+            <div id="load-more" class="quip scroll-item {{#if isActive 'load-more'}}active{{/if}}">
+                <div class="quip-content">Show more</div>
+                <div class="quip-border"></div>
             </div>
+            {{/if}} 
+
+            {{#each quips}}
+            <div id="{{_id}}" class="quip scroll-item {{#if isActive _id}}active{{/if}}">
+                {{#if areEditing _id}} {{> editQuip}} {{else}}
+                <div class="quip-content">{{text}}</div>
+                {{/if}}
+                <div class="quip-fade"></div>
+                <div class="quip-border"></div>
+            </div>
+            {{/each}}
+
+            <div id="new-quip-item" class="quip quip-draft scroll-item {{#if isActive 'new-quip-item'}}active{{/if}}">
+                <div class="quip-border"></div>
+                <div class="quip-content">
+                    <form id="new-quip">
+                        <textarea type="text" id="new-quip-text" name="new-quip-text" placeholder="Quip it"></textarea>
+                    </form>
+                </div>
+            </div>
+
         </div>
+
     </div>
+    <!-- page-content -->
 
 </template>
 
 <template name="editQuip">
-   <form id="update-quip">
-        <input type="text" id="update-quip-text" name="update-quip-text" value="{{text}}">
+    <form id="update-quip">
+        <textarea type="text" id="update-quip-text" name="update-quip-text">{{text}}</textarea>
     </form>
 </template>
