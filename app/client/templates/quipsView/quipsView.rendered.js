@@ -3,13 +3,13 @@
 
 Template.quipsView.rendered = function() {
 
-  Session.setDefault('quipsLimit', Template.quipsView.QUIPS_INCREMENT);
-  Session.set("quipsLimit", Template.quipsView.QUIPS_INCREMENT);
+  Session.setDefault('quipsLimit', quipsController.QUIPS_INCREMENT);
+  Session.set("quipsLimit", quipsController.QUIPS_INCREMENT);
   Session.set("areEditing", false);
 
   ScrollList.initialize();
   
-  Template.quipsView.initKeyhandler();
+  quipsController.initKeyhandler();
 
   ScrollList.activeElementId('new-quip-item');
 

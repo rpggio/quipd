@@ -8,13 +8,13 @@ Template.quipsView.helpers({
     });
   },
   areMoreQuips: function() {
-    return Template.quipsView.areMoreQuips();
+    return quipsController.areMoreQuips();
   },
   isActive: function(id) {
     return id === ScrollList.activeElementId();
   },
   areEditing: function(id) {
-    return Template.quipsView.areEditing()
+    return quipsController.areEditing()
       && id === ScrollList.activeElementId();
   }
 });

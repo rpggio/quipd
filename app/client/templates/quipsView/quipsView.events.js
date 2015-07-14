@@ -1,7 +1,7 @@
 
 var events = {
     'click #showMore': function() {
-      Template.quipsView.showMore();
+      quipsController.showMore();
     },
     'submit #new-quip': function(event) {
       var text = event.target['new-quip-text'].value;
@@ -32,10 +32,10 @@ events['click ' + ScrollList.SCROLL_ITEM_SELECTOR] = function(event) {
       if(!id) return;
       var activeId = ScrollList.activeElementId;
       if(activeId == id){
-        Template.quipsView.areEditing(true);
+        quipsController.areEditing(true);
       }
       else{
-        Template.quipsView.areEditing(false)
+        quipsController.areEditing(false)
         ScrollList.activeElementId(id);
       }
     }
