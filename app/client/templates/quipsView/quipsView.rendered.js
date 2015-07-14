@@ -1,35 +1,33 @@
 
 
 
-Template.main.rendered = function() {
+Template.quipsView.rendered = function() {
 
-  console.log('main.rendered');
-
-  Session.setDefault('quipsLimit', MainTemplate.QUIPS_INCREMENT);
-  Session.set("quipsLimit", MainTemplate.QUIPS_INCREMENT);
+  Session.setDefault('quipsLimit', Template.quipsView.QUIPS_INCREMENT);
+  Session.set("quipsLimit", Template.quipsView.QUIPS_INCREMENT);
   Session.set("areEditing", false);
 
-  MainTemplate.initScrollHandler();
-  MainTemplate.initKeyhandler();
+  ScrollList.initialize();
+  
+  Template.quipsView.initKeyhandler();
 
-  MainTemplate.activeElementId('new-quip-item');
+  ScrollList.activeElementId('new-quip-item');
 
   Deps.autorun(function() {
     Meteor.subscribe('quipsPub',
       Session.get('quipsLimit'),
       function() {
-        console.log('quipsPub callback');
         Session.get('quipsCount', Quips.find().count());
-        MainTemplate.updateScroll();
+        ScrollList.updateScroll();
       }
     );
   });
 
   Deps.autorun(function(){   
-    var active = MainTemplate.activeElement();
+    var active = ScrollList.activeElement();
     if(active) {
       Session.set("areEditing", false);
-      MainTemplate.scrollTo(active);
+      ScrollList.scrollTo(active);
     }
   });
 
@@ -55,10 +53,3 @@ Template.main.rendered = function() {
   });
 
 };
-
-Template.editQuip.rendered = function(a) {
-  var input = this.$('#update-quip-text');
-  input.focus();
-  var length = input.val().length * 2; // *2 to make sure it's really the end
-  input[0].setSelectionRange(length, length);
-}

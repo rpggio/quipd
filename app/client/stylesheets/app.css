@@ -46,7 +46,7 @@
 }
 
 .active .quip-border {
-    border: 1px solid lightgray;
+    border: 1px solid gray;
 }
 
 #new-quip textarea {
