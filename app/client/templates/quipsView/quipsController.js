@@ -24,15 +24,36 @@ quipsController.areEditing = function(editing){
   Session.set('areEditing', editing);
 }
 
+quipsController.updateQuip = function(quip, text) {
+  console.log({'quipsController.updateQuip': text});
+  Meteor.call("updateQuip", quip._id, text);
+  quipsController.areEditing(false);
+  return false;
+}
+
 quipsController.initKeyhandler = function() {
   $(document).keydown(function(e) {
     //console.log('keydown: ' + e.which);
     switch (e.which) {
       case 13: // enter
         var areEditing = quipsController.areEditing();
+        var activeElementId = scrollList.activeElementId();
         if(areEditing){
-          // submit
+          if(activeElementId){
+              var text = $(e.target).val();
+              if(text != null && text.length) {
+                Meteor.call("updateQuip", activeElementId, text);
+                quipsController.areEditing(false);
+              }
+          }
+          else {
+            quipsController.areEditing(false);
+          }
+          
         } else {
+          if(activeElementId){
+            quipsController.areEditing(true);
+          }
         }
 
         // if(!Session.get('editingQuipId') && Session.get('activeElementId')){

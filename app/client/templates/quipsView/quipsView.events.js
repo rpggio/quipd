@@ -15,22 +15,15 @@ var events = {
     },
     'click #seedQuips': function() {
       Meteor.call('seedQuips');
-    },
-    'submit #update-quip': function(event) {
-      var text = event.target['update-quip-text'].value;
-      console.log({submit_update_quip: text});
-      Meteor.call("updateQuip", this._id, text);
-      Session.set("editingQuipId", null);
-      return false;
     }
   };
 
 events['click ' + scrollList.SCROLL_ITEM_SELECTOR] = function(event) {
       var target = $(event.currentTarget);
-      //var id = event.currentTarget && event.currentTarget.attributes['id'].value;
       var id = target && target.attr('id');
       if(!id) return;
-      var activeId = scrollList.activeElementId;
+      var activeId = scrollList.activeElementId();
+      console.log([activeId, id]);
       if(activeId == id){
         quipsController.areEditing(true);
       }
