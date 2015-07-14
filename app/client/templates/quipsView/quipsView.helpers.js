@@ -11,10 +11,10 @@ Template.quipsView.helpers({
     return quipsController.areMoreQuips();
   },
   isActive: function(id) {
-    return id === ScrollList.activeElementId();
+    return id === scrollList.activeElementId();
   },
   areEditing: function(id) {
     return quipsController.areEditing()
-      && id === ScrollList.activeElementId();
+      && id === scrollList.activeElementId();
   }
 });

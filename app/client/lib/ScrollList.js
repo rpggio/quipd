@@ -1,71 +1,71 @@
 
-ScrollList = {};
+scrollList = {};
 
-ScrollList.SCROLL_ITEM_SELECTOR = '.scroll-item';
+scrollList.SCROLL_ITEM_SELECTOR = '.scroll-item';
 
-ScrollList.initialize = function() {
+scrollList.initialize = function() {
     $(window).bind('mousewheel', function(event) {
       if (event.originalEvent.wheelDelta >= 0) {
-          ScrollList.prev();
+          scrollList.prev();
       }
       else {
-          ScrollList.next();
+          scrollList.next();
       }
       event.preventDefault();
   });
 }
 
-ScrollList.activeElementId = function(id){
+scrollList.activeElementId = function(id){
   if(id == null){
     return Session.get('activeElementId');
   }
   Session.set('activeElementId', id);
 }
 
-ScrollList.activeElement = function(el) {
+scrollList.activeElement = function(el) {
   if(el){
-    ScrollList.activeElementId(el.attr('id'));
+    scrollList.activeElementId(el.attr('id'));
   }
   else{
-    var activeId = ScrollList.activeElementId();
+    var activeId = scrollList.activeElementId();
     return activeId && $('#' + activeId);
   }
 }
 
-ScrollList.next = function() {
-  var active = ScrollList.activeElement();
-  var next = active && active.next(ScrollList.SCROLL_ITEM_SELECTOR);
+scrollList.next = function() {
+  var active = scrollList.activeElement();
+  var next = active && active.next(scrollList.SCROLL_ITEM_SELECTOR);
   if(!next){
     return false;
   }
   var id = next.attr('id');
   if(id){
-    ScrollList.activeElementId(id);
+    scrollList.activeElementId(id);
     return id;
   }
 }
 
-ScrollList.prev = function() {
-  var active = ScrollList.activeElement();
-  var prev = active && active.prev(ScrollList.SCROLL_ITEM_SELECTOR);
+scrollList.prev = function() {
+  var active = scrollList.activeElement();
+  var prev = active && active.prev(scrollList.SCROLL_ITEM_SELECTOR);
   if(!prev){
     return false;
   }
   var id = prev.attr('id');
   if(id){
-    ScrollList.activeElementId(id);
+    scrollList.activeElementId(id);
     return id;
   }
 }
 
-ScrollList.updateScroll = function(el) {
-  var active = ScrollList.activeElement();
+scrollList.updateScroll = function(el) {
+  var active = scrollList.activeElement();
   if(active){
-    ScrollList.scrollTo(active);
+    scrollList.scrollTo(active);
   }  
 }
 
-ScrollList.scrollTo = function(el) {
+scrollList.scrollTo = function(el) {
   if(!el){
     return;
   }

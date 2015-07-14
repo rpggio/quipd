@@ -7,7 +7,7 @@ var events = {
       var text = event.target['new-quip-text'].value;
       Meteor.call("addQuip", text);
       event.target['new-quip-text'].value = "";
-      ScrollList.updateScroll();
+      scrollList.updateScroll();
       return false;
     },
     'click #resetQuips': function() {
@@ -25,18 +25,18 @@ var events = {
     }
   };
 
-events['click ' + ScrollList.SCROLL_ITEM_SELECTOR] = function(event) {
+events['click ' + scrollList.SCROLL_ITEM_SELECTOR] = function(event) {
       var target = $(event.currentTarget);
       //var id = event.currentTarget && event.currentTarget.attributes['id'].value;
       var id = target && target.attr('id');
       if(!id) return;
-      var activeId = ScrollList.activeElementId;
+      var activeId = scrollList.activeElementId;
       if(activeId == id){
         quipsController.areEditing(true);
       }
       else{
         quipsController.areEditing(false)
-        ScrollList.activeElementId(id);
+        scrollList.activeElementId(id);
       }
     }
 

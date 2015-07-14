@@ -7,27 +7,27 @@ Template.quipsView.rendered = function() {
   Session.set("quipsLimit", quipsController.QUIPS_INCREMENT);
   Session.set("areEditing", false);
 
-  ScrollList.initialize();
+  scrollList.initialize();
   
   quipsController.initKeyhandler();
 
-  ScrollList.activeElementId('new-quip-item');
+  scrollList.activeElementId('new-quip-item');
 
   Deps.autorun(function() {
     Meteor.subscribe('quipsPub',
       Session.get('quipsLimit'),
       function() {
         Session.get('quipsCount', Quips.find().count());
-        ScrollList.updateScroll();
+        scrollList.updateScroll();
       }
     );
   });
 
   Deps.autorun(function(){   
-    var active = ScrollList.activeElement();
+    var active = scrollList.activeElement();
     if(active) {
       Session.set("areEditing", false);
-      ScrollList.scrollTo(active);
+      scrollList.scrollTo(active);
     }
   });
 

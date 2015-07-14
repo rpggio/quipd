@@ -24,7 +24,6 @@ quipsController.areEditing = function(editing){
   Session.set('areEditing', editing);
 }
 
-
 quipsController.initKeyhandler = function() {
   $(document).keydown(function(e) {
     //console.log('keydown: ' + e.which);
@@ -34,7 +33,6 @@ quipsController.initKeyhandler = function() {
         if(areEditing){
           // submit
         } else {
-
         }
 
         // if(!Session.get('editingQuipId') && Session.get('activeElementId')){
@@ -57,13 +55,13 @@ quipsController.initKeyhandler = function() {
         // no-op
         return;
       case 38: // up
-        ScrollList.prev() && e.preventDefault();
+        scrollList.prev() && e.preventDefault();
         return;
       case 39: // right
         // no-op
         return;
       case 40: // down
-        ScrollList.next() && e.preventDefault();
+        scrollList.next() && e.preventDefault();
         return;
       default:
         return;
