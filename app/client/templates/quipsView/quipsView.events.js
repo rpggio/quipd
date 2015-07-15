@@ -1,14 +1,7 @@
 
 var events = {
-    'click #showMore': function() {
+    'click #load-more': function() {
       quipsController.showMore();
-    },
-    'submit #new-quip': function(event) {
-      var text = event.target['new-quip-text'].value;
-      Meteor.call("addQuip", text);
-      event.target['new-quip-text'].value = "";
-      scrollList.updateScroll();
-      return false;
     },
     'click #resetQuips': function() {
       Meteor.call('resetQuips');
@@ -22,8 +15,14 @@ events['click ' + scrollList.SCROLL_ITEM_SELECTOR] = function(event) {
       var target = $(event.currentTarget);
       var id = target && target.attr('id');
       if(!id) return;
+
+      if(id == quipsController.SHOW_MORE_ID 
+        || id == quipsController.NEW_QUIP_ID){
+        return;
+        scrollList.activeElementId(id);
+      }
+
       var activeId = scrollList.activeElementId();
-      console.log([activeId, id]);
       if(activeId == id){
         quipsController.areEditing(true);
       }

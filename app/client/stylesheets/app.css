@@ -30,7 +30,7 @@
 }
 
 .quip-content {
-    padding: 17px 10px;
+    padding: 15px;
     font-size: 13pt;
     overflow-y: hidden;
 }
@@ -49,21 +49,22 @@
     border: 1px solid gray;
 }
 
+textarea {
+    resize: none;
+    outline: none;
+    font-size: 13pt;
+}
+
 #new-quip textarea {
     width: 100%;
-    padding: 10px;
     border: 1px solid lightgray;
-    font-size: 13pt;
-    min-height: 6em;
+    padding: 15px;
 }
 
 #update-quip textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid lightgray;
-    font-size: 13pt;
-    min-height: 6em;
-    max-height: 12em;
+    border: none;
+    padding: 15px;
 }
 
 .quip-draft {
@@ -73,6 +74,7 @@
 #load-more {
     margin-bottom: 20px;
     padding: 8px;
+    cursor: default;
 }
 
 #load-more .quip-content {

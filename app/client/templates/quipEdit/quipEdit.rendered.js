@@ -4,4 +4,7 @@ Template.quipEdit.rendered = function(a) {
   input.focus();
   var length = input.val().length * 2; // *2 to make sure it's really the end
   input[0].setSelectionRange(length, length);
+
+  var textareas = $('textarea.autosize');
+  textareas.autosize();
 }

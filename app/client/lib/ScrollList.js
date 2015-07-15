@@ -82,5 +82,5 @@ scrollList.scrollTo = function(el) {
     offset = elOffset;
   }
 
-  $('html, body').animate({scrollTop:offset}, 100);
+  $('html, body').animate({scrollTop:offset}, 50);
 }

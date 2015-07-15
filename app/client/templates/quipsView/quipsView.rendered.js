@@ -13,11 +13,15 @@ Template.quipsView.rendered = function() {
 
   scrollList.activeElementId('new-quip-item');
 
+
+  var textareas = $('textarea.autosize');
+  textareas.autosize();
+
   Deps.autorun(function() {
     Meteor.subscribe('quipsPub',
       Session.get('quipsLimit'),
       function() {
-        Session.get('quipsCount', Quips.find().count());
+        Session.set('quipsCount', Quips.find().count());
         scrollList.updateScroll();
       }
     );
@@ -35,6 +39,11 @@ Template.quipsView.rendered = function() {
     if(Meteor.userId()){
       // login changed
     }     
+  });
+
+  Deps.autorun(function(){   
+    var id = scrollList.activeElementId();
+    quipsController.areEditing(false);
   });
 
   Deps.autorun(function(){

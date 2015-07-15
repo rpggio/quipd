@@ -1,34 +1,47 @@
-
 quipsController = {};
 
 quipsController.QUIPS_INCREMENT = 20;
+quipsController.SHOW_MORE_ID = 'load-more';
+quipsController.NEW_QUIP_ID = 'new-quip-item';
 
 quipsController.areMoreQuips = function() {
-  var quipsCount = Quips.find().count();
-  var limit = Session.get("quipsLimit");
-  var result = !(quipsCount < limit);
-  return result;
+  return !(Session.get('quipsCount') < Session.get('quipsLimit'));
 }
 
 quipsController.showMore = function() {
-  // todo: save selected id as session valud
   quipsController.showingMore = true;
+  scrollList.next();
   Session.set("quipsLimit",
     Session.get("quipsLimit") + quipsController.QUIPS_INCREMENT);
 }
 
-quipsController.areEditing = function(editing){
-  if(editing == null){
+quipsController.areEditing = function(editing) {
+  if (editing == null) {
     return Session.get('areEditing');
   }
   Session.set('areEditing', editing);
 }
 
 quipsController.updateQuip = function(quip, text) {
-  console.log({'quipsController.updateQuip': text});
+  console.log({
+    'quipsController.updateQuip': text
+  });
   Meteor.call("updateQuip", quip._id, text);
   quipsController.areEditing(false);
   return false;
+}
+
+// Prevents flood of arrow keys when navigating list
+// Returns true if current arrow key call should be accepted.
+quipsController.acceptArrowKey = function() {
+  if (quipsController.blockArrow) {
+    return false;
+  }
+  quipsController.blockArrow = true;
+  setTimeout(function() {
+    quipsController.blockArrow = false;
+  }, 50);
+  return true;
 }
 
 quipsController.initKeyhandler = function() {
@@ -38,29 +51,46 @@ quipsController.initKeyhandler = function() {
       case 13: // enter
         var areEditing = quipsController.areEditing();
         var activeElementId = scrollList.activeElementId();
-        if(areEditing){
-          if(activeElementId){
+
+        if (activeElementId == quipsController.SHOW_MORE_ID) {
+          quipsController.showMore();
+        } else if (areEditing) {
+
+          if (activeElementId) {
+
+            if (activeElementId == quipsController.NEW_QUIP_ID) {
+              // create new quip
               var text = $(e.target).val();
-              if(text != null && text.length) {
+              if (text != null && text.length) {
+                Meteor.call("addQuip", text);
+                $(e.target).val('');
+                quipsController.areEditing(false);
+              }
+            } else {
+              // update existing
+              var text = $(e.target).val();
+              if (text != null && text.length) {
                 Meteor.call("updateQuip", activeElementId, text);
                 quipsController.areEditing(false);
               }
-          }
-          else {
+            }
+
+          } else {
+            // editing without active element: invalid state
             quipsController.areEditing(false);
           }
-          
-        } else {
-          if(activeElementId){
+
+        } else {  // not editing
+          if (activeElementId) {
             quipsController.areEditing(true);
+            if (activeElementId == quipsController.NEW_QUIP_ID) {
+              var textarea = $('#new-quip-text');
+              textarea.focus();
+              textarea[0].setSelectionRange(0, 0);
+            }
           }
         }
 
-        // if(!Session.get('editingQuipId') && Session.get('activeElementId')){
-        //   console.log('starting edit: enter key pressed');
-        //   Session.set('editingQuipId', Session.get('activeElementId'));
-        //   break;
-        // }
         e.preventDefault();
         return;
       case 27: // esc
@@ -76,13 +106,23 @@ quipsController.initKeyhandler = function() {
         // no-op
         return;
       case 38: // up
-        scrollList.prev() && e.preventDefault();
+        if (!quipsController.areEditing()) {
+          if (quipsController.acceptArrowKey()) {
+            scrollList.prev()
+          }
+          e.preventDefault();
+        }
         return;
       case 39: // right
         // no-op
         return;
       case 40: // down
-        scrollList.next() && e.preventDefault();
+        if (!quipsController.areEditing()) {
+          if (quipsController.acceptArrowKey()) {
+            scrollList.next()
+          }
+          e.preventDefault();
+        }
         return;
       default:
         return;
