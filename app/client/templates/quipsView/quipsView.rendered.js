@@ -49,17 +49,30 @@ Template.quipsView.rendered = function() {
     console.log('areEditing: ', quipsController.areEditing());
   });
 
+  // Track guest user ID.
+  // When user logs in, transfer quips from guest user.
   Deps.autorun(function(){
-    var isGuest = Meteor.userId() && !Meteor.user();
-    if(isGuest){
-      // track guest user
-      Session.set("guestUserId", Meteor.userId());
+    var user = Meteor.user();
+    if(!user){
+      console.error("No user available");
+      return;
     }
-    else{
-      // move quips from guest user to real user
-      var guestUserId = Session.get("guestUserId");
+
+    if(user.profile && user.profile.guest) {
+      Session.set("guestUserId", user._id);
+    }
+    else {
+      var guestUserId = Session.get('guestUserId');
       if(guestUserId){
-        Meteor.call('moveQuipsToUser', guestUserId, Meteor.userId());
+        if(guestUserId == user._id) {
+          console.error("guestUserId was same as userId");
+          return;
+        }
+
+        // User has just logged in: transfer quips created as guest
+        console.info("moving quips from guest user ", guestUserId, " to ", user._id);
+        Session.set('guestUserId', null);
+        Meteor.call('moveQuipsToUser', guestUserId, user._id);
       }
     }
   });

@@ -1,0 +1,30 @@
+
+#header-view {
+    position: fixed;
+    width: 100%;
+    padding: 5px;
+    /*vertical-align: middle;*/
+    background: #DDDDDD;
+    height: 50px;
+    line-height: 50px;
+    z-index:1;
+}
+
+#header-content {
+    min-width: 200px;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+#login-buttons {
+    position: absolute;
+    right: 0;
+    top: 7px;
+}
+
+#login-buttons .login-link-text {
+    white-space: nowrap;
+
+}
+
