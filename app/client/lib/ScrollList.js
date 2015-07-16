@@ -82,6 +82,13 @@ scrollList.updateScroll = function(el) {
   }  
 }
 
+scrollList.scrollToId = function(id) {
+  if(!id){
+    return;
+  }
+  scrollList.scrollTo(scrollList.get(id));
+}
+
 scrollList.scrollTo = function(el) {
   if(!el){
     return;

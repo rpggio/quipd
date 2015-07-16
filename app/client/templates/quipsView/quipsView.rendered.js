@@ -28,14 +28,6 @@ Template.quipsView.rendered = function() {
   });
 
   Deps.autorun(function(){   
-    var active = scrollList.activeElement();
-    if(active) {
-      Session.set("areEditing", false);
-      scrollList.scrollTo(active);
-    }
-  });
-
-  Deps.autorun(function(){   
     if(Meteor.userId()){
       // login changed
     }     
@@ -46,6 +38,15 @@ Template.quipsView.rendered = function() {
     var id = scrollList.activeElementId();
     console.log('activeElementId: ' + id);
     quipsController.areEditing(false);
+    if(!id){
+      scrollList.activeElementId(quipsController.NEW_QUIP_ID);
+    } else {
+      scrollList.scrollToId(id);
+    }
+  });
+
+  Deps.autorun(function(){   
+    console.log('areEditing: ', quipsController.areEditing());
   });
 
   Deps.autorun(function(){

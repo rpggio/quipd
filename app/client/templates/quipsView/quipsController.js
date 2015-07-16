@@ -64,35 +64,41 @@ quipsController.initKeyhandler = function() {
         var areEditing = quipsController.areEditing();
         var activeElementId = scrollList.activeElementId();
 
+        // show more
+
         if (activeElementId == quipsController.SHOW_MORE_ID) {
           quipsController.showMore();
-        } else if (areEditing) {
+        } 
 
-          if (activeElementId) {
+        // new-quip
 
-            if (activeElementId == quipsController.NEW_QUIP_ID) {
-              // create new quip
-              var text = $(e.target).val();
-              if (text != null && text.length) {
-                Meteor.call("addQuip", text);
-                $(e.target).val('');
-                quipsController.areEditing(false);
-              }
-            } else {
-              // update existing
-              var text = $(e.target).val();
-              if (text != null && text.length) {
-                Meteor.call("updateQuip", activeElementId, text);
-                quipsController.areEditing(false);
-              }
-            }
-
-          } else {
-            // editing without active element: invalid state
+        else if (activeElementId == quipsController.NEW_QUIP_ID) {
+          // create new quip
+          var text = $(e.target).val();
+          if (text != null && text.length) {
+            Meteor.call("addQuip", text);
+            $(e.target).val('');
             quipsController.areEditing(false);
           }
+        }
 
-        } else {  // not editing
+        // editing
+
+        else if (areEditing) {
+          if(!activeElementId) {
+            console.error('areEditing = true, but no active element');
+            return;
+          }
+          var text = $(e.target).val();
+          if (text != null && text.length) {
+            Meteor.call("updateQuip", activeElementId, text);
+            quipsController.areEditing(false);
+          }
+        } 
+
+        // navigating
+
+        else {
           if (activeElementId) {
             quipsController.areEditing(true);
             if (activeElementId == quipsController.NEW_QUIP_ID) {
