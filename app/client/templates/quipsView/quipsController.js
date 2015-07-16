@@ -1,18 +1,60 @@
 quipsController = {};
 
-quipsController.QUIPS_INCREMENT = 20;
+quipsController.QUIPS_INCREMENT = 5;
 quipsController.SHOW_MORE_ID = 'load-more';
 quipsController.NEW_QUIP_ID = 'new-quip-item';
 
+quipsController.resetUserSession = function() {
+  console.info('resetting user session');
+  Session.setDefault('quipsLimit', quipsController.QUIPS_INCREMENT);
+  quipsController.quipsLimit(quipsController.QUIPS_INCREMENT)
+  // for some reason, the next line breaks the showMore button upon login
+  // quipsController.updateCount();
+  quipsController.areEditing(false);
+  scrollList.activeElementId('new-quip-item');
+}
+
+quipsController.quipsCount = function(limit) {
+  if(limit == null){
+    return Session.get('quipsCount');
+  }
+  Session.set('quipsCount', limit);
+}
+
+quipsController.quipsLimit = function(limit) {
+  if(limit == null){
+    return Session.get('quipsLimit');
+  }
+  Session.set('quipsLimit', limit);
+}
+
+quipsController.priorUserId = function(id) {
+  if(id == null){
+    return Session.get('priorUserId');
+  }
+  Session.set('priorUserId', id);
+}
+
+quipsController.priorUserWasGuest = function(wasGuest) {
+  if(wasGuest == null){
+    return Session.get('priorUserWasGuest');
+  }
+  Session.set('priorUserWasGuest', wasGuest);
+}
+
+quipsController.updateCount = function() {
+  quipsController.quipsCount(Quips.find().count());
+}
+
 quipsController.areMoreQuips = function() {
-  return !(Session.get('quipsCount') < Session.get('quipsLimit'));
+  return !(quipsController.quipsCount() < quipsController.quipsLimit());
 }
 
 quipsController.showMore = function() {
   quipsController.showingMore = true;
   scrollList.next();
-  Session.set("quipsLimit",
-    Session.get("quipsLimit") + quipsController.QUIPS_INCREMENT);
+  quipsController.quipsLimit(
+    quipsController.quipsLimit() + quipsController.QUIPS_INCREMENT);
 }
 
 quipsController.areEditing = function(editing) {

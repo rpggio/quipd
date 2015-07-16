@@ -3,25 +3,23 @@
 
 Template.quipsView.rendered = function() {
 
-  Session.setDefault('quipsLimit', quipsController.QUIPS_INCREMENT);
-  Session.set("quipsLimit", quipsController.QUIPS_INCREMENT);
-  Session.set("areEditing", false);
+  quipsController.resetUserSession();
 
   scrollList.initialize();
   
   quipsController.initKeyhandler();
 
-  scrollList.activeElementId('new-quip-item');
-
-
   var textareas = $('textarea.autosize');
   textareas.autosize();
 
   Deps.autorun(function() {
+    console.log('quipsPub autorun');
+    Meteor.user();  // force reload on user change??
     Meteor.subscribe('quipsPub',
-      Session.get('quipsLimit'),
+      quipsController.quipsLimit(),
       function() {
-        Session.set('quipsCount', Quips.find().count());
+        console.log('quipsPub subscribe callback');
+        quipsController.updateCount();
         scrollList.updateScroll();
       }
     );
@@ -49,32 +47,44 @@ Template.quipsView.rendered = function() {
     console.log('areEditing: ', quipsController.areEditing());
   });
 
+  Deps.autorun(function(){   
+    console.log('quipsCount: ', quipsController.quipsCount());
+  });
+
+  Deps.autorun(function(){   
+    console.log('quipsLimit: ', quipsController.quipsLimit());
+  });
+
   // Track guest user ID.
   // When user logs in, transfer quips from guest user.
   Deps.autorun(function(){
     var user = Meteor.user();
     if(!user){
-      console.error("No user available");
+      console.warn("No user available");
       return;
     }
 
-    if(user.profile && user.profile.guest) {
-      Session.set("guestUserId", user._id);
-    }
-    else {
-      var guestUserId = Session.get('guestUserId');
-      if(guestUserId){
-        if(guestUserId == user._id) {
-          console.error("guestUserId was same as userId");
-          return;
-        }
+    var priorUserId = quipsController.priorUserId();
 
-        // User has just logged in: transfer quips created as guest
-        console.info("moving quips from guest user ", guestUserId, " to ", user._id);
-        Session.set('guestUserId', null);
-        Meteor.call('moveQuipsToUser', guestUserId, user._id);
-      }
+    if(user._id == priorUserId){
+      console.warn("Current user ID is the same as prior user ID");
+      return;
     }
+
+    console.log({ currentUser: user});
+
+    var isGuest = user.profile && user.profile.guest;
+    var wasGuest = quipsController.priorUserWasGuest();
+
+    if(wasGuest && !isGuest){
+      // transfer quips
+      console.info("moving quips from guest user ", priorUserId, " to ", user._id);
+      Meteor.call('moveQuipsToUser', priorUserId, user._id);
+    }
+
+    quipsController.resetUserSession();
+    quipsController.priorUserWasGuest(isGuest);
+    quipsController.priorUserId(user._id);
   });
 
 };
