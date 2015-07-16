@@ -1,6 +1,6 @@
 quipsController = {};
 
-quipsController.QUIPS_INCREMENT = 5;
+quipsController.QUIPS_INCREMENT = 20;
 quipsController.SHOW_MORE_ID = 'load-more';
 quipsController.NEW_QUIP_ID = 'new-quip-item';
 
@@ -64,6 +64,13 @@ quipsController.areEditing = function(editing) {
   Session.set('areEditing', editing);
 }
 
+quipsController.addQuip = function(text) {
+  console.log('adding quip ' + text)
+  Meteor.call("addQuip", text);
+  quipsController.areEditing(false);
+  scrollList.scrollToId(quipsController.NEW_QUIP_ID);
+}
+
 quipsController.updateQuip = function(quip, text) {
   console.log({
     'quipsController.updateQuip': text
@@ -118,9 +125,8 @@ quipsController.initKeyhandler = function() {
           // create new quip
           var text = $(e.target).val();
           if (text != null && text.length) {
-            Meteor.call("addQuip", text);
+            quipsController.addQuip(text);
             $(e.target).val('');
-            quipsController.areEditing(false);
           }
         }
 
