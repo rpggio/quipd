@@ -82,3 +82,27 @@ textarea {
     text-align: center;
     font-variant: small-caps;
 }
+
+.quip-del {
+    width: 15px;
+    height: 15px;
+    cursor: default;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    color: #888888;
+    line-height: 1em;
+    display: none;
+}
+
+.quip-del:hover {
+    color: black;
+    font-weight: bolder;
+}
+
+.quip.active .quip-del {
+    display: block;
+}

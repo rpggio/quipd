@@ -31,6 +31,18 @@ quipsController.updateQuip = function(quip, text) {
   return false;
 }
 
+quipsController.isQuip = function(itemId) {
+  return itemId
+    && itemId != quipsController.SHOW_MORE_ID
+    && itemId != quipsController.NEW_QUIP_ID;
+}
+
+quipsController.deleteQuip = function(id){
+  console.log('deleting quip ' + id);
+  scrollList.prev();
+  Meteor.call("deleteQuip", id);
+}
+
 // Prevents flood of arrow keys when navigating list
 // Returns true if current arrow key call should be accepted.
 quipsController.acceptArrowKey = function() {
@@ -46,7 +58,7 @@ quipsController.acceptArrowKey = function() {
 
 quipsController.initKeyhandler = function() {
   $(document).keydown(function(e) {
-    //console.log('keydown: ' + e.which);
+    console.log('keydown: ' + e.which);
     switch (e.which) {
       case 13: // enter
         var areEditing = quipsController.areEditing();
@@ -122,6 +134,12 @@ quipsController.initKeyhandler = function() {
             scrollList.next()
           }
           e.preventDefault();
+        }
+        return;
+      case 46: // del
+        var activeId = scrollList.activeElementId();
+        if(quipsController.isQuip(activeId)){
+          quipsController.deleteQuip(activeId);
         }
         return;
       default:

@@ -14,7 +14,8 @@
             {{#each quips}}
             <div id="{{_id}}" class="quip scroll-item {{#if isActive _id}}active{{/if}}">
                 {{#if areEditing _id}} {{> quipEdit}} {{else}}
-                <div class="quip-content">{{text}}</div>
+                    <div class="quip-content">{{text}}</div>
+                    <div class="quip-del">X</div>
                 {{/if}}
                 <div class="quip-fade"></div>
                 <div class="quip-border"></div>

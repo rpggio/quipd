@@ -41,8 +41,10 @@ Template.quipsView.rendered = function() {
     }     
   });
 
+  // When active element changes, set editing = false.
   Deps.autorun(function(){   
     var id = scrollList.activeElementId();
+    console.log('activeElementId: ' + id);
     quipsController.areEditing(false);
   });
 

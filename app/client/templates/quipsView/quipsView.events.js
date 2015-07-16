@@ -8,13 +8,22 @@ var events = {
     },
     'click #seedQuips': function() {
       Meteor.call('seedQuips');
+    },
+    'click .quip-del': function() {
+      console.log('click .quip-del');
+      quipsController.deleteQuip(this._id);
+      return false;
     }
   };
 
 events['click ' + scrollList.SCROLL_ITEM_SELECTOR] = function(event) {
+      console.log('click ' + scrollList.SCROLL_ITEM_SELECTOR);
+
       var target = $(event.currentTarget);
       var id = target && target.attr('id');
       if(!id) return;
+
+      console.log('clicked ' + id);
 
       if(id == quipsController.SHOW_MORE_ID 
         || id == quipsController.NEW_QUIP_ID){

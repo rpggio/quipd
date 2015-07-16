@@ -58,6 +58,23 @@ scrollList.prev = function() {
   }
 }
 
+scrollList.get = function(id) {
+  if (!id){
+    return null;
+  }
+  return $('#' + id);
+}
+
+scrollList.getNext = function(id) {
+  var current = scrollList.get(id);
+  return current && current.next(scrollList.SCROLL_ITEM_SELECTOR);
+}
+
+scrollList.getPrev = function(id) {
+  var current = scrollList.get(id);
+  return current && current.prev(scrollList.SCROLL_ITEM_SELECTOR);
+}
+
 scrollList.updateScroll = function(el) {
   var active = scrollList.activeElement();
   if(active){
