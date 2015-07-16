@@ -42,6 +42,13 @@ quipsController.priorUserWasGuest = function(wasGuest) {
   Session.set('priorUserWasGuest', wasGuest);
 }
 
+quipsController.searchPattern = function(value) {
+  if(value === undefined){
+    return Session.get('searchPattern');
+  }
+  Session.set('searchPattern', value);
+}
+
 quipsController.updateCount = function() {
   quipsController.quipsCount(Quips.find().count());
 }
@@ -68,6 +75,7 @@ quipsController.addQuip = function(text) {
   console.log('adding quip ' + text)
   Meteor.call("addQuip", text);
   quipsController.areEditing(false);
+  quipsController.searchPattern(null);
   scrollList.scrollToId(quipsController.NEW_QUIP_ID);
 }
 
@@ -122,12 +130,25 @@ quipsController.initKeyhandler = function() {
         // new-quip
 
         else if (activeElementId == quipsController.NEW_QUIP_ID) {
-          // create new quip
+          
           var text = $(e.target).val();
-          if (text != null && text.length) {
-            quipsController.addQuip(text);
-            $(e.target).val('');
+
+          if (text == null || !text.length) {
+            return;
           }
+
+          if(text.indexOf('?') == 0) {
+            var pattern = text.slice(1);
+            if(pattern.length < 2){
+              return; 
+            }
+            quipsController.searchPattern(pattern);
+          } 
+          else {
+            quipsController.addQuip(text);
+          }
+
+          $(e.target).val('');
         }
 
         // editing
@@ -162,6 +183,7 @@ quipsController.initKeyhandler = function() {
       case 27: // esc
         $('#new-quip-text').val('');
         quipsController.areEditing(false);
+        quipsController.searchPattern(null);
         e.preventDefault();
         return;
       case 35: // end

@@ -17,6 +17,7 @@ Template.quipsView.rendered = function() {
     Meteor.user();  // force reload on user change??
     Meteor.subscribe('quipsPub',
       quipsController.quipsLimit(),
+      quipsController.searchPattern(),
       function() {
         console.log('quipsPub subscribe callback');
         quipsController.updateCount();

@@ -13,6 +13,10 @@
             </div>
             {{/if}} 
 
+            {{#if searchPattern}} 
+            <h2>&lsquo;{{ searchPattern }}&rsquo;</h2>
+            {{/if}}
+
             {{#each quips}}
             <div id="{{_id}}" class="quip scroll-item {{#if isActive _id}}active{{/if}}">
                 {{#if areEditing _id}} {{> quipEdit}} {{else}}

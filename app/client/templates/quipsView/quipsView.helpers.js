@@ -16,5 +16,8 @@ Template.quipsView.helpers({
   areEditing: function(id) {
     return quipsController.areEditing()
       && id === scrollList.activeElementId();
+  },
+  searchPattern: function() {
+    return quipsController.searchPattern();
   }
 });
