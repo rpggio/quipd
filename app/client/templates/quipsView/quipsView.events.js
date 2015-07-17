@@ -26,7 +26,7 @@ events['click ' + scrollList.SCROLL_ITEM_SELECTOR] = function(event) {
       console.log('clicked ' + id);
 
       if(id == quipsController.SHOW_MORE_ID 
-        || id == quipsController.NEW_QUIP_ID){
+        || id == quipsController.QUIPBOX_ID){
         return;
         scrollList.activeElementId(id);
       }

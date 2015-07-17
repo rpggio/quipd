@@ -2,7 +2,7 @@ quipsController = {};
 
 quipsController.QUIPS_INCREMENT = 20;
 quipsController.SHOW_MORE_ID = 'load-more';
-quipsController.NEW_QUIP_ID = 'new-quip-item';
+quipsController.QUIPBOX_ID = 'quipbox';
 
 quipsController.resetUserSession = function() {
   console.info('resetting user session');
@@ -11,7 +11,9 @@ quipsController.resetUserSession = function() {
   // for some reason, the next line breaks the showMore button upon login
   // quipsController.updateCount();
   quipsController.areEditing(false);
-  scrollList.activeElementId('new-quip-item');
+  quipsController.searchPattern(null);
+  quipsController.tagSearch(null);
+  scrollList.activeElementId(quipsController.QUIPBOX_ID);
 }
 
 quipsController.quipsCount = function(limit) {
@@ -49,6 +51,13 @@ quipsController.searchPattern = function(value) {
   Session.set('searchPattern', value);
 }
 
+quipsController.tagSearch = function(value) {
+  if(value === undefined){
+    return Session.get('tagSearch');
+  }
+  Session.set('tagSearch', value);
+}
+
 quipsController.updateCount = function() {
   quipsController.quipsCount(Quips.find().count());
 }
@@ -71,12 +80,13 @@ quipsController.areEditing = function(editing) {
   Session.set('areEditing', editing);
 }
 
-quipsController.addQuip = function(text) {
-  console.log('adding quip ' + text)
-  Meteor.call("addQuip", text);
+quipsController.addQuip = function(quip) {
+  console.log('adding quip ' + quip)
+  Meteor.call("addQuip", quip);
   quipsController.areEditing(false);
   quipsController.searchPattern(null);
-  scrollList.scrollToId(quipsController.NEW_QUIP_ID);
+  quipsController.tagSearch(null);
+  scrollList.scrollToId(quipsController.QUIPBOX_ID);
 }
 
 quipsController.updateQuip = function(quip, text) {
@@ -91,7 +101,7 @@ quipsController.updateQuip = function(quip, text) {
 quipsController.isQuip = function(itemId) {
   return itemId
     && itemId != quipsController.SHOW_MORE_ID
-    && itemId != quipsController.NEW_QUIP_ID;
+    && itemId != quipsController.QUIPBOX_ID;
 }
 
 quipsController.deleteQuip = function(id){
@@ -113,6 +123,34 @@ quipsController.acceptArrowKey = function() {
   return true;
 }
 
+quipsController.parseLine = function(text){
+  text = text.trim();
+  var foundTag = false;
+  var quip = { tags: [] };
+  do {
+    var lastWord = Util.getLastWord(text);
+    foundTag = false;
+    if(lastWord 
+        && lastWord.length < text.length 
+        && lastWord.length >= 3 
+        && lastWord[0] == '#')
+    {
+      var tag = lastWord.slice(1)
+      if(tag.length >= 2){
+        quip.tags.push(tag);
+        text = text.slice(0, -lastWord.length).trim();
+        foundTag = true;
+      }
+    }
+  } while(foundTag)
+
+  quip.text = text;
+
+  console.log(quip);
+
+  return quip;
+}
+
 quipsController.initKeyhandler = function() {
   $(document).keydown(function(e) {
     console.log('keydown: ' + e.which);
@@ -127,9 +165,9 @@ quipsController.initKeyhandler = function() {
           quipsController.showMore();
         } 
 
-        // new-quip
+        // quip box
 
-        else if (activeElementId == quipsController.NEW_QUIP_ID) {
+        else if (activeElementId == quipsController.QUIPBOX_ID) {
           
           var text = $(e.target).val();
 
@@ -142,13 +180,25 @@ quipsController.initKeyhandler = function() {
             if(pattern.length < 2){
               return; 
             }
-            quipsController.searchPattern(pattern);
+
+            //search
+              
+            if(pattern.indexOf('#') == 0){
+              pattern = pattern.slice(1);
+              quipsController.tagSearch(pattern);
+            }
+            else {
+              quipsController.searchPattern(pattern);
+            }
+            $(e.target).val('');
           } 
           else {
-            quipsController.addQuip(text);
+            // add new
+            var quip = quipsController.parseLine(text);
+            quipsController.addQuip(quip);
+            $(e.target).val('');
           }
 
-          $(e.target).val('');
         }
 
         // editing
@@ -170,7 +220,7 @@ quipsController.initKeyhandler = function() {
         else {
           if (activeElementId) {
             quipsController.areEditing(true);
-            if (activeElementId == quipsController.NEW_QUIP_ID) {
+            if (activeElementId == quipsController.QUIPBOX_ID) {
               var textarea = $('#new-quip-text');
               textarea.focus();
               textarea[0].setSelectionRange(0, 0);
@@ -184,6 +234,7 @@ quipsController.initKeyhandler = function() {
         $('#new-quip-text').val('');
         quipsController.areEditing(false);
         quipsController.searchPattern(null);
+        quipsController.tagSearch(null);
         e.preventDefault();
         return;
       case 35: // end

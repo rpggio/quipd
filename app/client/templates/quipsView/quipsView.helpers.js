@@ -18,6 +18,12 @@ Template.quipsView.helpers({
       && id === scrollList.activeElementId();
   },
   searchPattern: function() {
-    return quipsController.searchPattern();
+    var tagSearch = quipsController.tagSearch();
+    var result = [
+      tagSearch ? '#' + tagSearch : null, 
+      quipsController.searchPattern()]
+      .join(' ')
+      .trim();
+    return result.length ? result : null;
   }
 });

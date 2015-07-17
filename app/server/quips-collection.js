@@ -2,33 +2,27 @@ Quips._ensureIndex({
   text: 'text'
 });
 
-Meteor.publish('quipsPub', function(limit, pattern) {
+Meteor.publish('quipsPub', function(limit, pattern, tag) {
 
-  if (!pattern) {
-    return Quips.find(
-    {
-      ownerId: this.userId
-    },
-    {
-      limit: limit || 10,
-      sort: {
-        createdAt: -1
-      }
-    });
+  var findParams = {
+    ownerId: this.userId
+  };
+  if(pattern){
+    findParams.$text = { $search: pattern };
+  }
+  if(tag){
+    findParams.tags = tag;
   }
 
-  return Quips.find(
-  {
-    ownerId: this.userId,
-    $text: {
-      $search: pattern
-    }
-  },
-  {
+  var sortParams = {
     limit: limit || 10,
     sort: {
       createdAt: -1
     }
-  });
+  };
+
+  console.log([findParams, sortParams]);
+
+  return Quips.find(findParams, sortParams);
 
 });

@@ -18,6 +18,7 @@ Template.quipsView.rendered = function() {
     Meteor.subscribe('quipsPub',
       quipsController.quipsLimit(),
       quipsController.searchPattern(),
+      quipsController.tagSearch(),
       function() {
         console.log('quipsPub subscribe callback');
         quipsController.updateCount();
@@ -38,7 +39,7 @@ Template.quipsView.rendered = function() {
     console.log('activeElementId: ' + id);
     quipsController.areEditing(false);
     if(!id){
-      scrollList.activeElementId(quipsController.NEW_QUIP_ID);
+      scrollList.activeElementId(quipsController.QUIPBOX_ID);
     } else {
       scrollList.scrollToId(id);
     }
@@ -54,6 +55,14 @@ Template.quipsView.rendered = function() {
 
   Deps.autorun(function(){   
     console.log('quipsLimit: ', quipsController.quipsLimit());
+  });
+
+  Deps.autorun(function(){   
+    console.log('searchPattern: ', quipsController.searchPattern());
+  });
+
+  Deps.autorun(function(){   
+    console.log('tagSearch: ', quipsController.tagSearch());
   });
 
   // Track guest user ID.

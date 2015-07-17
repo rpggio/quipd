@@ -7,7 +7,7 @@
             <div id="quips-blank-top" class="quips-blank"></div>
 
             {{#if areMoreQuips}}
-            <div id="load-more" class="quip scroll-item {{#if isActive 'load-more'}}active{{/if}}">
+            <div id="load-more" class="scroll-item {{#if isActive 'load-more'}}active{{/if}}">
                 <div class="quip-content">Show more</div>
                 <div class="quip-border"></div>
             </div>
@@ -21,6 +21,11 @@
             <div id="{{_id}}" class="quip scroll-item {{#if isActive _id}}active{{/if}}">
                 {{#if areEditing _id}} {{> quipEdit}} {{else}}
                     <div class="quip-content">{{text}}</div>
+                    <div class="quip-tags">
+                        {{#each tags}}
+                        <span class="tag">#{{this}}</span>
+                        {{/each}}
+                    </div>
                     <div class="quip-del">X</div>
                 {{/if}}
                 <div class="quip-fade"></div>
@@ -28,7 +33,7 @@
             </div>
             {{/each}}
 
-            <div id="new-quip-item" class="quip quip-draft scroll-item {{#if isActive 'new-quip-item'}}active{{/if}}">
+            <div id="quipbox" class="quip-draft quip scroll-item {{#if isActive 'quipbox'}}active{{/if}}">
                 <div class="quip-border"></div>
                 <div class="quip-content">
                     <form id="new-quip">

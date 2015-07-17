@@ -5,16 +5,24 @@ Meteor.startup(function() {
     resetQuips: function() {
       Quips.remove({ownerId: Meteor.userId()});
     },
-    addQuip: function (text) {
+    addQuip: function (quip) {
       if (! Meteor.userId()) {
         throw new Meteor.Error("not-authorized");
       }
 
-      Quips.insert({
-        text: text,
-        createdAt: moment().toDate(),
-        ownerId: Meteor.userId()
-      });
+      if(!quip || !quip.text){
+       throw new Meteor.Error("invalid quip: " + quip); 
+      }
+      
+      quip.createdAt = moment().toDate();
+      quip.ownerId = Meteor.userId();
+      var id = Quips.insert(quip);
+
+      // if(quip.tags){
+      //   quip.tags.forEach(function(tag){
+      //     Quips.addTag(tag, { _id: id });
+      //   });
+      // }
     },
     updateQuip: function(id, text){
       console.log({updating: text});
