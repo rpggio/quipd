@@ -14,7 +14,8 @@
             {{/if}} 
 
             {{#if searchPattern}} 
-            <h2>&lsquo;{{ searchPattern }}&rsquo;</h2>
+            <h2 id="search-desc">&lsquo;{{ searchPattern }}&rsquo;</h2>
+            <span id="search-quit" class="context-link" title="Quit search">X</span>
             {{/if}}
 
             {{#each quips}}
@@ -26,7 +27,7 @@
                         <span class="tag">#{{this}}</span>
                         {{/each}}
                     </div>
-                    <div class="quip-del">X</div>
+                    <div class="quip-del context-link" title="Delete quip">X</div>
                 {{/if}}
                 <div class="quip-fade"></div>
                 <div class="quip-border"></div>

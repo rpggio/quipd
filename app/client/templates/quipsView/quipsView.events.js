@@ -13,6 +13,17 @@ var events = {
       console.log('click .quip-del');
       quipsController.deleteQuip(this._id);
       return false;
+    },
+    'click .tag': function() {
+      console.log('click .tag', this.valueOf());
+      quipsController.tagSearch(this.valueOf());
+      quipsController.searchPattern(null);
+      return false;
+    },
+    'click #search-quit': function() {
+      quipsController.tagSearch(null);
+      quipsController.searchPattern(null);
+      return false;
     }
   };
 

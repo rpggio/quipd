@@ -65,21 +65,15 @@
 .quip-del {
     width: 15px;
     height: 15px;
-    cursor: default;
     position: absolute;
     top: 5px;
     right: 5px;
     text-align: center;
     vertical-align: middle;
-    font-weight: bold;
-    color: #888888;
-    line-height: 1em;
     display: none;
 }
 
 .quip-del:hover {
-    color: black;
-    font-weight: bolder;
 }
 
 .quip.active .quip-del {
@@ -106,4 +100,32 @@
     padding: 2px;
     margin-left: 4px;
     cursor: default;
+}
+
+.quip-tags .tag:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.context-link {
+    cursor: default;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    color: #888888;
+    line-height: 1em;
+}
+
+.context-link:hover {
+    cursor: pointer;
+    color: darkblue;
+    font-weight: bolder;
+}
+
+#search-desc {
+    display: inline;
+}
+
+#search-quit {
+    margin-left: 30px;
 }

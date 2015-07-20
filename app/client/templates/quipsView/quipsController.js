@@ -186,9 +186,11 @@ quipsController.initKeyhandler = function() {
             if(pattern.indexOf('#') == 0){
               pattern = pattern.slice(1);
               quipsController.tagSearch(pattern);
+              quipsController.searchPattern(null);
             }
             else {
               quipsController.searchPattern(pattern);
+              quipsController.tagSearch(null);
             }
             $(e.target).val('');
           } 
