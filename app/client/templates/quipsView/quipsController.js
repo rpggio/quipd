@@ -3,6 +3,7 @@ quipsController = {};
 quipsController.QUIPS_INCREMENT = 20;
 quipsController.SHOW_MORE_ID = 'load-more';
 quipsController.QUIPBOX_ID = 'quipbox';
+quipsController.QUIPBOX_TEXT_ID = 'new-quip-text';
 
 quipsController.resetUserSession = function() {
   console.info('resetting user session');
@@ -153,25 +154,19 @@ quipsController.parseLine = function(text){
 
 quipsController.initKeyhandler = function() {
   $(document).keydown(function(e) {
-    console.log('keydown: ' + e.which);
-    switch (e.which) {
-      case 13: // enter
-        var areEditing = quipsController.areEditing();
-        var activeElementId = scrollList.activeElementId();
+    console.log('keydown:', e);
 
-        // show more
+    var targetSelection = $(e.target);
+    var targetId = targetSelection.attr('id');
 
-        if (activeElementId == quipsController.SHOW_MORE_ID) {
-          quipsController.showMore();
-        } 
-
-        // quip box
-
-        else if (activeElementId == quipsController.QUIPBOX_ID) {
-          
-          var text = $(e.target).val();
+    if(targetId == quipsController.QUIPBOX_ID
+        || targetId == quipsController.QUIPBOX_TEXT_ID) {
+      switch (e.which) {
+        case 13: // enter
+          var text = targetSelection.val();
 
           if (text == null || !text.length) {
+            e.preventDefault();
             return;
           }
 
@@ -202,78 +197,102 @@ quipsController.initKeyhandler = function() {
             $(e.target).val('');
           }
 
+          e.preventDefault();
+        default:
+          scrollList.activeElementId(quipsController.QUIPBOX_ID);
+          // allow default
+      }
+
+    }
+
+    // Show more
+    else if (targetId == quipsController.SHOW_MORE_ID){
+        if(e.which == 13){
+          quipsController.showMore();
+          e.preventDefault();
+          return;
         }
+    }
 
-        // editing
+    // General key handler
+    else {
 
-        else if (areEditing) {
-          if(!activeElementId) {
-            console.error('areEditing = true, but no active element');
-            return;
-          }
-          var text = $(e.target).val();
-          if (text != null && text.length) {
-            Meteor.call("updateQuip", activeElementId, text);
-            quipsController.areEditing(false);
-          }
-        } 
+      switch (e.which) {
+        case 13: // enter
+          var areEditing = quipsController.areEditing();
+          var activeElementId = scrollList.activeElementId();
 
-        // navigating
+          // editing
+          if (areEditing) {
+            if(!activeElementId) {
+              console.error('areEditing = true, but no active element');
+              return;
+            }
+            var text = $(e.target).val();
+            if (text != null && text.length) {
+              Meteor.call("updateQuip", activeElementId, text);
+              quipsController.areEditing(false);
+            }
+          } 
 
-        else {
-          if (activeElementId) {
-            quipsController.areEditing(true);
-            if (activeElementId == quipsController.QUIPBOX_ID) {
-              var textarea = $('#new-quip-text');
-              textarea.focus();
-              textarea[0].setSelectionRange(0, 0);
+          // navigating
+          else {
+            if (activeElementId) {
+              quipsController.areEditing(true);
+              if (activeElementId == quipsController.QUIPBOX_ID) {
+                var textarea = $('#new-quip-text');
+                textarea.focus();
+                textarea[0].setSelectionRange(0, 0);
+              }
             }
           }
-        }
 
-        e.preventDefault();
-        return;
-      case 27: // esc
-        $('#new-quip-text').val('');
-        quipsController.areEditing(false);
-        quipsController.searchPattern(null);
-        quipsController.tagSearch(null);
-        e.preventDefault();
-        return;
-      case 35: // end
-        return;
-      case 36: // home
-        return;
-      case 37: // left
-        // no-op
-        return;
-      case 38: // up
-        if (!quipsController.areEditing()) {
-          if (quipsController.acceptArrowKey()) {
-            scrollList.prev()
-          }
           e.preventDefault();
-        }
-        return;
-      case 39: // right
-        // no-op
-        return;
-      case 40: // down
-        if (!quipsController.areEditing()) {
-          if (quipsController.acceptArrowKey()) {
-            scrollList.next()
-          }
+          return;
+        case 27: // esc
+          $('#new-quip-text').val('');
+          quipsController.areEditing(false);
+          quipsController.searchPattern(null);
+          quipsController.tagSearch(null);
           e.preventDefault();
-        }
-        return;
-      case 46: // del
-        var activeId = scrollList.activeElementId();
-        if(quipsController.isQuip(activeId)){
-          quipsController.deleteQuip(activeId);
-        }
-        return;
-      default:
-        return;
+          return;
+        case 35: // end
+          return;
+        case 36: // home
+          return;
+        case 37: // left
+          // no-op
+          return;
+        case 38: // up
+          if (!quipsController.areEditing()) {
+            if (quipsController.acceptArrowKey()) {
+              scrollList.prev()
+            }
+            e.preventDefault();
+          }
+          return;
+        case 39: // right
+          // no-op
+          return;
+        case 40: // down
+          if (!quipsController.areEditing()) {
+            if (quipsController.acceptArrowKey()) {
+              scrollList.next()
+            }
+            e.preventDefault();
+          }
+          return;
+        case 46: // del
+          var activeId = scrollList.activeElementId();
+          if(quipsController.isQuip(activeId)){
+            quipsController.deleteQuip(activeId);
+          }
+          return;
+        default:
+          return;
+      }
+
     }
+
   });
 }

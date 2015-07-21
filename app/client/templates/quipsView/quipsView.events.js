@@ -24,6 +24,10 @@ var events = {
       quipsController.tagSearch(null);
       quipsController.searchPattern(null);
       return false;
+    },
+    'click #quipbox, click #new-quip-text': function() {
+      scrollList.activeElementId(quipsController.QUIPBOX_ID);
+      return false;
     }
   };
 

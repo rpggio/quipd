@@ -42,6 +42,9 @@ Template.quipsView.rendered = function() {
       scrollList.activeElementId(quipsController.QUIPBOX_ID);
     } else {
       scrollList.scrollToId(id);
+      if(id != quipsController.QUIPBOX_ID){
+        $('#' + quipsController.QUIPBOX_TEXT_ID).blur();
+      }
     }
   });
 
