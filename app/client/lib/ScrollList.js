@@ -5,9 +5,7 @@ scrollList.SCROLL_ITEM_SELECTOR = '.scroll-item';
 
 scrollList.initialize = function(outerContainerSelector) {  
 
-    scrollList.correctBodyHeight();
-
-    $(window).bind('mousewheel', function(event) {
+    $(outerContainerSelector).bind('mousewheel', function(event) {
       if (event.originalEvent.wheelDelta >= 0) {
           scrollList.prev();
       }
@@ -16,15 +14,6 @@ scrollList.initialize = function(outerContainerSelector) {
       }
       event.preventDefault();
   });
-}
-
-// Hack for Chrome bug
-// http://stackoverflow.com/a/9628472/207291
-scrollList.correctBodyHeight = function()
-{
-    document.body.style.height = document.body.scrollHeight + 'px';
-
-    setTimeout(scrollList.correctBodyHeight, 200);
 }
 
 scrollList.activeElementId = function(id){

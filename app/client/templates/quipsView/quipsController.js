@@ -81,7 +81,7 @@ quipsController.areEditing = function(editing) {
 }
 
 quipsController.addQuip = function(quip) {
-  console.log('adding quip ' + quip)
+  console.log('adding quip', quip)
   Meteor.call("addQuip", quip);
   quipsController.areEditing(false);
   quipsController.searchPattern(null);
