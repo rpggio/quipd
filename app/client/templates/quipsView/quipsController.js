@@ -178,6 +178,7 @@ quipsController.initKeyhandler = function() {
           if(text.indexOf('?') == 0) {
             var pattern = text.slice(1);
             if(pattern.length < 2){
+              e.preventDefault();
               return; 
             }
 

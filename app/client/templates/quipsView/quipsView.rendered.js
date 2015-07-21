@@ -5,7 +5,7 @@ Template.quipsView.rendered = function() {
 
   quipsController.resetUserSession();
 
-  scrollList.initialize();
+  scrollList.initialize('#page-body');
   
   quipsController.initKeyhandler();
 
