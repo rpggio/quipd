@@ -17,16 +17,10 @@ Meteor.startup(function() {
       quip.createdAt = moment().toDate();
       quip.ownerId = Meteor.userId();
       var id = Quips.insert(quip);
-
-      // if(quip.tags){
-      //   quip.tags.forEach(function(tag){
-      //     Quips.addTag(tag, { _id: id });
-      //   });
-      // }
     },
-    updateQuip: function(id, text){
-      console.log({updating: text});
-      Quips.update({ _id: id}, {$set: {text: text}});
+    updateQuip: function(id, text, tags){
+      console.log('updateQuip', id, text, tags);
+      Quips.update({ _id: id}, {$set: {text: text, tags: tags}});
     },
     deleteQuip: function (id) {
       Quips.remove(id);

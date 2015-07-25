@@ -82,7 +82,7 @@ quipsController.areEditing = function(editing) {
 }
 
 quipsController.addQuip = function(quip) {
-  console.log('adding quip', quip)
+  console.log('addQuip', quip)
   Meteor.call("addQuip", quip);
   quipsController.areEditing(false);
   quipsController.searchPattern(null);
@@ -90,11 +90,9 @@ quipsController.addQuip = function(quip) {
   scrollList.scrollToId(quipsController.QUIPBOX_ID);
 }
 
-quipsController.updateQuip = function(quip, text) {
-  console.log({
-    'quipsController.updateQuip': text
-  });
-  Meteor.call("updateQuip", quip._id, text);
+quipsController.updateQuip = function(id, text, tags) {
+  console.log('updateQuip', id, text, tags);
+  Meteor.call("updateQuip", id, text, tags);
   quipsController.areEditing(false);
   return false;
 }
@@ -244,6 +242,86 @@ quipsController.initAutoRuns = function() {
   
 }
 
+quipsController.handleQuipboxKey = function(e) {
+  var targetSelection = $(e.target);
+  switch (e.which) {
+    case 13: // enter
+      var text = targetSelection.val();
+
+      if (text == null || !text.length) {
+        e.preventDefault();
+        return;
+      }
+
+      if(text.indexOf('?') == 0) {
+        var pattern = text.slice(1);
+        if(pattern.length < 2){
+          e.preventDefault();
+          return; 
+        }
+
+        // search
+          
+        if(pattern.indexOf('#') == 0){
+          pattern = pattern.slice(1);
+          quipsController.tagSearch(pattern);
+          quipsController.searchPattern(null);
+        }
+        else {
+          quipsController.searchPattern(pattern);
+          quipsController.tagSearch(null);
+        }
+        $(e.target).val('');
+      } 
+      else {
+
+        // add new
+        
+        var quip = quipsController.parseLine(text);
+        quipsController.addQuip(quip);
+        $(e.target).val('');
+      }
+
+      e.preventDefault();
+    default:
+      scrollList.activeElementId(quipsController.QUIPBOX_ID);
+      // allow default
+  }
+}
+
+quipsController.handleEnterKey = function(e) {
+  var areEditing = quipsController.areEditing();
+  var activeElementId = scrollList.activeElementId();
+
+  // editing
+  if (areEditing) {
+    if(!activeElementId) {
+      console.error('areEditing = true, but no active element');
+      return;
+    }
+    var text = $(e.target).val();
+    if (text != null && text.length) {
+      var parsed = quipsController.parseLine(text);
+      quipsController.updateQuip(activeElementId, parsed.text, parsed.tags)
+    }
+  } 
+
+  // navigating
+  else {
+    if (activeElementId) {
+      quipsController.areEditing(true);
+      if (activeElementId == quipsController.QUIPBOX_ID) {
+        var textarea = $('#new-quip-text');
+        textarea.focus();
+        textarea[0].setSelectionRange(0, 0);
+      }
+    }
+  }
+
+  e.preventDefault();
+  return;
+}
+
 quipsController.initKeyhandler = function() {
   $(document).keydown(function(e) {
 
@@ -252,48 +330,8 @@ quipsController.initKeyhandler = function() {
 
     if(targetId == quipsController.QUIPBOX_ID
         || targetId == quipsController.QUIPBOX_TEXT_ID) {
-      switch (e.which) {
-        case 13: // enter
-          var text = targetSelection.val();
-
-          if (text == null || !text.length) {
-            e.preventDefault();
-            return;
-          }
-
-          if(text.indexOf('?') == 0) {
-            var pattern = text.slice(1);
-            if(pattern.length < 2){
-              e.preventDefault();
-              return; 
-            }
-
-            //search
-              
-            if(pattern.indexOf('#') == 0){
-              pattern = pattern.slice(1);
-              quipsController.tagSearch(pattern);
-              quipsController.searchPattern(null);
-            }
-            else {
-              quipsController.searchPattern(pattern);
-              quipsController.tagSearch(null);
-            }
-            $(e.target).val('');
-          } 
-          else {
-            // add new
-            var quip = quipsController.parseLine(text);
-            quipsController.addQuip(quip);
-            $(e.target).val('');
-          }
-
-          e.preventDefault();
-        default:
-          scrollList.activeElementId(quipsController.QUIPBOX_ID);
-          // allow default
-      }
-
+      quipsController.handleQuipboxKey(e);
+      return;
     }
 
     // Show more
@@ -310,35 +348,7 @@ quipsController.initKeyhandler = function() {
 
       switch (e.which) {
         case 13: // enter
-          var areEditing = quipsController.areEditing();
-          var activeElementId = scrollList.activeElementId();
-
-          // editing
-          if (areEditing) {
-            if(!activeElementId) {
-              console.error('areEditing = true, but no active element');
-              return;
-            }
-            var text = $(e.target).val();
-            if (text != null && text.length) {
-              Meteor.call("updateQuip", activeElementId, text);
-              quipsController.areEditing(false);
-            }
-          } 
-
-          // navigating
-          else {
-            if (activeElementId) {
-              quipsController.areEditing(true);
-              if (activeElementId == quipsController.QUIPBOX_ID) {
-                var textarea = $('#new-quip-text');
-                textarea.focus();
-                textarea[0].setSelectionRange(0, 0);
-              }
-            }
-          }
-
-          e.preventDefault();
+          quipsController.handleEnterKey(e);
           return;
         case 27: // esc
           $('#new-quip-text').val('');

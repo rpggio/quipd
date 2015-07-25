@@ -88,7 +88,7 @@
 .quip-tags {
     position: absolute;
     top: 5px;
-    right: 25px;
+    right: 35px;
     text-align: center;
     vertical-align: middle;
     font-size: 10pt;
@@ -96,10 +96,11 @@
 
 .quip-tags .tag {
     color: white;
-    background-color: lightgray;
+    background-color: gray;
     padding: 2px;
     margin-left: 4px;
     cursor: default;
+    opacity: 0.4;
 }
 
 .quip-tags .tag:hover {
