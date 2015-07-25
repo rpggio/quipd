@@ -70,6 +70,14 @@ scrollList.prev = function() {
   }
 }
 
+scrollList.first = function() {
+  scrollList.activeElement($(scrollList.SCROLL_ITEM_SELECTOR).first());
+}
+
+scrollList.last = function() {
+  scrollList.activeElement($(scrollList.SCROLL_ITEM_SELECTOR).last());
+}
+
 scrollList.get = function(id) {
   if (!id){
     return null;

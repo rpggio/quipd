@@ -64,7 +64,6 @@ quipsController.updateCount = function() {
 }
 
 quipsController.areMoreQuips = function() {
-  console.log('areMoreQuips', quipsController.quipsCount(), '>=', quipsController.quipsLimit());
   return quipsController.quipsCount() >= quipsController.quipsLimit();
 }
 
@@ -249,6 +248,14 @@ quipsController.initAutoRuns = function() {
 quipsController.handleQuipboxKey = function(e) {
   var targetSelection = $(e.target);
   switch (e.which) {
+    case 27: // esc
+      quipsController.areEditing(false);
+      targetSelection.val('');
+      targetSelection.blur();
+      quipsController.searchPattern(null);
+      quipsController.tagSearch(null);
+      e.preventDefault();
+      return;
     case 13: // enter
       var text = targetSelection.val();
 
@@ -355,15 +362,16 @@ quipsController.initKeyhandler = function() {
           quipsController.handleEnterKey(e);
           return;
         case 27: // esc
-          $('#new-quip-text').val('');
           quipsController.areEditing(false);
-          quipsController.searchPattern(null);
-          quipsController.tagSearch(null);
           e.preventDefault();
           return;
         case 35: // end
+          scrollList.last();
+          e.preventDefault();
           return;
         case 36: // home
+          scrollList.first();
+          e.preventDefault();
           return;
         case 37: // left
           // no-op
