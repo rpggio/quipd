@@ -1,6 +1,11 @@
-Quips._ensureIndex({
-  text: 'text'
-});
+
+//Quips._dropIndex('quipsFullText');
+
+Quips._ensureIndex(
+  { text: 'text',
+    tags: 'text' },
+  { name: 'quipsFullText' }
+);
 
 Meteor.publish('quipsPub', function(limit, pattern, tag) {
 
