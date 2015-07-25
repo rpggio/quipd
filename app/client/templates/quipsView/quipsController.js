@@ -60,11 +60,12 @@ quipsController.tagSearch = function(value) {
 }
 
 quipsController.updateCount = function() {
-  quipsController.quipsCount(Quips.find().count());
+  quipsController.quipsCount(Quips.find({}).count());
 }
 
 quipsController.areMoreQuips = function() {
-  return !(quipsController.quipsCount() < quipsController.quipsLimit());
+  console.log('areMoreQuips', quipsController.quipsCount(), '>=', quipsController.quipsLimit());
+  return quipsController.quipsCount() >= quipsController.quipsLimit();
 }
 
 quipsController.showMore = function() {
@@ -155,33 +156,32 @@ quipsController.initAutoRuns = function() {
   Deps.autorun(function() {
     console.log('quipsPub autorun');
     Meteor.user();  // force reload on user change??
-    Meteor.subscribe('quipsPub',
+    quipsController.quipsPubHandle = Meteor.subscribe('quipsPub',
       quipsController.quipsLimit(),
       quipsController.searchPattern(),
       quipsController.tagSearch(),
       function() {
         console.log('quipsPub subscribe callback');
-        quipsController.updateCount();
         scrollList.updateScroll();
       }
     );
   });
 
   Deps.autorun(function(){   
-    if(Meteor.userId()){
-      // login changed
-    }     
+    console.log('auto update count');
+    quipsController.updateCount();
   });
 
   // When active element changes, set editing = false.
   Deps.autorun(function(){   
     var id = scrollList.activeElementId();
-    console.log('activeElementId: ' + id);
+    //console.log('activeElementId: ' + id);
     quipsController.areEditing(false);
     if(!id){
+      // default to quipbox id
       scrollList.activeElementId(quipsController.QUIPBOX_ID);
     } else {
-      scrollList.scrollToId(id);
+      // blur quipbox when moving away
       if(id != quipsController.QUIPBOX_ID){
         $('#' + quipsController.QUIPBOX_TEXT_ID).blur();
       }
@@ -200,12 +200,16 @@ quipsController.initAutoRuns = function() {
     console.log('quipsLimit: ', quipsController.quipsLimit());
   });
 
-  Deps.autorun(function(){   
-    console.log('searchPattern: ', quipsController.searchPattern());
+  Deps.autorun(function(){
+    var searchPattern = quipsController.searchPattern();
+    console.log('searchPattern: ', searchPattern);
+    quipsController.quipsLimit(quipsController.QUIPS_INCREMENT);
   });
 
   Deps.autorun(function(){   
-    console.log('tagSearch: ', quipsController.tagSearch());
+    var tagSearch = quipsController.tagSearch();
+    console.log('tagSearch: ', tagSearch);
+    quipsController.quipsLimit(quipsController.QUIPS_INCREMENT);
   });
 
   // Track guest user ID.

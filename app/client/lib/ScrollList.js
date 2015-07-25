@@ -14,6 +14,17 @@ scrollList.initialize = function(outerContainerSelector) {
       }
       event.preventDefault();
   });
+
+  Deps.autorun(function(){   
+    var activeElementId = scrollList.activeElementId();
+    if(activeElementId){
+      scrollList.scrollToId(activeElementId);
+    }
+  });
+
+  Meteor.setTimeout(function() {
+    scrollList.updateScroll();
+  });
 }
 
 scrollList.activeElementId = function(id){

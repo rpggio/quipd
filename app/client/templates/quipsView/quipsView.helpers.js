@@ -25,5 +25,8 @@ Template.quipsView.helpers({
       .join(' ')
       .trim();
     return result.length ? result : null;
+  },
+  quipsCount: function(){
+    return quipsController.quipsCount;
   }
 });
