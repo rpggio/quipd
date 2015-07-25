@@ -4,6 +4,37 @@ quipsController.QUIPS_INCREMENT = 20;
 quipsController.SHOW_MORE_ID = 'load-more';
 quipsController.QUIPBOX_ID = 'quipbox';
 quipsController.QUIPBOX_TEXT_ID = 'new-quip-text';
+quipsController.AUTOSIZE_SELECTOR = 'textarea.autosize';
+
+quipsController.initialize = function() {
+  quipsController.resetUserSession();
+
+  scrollList.initialize('#body-wrapper');
+  
+  quipsController.initKeyhandler();
+
+  $(quipsController.AUTOSIZE_SELECTOR).autosize();
+
+  quipsController.initAutoRuns();   
+
+  quipsController.initTextAreaPasteGuard();
+}
+
+quipsController.initTextAreaPasteGuard = function() {
+  $(quipsController.AUTOSIZE_SELECTOR).on('paste', function (e) {
+    var element = $(this);
+    var max = element.attr('maxlength');
+    var text = e.originalEvent.clipboardData.getData('text/plain');
+    if(text.length > max){
+      // e.originalEvent.clipboardData.setData('Text', 'fartface');
+      // console.log(e.originalEvent.clipboardData.getData('text/plain'));
+
+      element.val(text.slice(0, max));
+      e.preventDefault();
+      quipsController.textareaSizeUpdate();
+    }
+  });
+}
 
 quipsController.resetUserSession = function() {
   console.info('resetting user session');
@@ -95,6 +126,10 @@ quipsController.updateQuip = function(id, text, tags) {
   Meteor.call("updateQuip", id, text, tags);
   quipsController.areEditing(false);
   return false;
+}
+
+quipsController.textareaSizeUpdate = function() {
+  $(quipsController.AUTOSIZE_SELECTOR).trigger('autosize.resize');
 }
 
 quipsController.isQuip = function(itemId) {
@@ -251,8 +286,9 @@ quipsController.handleQuipboxKey = function(e) {
     case 27: // esc
       quipsController.areEditing(false);
       targetSelection.val('');
+      quipsController.textareaSizeUpdate();
       targetSelection.blur();
-      quipsController.searchPattern(null);
+      quipsController.searchPattern (null);
       quipsController.tagSearch(null);
       e.preventDefault();
       return;
@@ -283,6 +319,7 @@ quipsController.handleQuipboxKey = function(e) {
           quipsController.tagSearch(null);
         }
         $(e.target).val('');
+        quipsController.textareaSizeUpdate();
       } 
       else {
 
@@ -291,6 +328,7 @@ quipsController.handleQuipboxKey = function(e) {
         var quip = quipsController.parseLine(text);
         quipsController.addQuip(quip);
         $(e.target).val('');
+        quipsController.textareaSizeUpdate();
       }
 
       e.preventDefault();
