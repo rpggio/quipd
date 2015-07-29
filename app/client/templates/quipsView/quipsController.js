@@ -403,16 +403,22 @@ quipsController.initKeyhandler = function() {
           quipsController.handleEnterKey(e);
           return;
         case 27: // esc
-          quipsController.areEditing(false);
-          e.preventDefault();
+          if (quipsController.areEditing()) {
+            quipsController.areEditing(false);
+            e.preventDefault();
+          }
           return;
         case 35: // end
-          scrollList.last();
-          e.preventDefault();
+          if (!quipsController.areEditing()) {
+            scrollList.last();
+            e.preventDefault();
+          }
           return;
         case 36: // home
-          scrollList.first();
-          e.preventDefault();
+          if (!quipsController.areEditing()) {
+            scrollList.first();
+            e.preventDefault();
+          }
           return;
         case 37: // left
           // no-op
@@ -437,9 +443,11 @@ quipsController.initKeyhandler = function() {
           }
           return;
         case 46: // del
-          var activeId = scrollList.activeElementId();
-          if(quipsController.isQuip(activeId)){
-            quipsController.deleteQuip(activeId);
+          if (!quipsController.areEditing()) {
+            var activeId = scrollList.activeElementId();
+            if(quipsController.isQuip(activeId)){
+              quipsController.deleteQuip(activeId);
+            }
           }
           return;
         default:
