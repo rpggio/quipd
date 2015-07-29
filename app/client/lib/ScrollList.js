@@ -5,14 +5,16 @@ scrollList.SCROLL_ITEM_SELECTOR = '.scroll-item';
 
 scrollList.initialize = function(outerContainerSelector) {  
 
-    $(outerContainerSelector).bind('mousewheel', function(event) {
-      if (event.originalEvent.wheelDelta >= 0) {
-          scrollList.prev();
+  $(outerContainerSelector).mousewheel(function(event, d, dx, dy) {
+      if (dy) {
+        if (dy > 0) {
+            scrollList.prev();
+        }
+        else {
+            scrollList.next();
+        }
+        event.preventDefault();
       }
-      else {
-          scrollList.next();
-      }
-      event.preventDefault();
   });
 
   Deps.autorun(function(){   
