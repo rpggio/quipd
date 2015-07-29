@@ -3,9 +3,13 @@ scrollList = {};
 
 scrollList.SCROLL_ITEM_SELECTOR = '.scroll-item';
 
-scrollList.initialize = function(outerContainerSelector) {  
+scrollList.initialize = function(outerContainerSelector, shouldHandle) {  
 
   $(outerContainerSelector).mousewheel(function(event, d, dx, dy) {
+      console.log(event.target);
+      if(shouldHandle && event.target && !shouldHandle(event.target)){
+        return;
+      }
       if (dy) {
         if (dy > 0) {
             scrollList.prev();

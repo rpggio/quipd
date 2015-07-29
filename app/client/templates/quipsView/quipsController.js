@@ -9,7 +9,12 @@ quipsController.AUTOSIZE_SELECTOR = 'textarea.autosize';
 quipsController.initialize = function() {
   quipsController.resetUserSession();
 
-  scrollList.initialize('#body-wrapper');
+  scrollList.initialize('#body-wrapper', 
+    function(target){
+      return target.tagName != 'TEXTAREA'
+        && !quipsController.areEditing();
+    }
+  );
   
   quipsController.initKeyhandler();
 
