@@ -3,10 +3,15 @@ Meteor.startup(function() {
 
   return Meteor.methods({
     resetQuips: function() {
-      Quips.remove({ownerId: Meteor.userId()});
+      var userId = Meteor.userId();
+      if (!userId) {
+        throw new Meteor.Error("not-authorized");
+      }
+      Quips.remove({ownerId: userId});
     },
     addQuip: function (quip) {
-      if (! Meteor.userId()) {
+      var userId = Meteor.userId();
+      if (!userId) {
         throw new Meteor.Error("not-authorized");
       }
 
@@ -19,17 +24,30 @@ Meteor.startup(function() {
       var id = Quips.insert(quip);
     },
     updateQuip: function(id, text, tags){
-      console.log('updateQuip', id, text, tags);
-      Quips.update({ _id: id}, {$set: {text: text, tags: tags}});
+      var userId = Meteor.userId();
+      if (!userId) {
+        throw new Meteor.Error("not-authorized");
+      }
+
+      Quips.update(
+          { _id: id, ownerId: userId }, 
+          {$set: {text: text, tags: tags}}
+      );
     },
     deleteQuip: function (id) {
-      Quips.remove(id);
+      var userId = Meteor.userId();
+      if (!userId) {
+        throw new Meteor.Error("not-authorized");
+      }
+
+      Quips.remove({ _id: id, ownerId: userId });
     },
     moveQuipsToUser: function(fromId, toId){
       if(!fromId || !toId){
         throw 'null argument';
       }
-      if(fromId != toId){
+      var existingCount = Quips.find({ownerId: fromId}).count();
+      if(fromId != toId && existingCount){
         console.log('moving quips from user ' + fromId + ' to ' + toId);
         Quips.update({ownerId: fromId}, {$set: {ownerId: toId}}, {multi:true});
       }

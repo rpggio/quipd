@@ -268,8 +268,6 @@ quipsController.initAutoRuns = function() {
     var wasGuest = quipsController.priorUserWasGuest();
 
     if(wasGuest && !isGuest){
-      // transfer quips
-      console.info("moving quips from guest user ", priorUserId, " to ", user._id);
       Meteor.call('moveQuipsToUser', priorUserId, user._id);
     }
 

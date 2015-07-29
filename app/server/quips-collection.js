@@ -1,6 +1,18 @@
 
-//Quips._dropIndex('quipsFullText');
 
+Quips.allow({  
+  insert: function (userId, doc) {
+    return userId;
+  },
+  update: function (userId, doc, fields, modifier) {
+    return doc.ownerId === userId;
+  },
+  remove: function (userId, doc) {
+    return doc.ownerId === userId;
+  }
+});
+
+//Quips._dropIndex('quipsFullText');
 Quips._ensureIndex(
   { text: 'text',
     tags: 'text' },
