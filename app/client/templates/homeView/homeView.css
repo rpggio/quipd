@@ -13,8 +13,14 @@
 }
 
 #site-greeting h1 {
-    font-size: 44pt;
+    font-size: 36pt;
     padding-bottom: 30px;
+}
+
+#site-greeting h1 span {
+    font-size: 26pt;
+    font-weight: normal;
+    padding-left: 40px;
 }
 
 .quip.greeting {

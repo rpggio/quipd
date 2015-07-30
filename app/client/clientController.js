@@ -3,9 +3,7 @@ clientController = {};
 
 clientController.initialize = function() {
 
-  console.log('init quips count: ', Quips.find({}).count());
-
-  // Track transitions between user
+  // Track transitions between user state
   Deps.autorun(function(){
     var user = Meteor.user();
     if(!user){
@@ -14,13 +12,10 @@ clientController.initialize = function() {
     }
 
     var priorUserId = clientController.priorUserId();
-    console.log('currentUser', user);
 
     if(user._id == priorUserId){
       return;
     }
-
-    console.log('currentUser', user);
 
     var isGuest = clientController.isGuest();
     var wasGuest = clientController.priorUserWasGuest();
