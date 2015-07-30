@@ -1,5 +1,8 @@
 
 Template.quipsView.helpers({
+  greetingMode: function() {
+    return clientController.greetingMode();
+  },
   quips: function() {
     return Quips.find({}, {
       sort: {

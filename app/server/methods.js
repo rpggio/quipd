@@ -46,10 +46,16 @@ Meteor.startup(function() {
       if(!fromId || !toId){
         throw 'null argument';
       }
-      var existingCount = Quips.find({ownerId: fromId}).count();
+      var existingCount = Quips.find({ownerId: fromId, guestQuip: true}).count();
       if(fromId != toId && existingCount){
         console.log('moving quips from user ' + fromId + ' to ' + toId);
-        Quips.update({ownerId: fromId}, {$set: {ownerId: toId}}, {multi:true});
+        Quips.update(
+          {ownerId: fromId}, 
+          {
+            $set: { ownerId: toId },
+            $unset: { guestQuip: '' }
+          }, 
+          { multi:true });
       }
     }
     

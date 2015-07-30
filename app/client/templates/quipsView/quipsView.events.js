@@ -10,12 +10,12 @@ var events = {
       Meteor.call('seedQuips');
     },
     'click .quip-del': function() {
-      console.log('click .quip-del');
-      quipsController.deleteQuip(this._id);
+      if(confirm('Delete quip?')) {
+        quipsController.deleteQuip(this._id);
+      }
       return false;
     },
     'click .tag': function() {
-      console.log('click .tag', this.valueOf());
       quipsController.tagSearch(this.valueOf());
       quipsController.searchPattern(null);
       return false;
@@ -32,13 +32,11 @@ var events = {
   };
 
 events['click ' + scrollList.SCROLL_ITEM_SELECTOR] = function(event) {
-      console.log('click ' + scrollList.SCROLL_ITEM_SELECTOR);
+      //console.log('click ' + scrollList.SCROLL_ITEM_SELECTOR);
 
       var target = $(event.currentTarget);
       var id = target && target.attr('id');
       if(!id) return;
-
-      console.log('clicked ' + id);
 
       if(id == quipsController.SHOW_MORE_ID 
         || id == quipsController.QUIPBOX_ID){

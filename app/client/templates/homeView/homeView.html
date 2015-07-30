@@ -1,0 +1,36 @@
+<template name="homeView">
+
+    <div id="body-wrapper">
+
+        {{> headerView }}
+
+        <div id="page-body">
+            {{#if greetingMode}} 
+                <div id="site-greeting">
+                    <h1>Collect your thoughts</h1>
+
+                    <div class="quip greeting">
+                        <div class="quip-content">Quipd saves your ideas and notes without getting in the way.</div>
+                        <div class="quip-tags"></div>
+                    </div>
+                    
+                    <div class="quip greeting">
+                        <div class="quip-content">Tag and search your notes, access them anywhere.</div>
+                        <div class="quip-tags"><span class="tag">#easy</span></div>
+                    </div>
+
+                    <div class="quip greeting">
+                        <div class="quip-content">You can do it all with your hands on the keyboard.</div>
+                        <div class="quip-tags"><span class="tag">#fast</span></div>
+                    </div>
+                </div>
+
+
+            {{/if}}
+        
+            {{> quipsView }}
+        </div> <!-- page-body -->
+
+    </div>
+
+</template>

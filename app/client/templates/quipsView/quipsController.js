@@ -11,8 +11,9 @@ quipsController.initialize = function() {
 
   scrollList.initialize('#body-wrapper', 
     function(target){
-      return target.tagName != 'TEXTAREA'
-        && !quipsController.areEditing();
+      return !(
+        $(target).attr('id') == 'update-quip-text' && quipsController.areEditing()
+        );
     }
   );
   
@@ -23,6 +24,8 @@ quipsController.initialize = function() {
   quipsController.initAutoRuns();   
 
   quipsController.initTextAreaPasteGuard();
+
+  quipsController.focusQuipBox();
 }
 
 quipsController.initTextAreaPasteGuard = function() {
@@ -67,20 +70,6 @@ quipsController.quipsLimit = function(limit) {
   Session.set('quipsLimit', limit);
 }
 
-quipsController.priorUserId = function(id) {
-  if(id == null){
-    return Session.get('priorUserId');
-  }
-  Session.set('priorUserId', id);
-}
-
-quipsController.priorUserWasGuest = function(wasGuest) {
-  if(wasGuest == null){
-    return Session.get('priorUserWasGuest');
-  }
-  Session.set('priorUserWasGuest', wasGuest);
-}
-
 quipsController.searchPattern = function(value) {
   if(value === undefined){
     return Session.get('searchPattern');
@@ -94,6 +83,7 @@ quipsController.tagSearch = function(value) {
   }
   Session.set('tagSearch', value);
 }
+
 
 quipsController.updateCount = function() {
   quipsController.quipsCount(Quips.find({}).count());
@@ -118,7 +108,12 @@ quipsController.areEditing = function(editing) {
 }
 
 quipsController.addQuip = function(quip) {
-  console.log('addQuip', quip)
+  clientController.greetingMode(false);
+
+  if(clientController.isGuest()){
+    quip.guestQuip = true;
+  }
+
   Meteor.call("addQuip", quip);
   quipsController.areEditing(false);
   quipsController.searchPattern(null);
@@ -135,6 +130,12 @@ quipsController.updateQuip = function(id, text, tags) {
 
 quipsController.textareaSizeUpdate = function() {
   $(quipsController.AUTOSIZE_SELECTOR).trigger('autosize.resize');
+}
+
+quipsController.focusQuipBox = function() {
+  var textarea = $('#' + quipsController.QUIPBOX_TEXT_ID);
+  textarea.focus();
+  textarea[0].setSelectionRange(0, 0);
 }
 
 quipsController.isQuip = function(itemId) {
@@ -185,29 +186,26 @@ quipsController.parseLine = function(text){
 
   quip.text = text;
 
-  console.log(quip);
-
   return quip;
 }
 
 quipsController.initAutoRuns = function() {
 
   Deps.autorun(function() {
-    console.log('quipsPub autorun');
+    //console.log('quipsPub autorun');
     Meteor.user();  // force reload on user change??
     quipsController.quipsPubHandle = Meteor.subscribe('quipsPub',
       quipsController.quipsLimit(),
       quipsController.searchPattern(),
       quipsController.tagSearch(),
       function() {
-        console.log('quipsPub subscribe callback');
+        //console.log('quipsPub subscribe callback');
         scrollList.updateScroll();
       }
     );
   });
 
   Deps.autorun(function(){   
-    console.log('auto update count');
     quipsController.updateCount();
   });
 
@@ -227,58 +225,35 @@ quipsController.initAutoRuns = function() {
     }
   });
 
-  Deps.autorun(function(){   
-    console.log('areEditing: ', quipsController.areEditing());
-  });
+  // Deps.autorun(function(){   
+  //   console.log('areEditing: ', quipsController.areEditing());
+  // });
 
-  Deps.autorun(function(){   
-    console.log('quipsCount: ', quipsController.quipsCount());
-  });
+  // Deps.autorun(function(){   
+  //   console.log('quipsCount: ', quipsController.quipsCount());
+  // });
 
-  Deps.autorun(function(){   
-    console.log('quipsLimit: ', quipsController.quipsLimit());
-  });
+  // Deps.autorun(function(){   
+  //   console.log('quipsLimit: ', quipsController.quipsLimit());
+  // });
 
   Deps.autorun(function(){
     var searchPattern = quipsController.searchPattern();
-    console.log('searchPattern: ', searchPattern);
+    //console.log('searchPattern: ', searchPattern);
     quipsController.quipsLimit(quipsController.QUIPS_INCREMENT);
   });
 
   Deps.autorun(function(){   
     var tagSearch = quipsController.tagSearch();
-    console.log('tagSearch: ', tagSearch);
+    //console.log('tagSearch: ', tagSearch);
     quipsController.quipsLimit(quipsController.QUIPS_INCREMENT);
   });
 
-  // Track guest user ID.
-  // When user logs in, transfer quips from guest user.
   Deps.autorun(function(){
-    var user = Meteor.user();
-    if(!user){
-      console.warn("No user available");
-      return;
+    var userId = Meteor.userId();
+    if(userId && userId != clientController.priorUserId()){
+      quipsController.resetUserSession();
     }
-
-    var priorUserId = quipsController.priorUserId();
-
-    if(user._id == priorUserId){
-      console.warn("Current user ID is the same as prior user ID");
-      return;
-    }
-
-    console.log({ currentUser: user});
-
-    var isGuest = user.profile && user.profile.guest;
-    var wasGuest = quipsController.priorUserWasGuest();
-
-    if(wasGuest && !isGuest){
-      Meteor.call('moveQuipsToUser', priorUserId, user._id);
-    }
-
-    quipsController.resetUserSession();
-    quipsController.priorUserWasGuest(isGuest);
-    quipsController.priorUserId(user._id);
   });
   
 }
@@ -363,9 +338,7 @@ quipsController.handleEnterKey = function(e) {
     if (activeElementId) {
       quipsController.areEditing(true);
       if (activeElementId == quipsController.QUIPBOX_ID) {
-        var textarea = $('#new-quip-text');
-        textarea.focus();
-        textarea[0].setSelectionRange(0, 0);
+        quipsController.focusQuipBox();
       }
     }
   }

@@ -1,12 +1,5 @@
 
 
-#page-body {
-    max-width: 800px;
-    /* margin: 50px auto 0px auto; */
-    margin: 0 auto;
-    padding-top: 60px;
-}
-
 #quips {
     line-height: 1.8em;
 }
@@ -85,8 +78,13 @@
     display: block;
 }
 
-.quips-blank {
-    height: 40vh;
+#quips-blank-top {
+    height: 100px;
+    width: 100%;
+}
+
+#quips-blank-bottom {
+    min-height: 250px;
     width: 100%;
 }
 

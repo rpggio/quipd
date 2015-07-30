@@ -1,0 +1,23 @@
+
+#page-body {
+    max-width: 800px;
+    margin: 60px auto 0px auto;
+}
+
+#site-greeting {
+    /*position: fixed;
+    top: 100px;*/
+
+    padding-top: 40px;
+    width:800px;
+}
+
+#site-greeting h1 {
+    font-size: 44pt;
+    padding-bottom: 30px;
+}
+
+.quip.greeting {
+  position: relative;
+  margin: 5px 0;
+}
