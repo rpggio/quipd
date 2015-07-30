@@ -10,9 +10,7 @@ var events = {
       Meteor.call('seedQuips');
     },
     'click .quip-del': function() {
-      if(confirm('Delete quip?')) {
-        quipsController.deleteQuip(this._id);
-      }
+      quipsController.deleteQuip(this._id);
       return false;
     },
     'click .tag': function() {

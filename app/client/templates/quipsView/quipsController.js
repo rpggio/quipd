@@ -145,9 +145,10 @@ quipsController.isQuip = function(itemId) {
 }
 
 quipsController.deleteQuip = function(id){
-  console.log('deleting quip ' + id);
-  scrollList.prev();
-  Meteor.call("deleteQuip", id);
+  if(confirm('Delete quip?')) {
+    scrollList.prev();
+    Meteor.call("deleteQuip", id);
+  }
 }
 
 // Prevents flood of arrow keys when navigating list
