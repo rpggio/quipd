@@ -15,9 +15,13 @@
 }
 
 .quip-content {
-    padding: 15px;
+    padding: 12px 15px 12px 15px;
     font-size: 13pt;
     overflow-y: hidden;
+}
+
+.quip-content.has-tags {
+    padding-top: 22px;
 }
 
 .quip-border {
@@ -88,7 +92,7 @@
 
 .quip-tags {
     position: absolute;
-    top: 5px;
+    top: 2px;
     right: 35px;
     text-align: center;
     vertical-align: middle;

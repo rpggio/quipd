@@ -17,6 +17,9 @@ Template.quipsView.helpers({
     return quipsController.areEditing()
       && id === scrollList.activeElementId();
   },
+  hasTags: function() {
+    return this.tags && this.tags.length;
+  },
   searchPattern: function() {
     var tagSearch = quipsController.tagSearch();
     var result = [
