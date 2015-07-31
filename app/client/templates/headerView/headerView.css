@@ -4,8 +4,7 @@
     top: 0;
     width: 100%;
     padding: 5px;
-    /*vertical-align: middle;*/
-    background: #DDDDDD;
+    background: #7F7264;
     height: 50px;
     line-height: 50px;
     z-index:1;
@@ -16,6 +15,13 @@
     max-width: 800px;
     margin: 0 auto;
     position: relative;
+    color: #FFFDFA;
+}
+
+#header-content .login-link-text, 
+#header-content .login-link-text:hover
+{
+  color: white;
 }
 
 #login-buttons {
@@ -26,6 +32,5 @@
 
 #login-buttons .login-link-text {
     white-space: nowrap;
-
 }
 

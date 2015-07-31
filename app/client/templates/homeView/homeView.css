@@ -14,13 +14,19 @@
 
 #site-greeting h1 {
     font-size: 36pt;
+    display: inline;
+}
+
+#site-greeting .title-block {
     padding-bottom: 30px;
 }
 
-#site-greeting h1 span {
+#site-greeting .counterpoint {
     font-size: 26pt;
     font-weight: normal;
-    padding-left: 40px;
+    padding-left: 50px;
+    color: #5F6274;
+    display: inline;
 }
 
 .quip.greeting {

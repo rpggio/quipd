@@ -21,6 +21,9 @@ body {
   /*min-height: 100% !important;*/
   height: initial !important;
   min-height: 500px;
+  background-image:url(/texture-02-edge-b-sepia-lt.jpg);
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 textarea {
@@ -28,3 +31,4 @@ textarea {
     outline: none;
     font-size: 13pt;
 }
+

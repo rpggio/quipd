@@ -55,7 +55,8 @@
 }
 
 #load-more .quip-content {
-    background-color: lightblue;
+    background-color: #7B7E8C;
+    color: white;
     text-align: center;
     font-variant: small-caps;
 }
@@ -99,11 +100,11 @@
 
 .quip-tags .tag {
     color: white;
-    background-color: gray;
+    background-color: #9D9EA7;
     padding: 2px;
     margin-left: 4px;
     cursor: default;
-    opacity: 0.4;
+    opacity: 0.6;
 }
 
 .quip-tags .tag:hover {
