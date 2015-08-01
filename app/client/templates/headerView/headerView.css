@@ -34,9 +34,22 @@
     white-space: nowrap;
 }
 
+#login-buttons .login-close-text {
+    font-size:0.8em;
+}
+
 #header-help {
     position: absolute;
     top: 10px;
     left: 100%;
     color: #FFFDFA;
+}
+
+#header-help i {
+    margin-left: 10px;
+    font-size: 1.5em;
+}
+
+.menu .item a {
+    color: inherit;
 }

@@ -1,19 +1,25 @@
-
 <template name="headerView">
-
     <div id="header-view">
         <div id="header-content">
             <h1 class="no-space">Quipd</h1>
 
-              <a id="header-help">
-                Help
-              </a>
+            <div id="header-help" class="ui dropdown">
+              <i class="help circle icon"></i>
+              <div class="menu">
+                  <a id="toggle-help-overlay" class="item">
+                    {{#if helpOverlay }}
+                        Hide inline help
+                    {{else}}
+                        Show inline help
+                    {{/if}}
+                  </a>
+                  <a class="item" href="mailto:info@quipd.io">Contact us</a>
+              </div>
+            </div>
 
             <div id="login-buttons">
                 {{> loginButtons align="right" }}
             </div>
-
         </div>
     </div>
-
 </template>
