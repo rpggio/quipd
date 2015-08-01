@@ -34,5 +34,8 @@ Template.quipsView.helpers({
   },
   quipsCount: function(){
     return quipsController.quipsCount;
+  },
+  helpOverlay: function() {
+    return quipsController.helpOverlay();
   }
 });

@@ -30,6 +30,12 @@
                 {{/if}}
                 <div class="quip-fade"></div>
                 <div class="quip-border"></div>
+
+                {{#if helpOverlay }}
+                {{#if isActive _id}}
+                    {{> quipShortcuts}}
+                {{/if}}
+                {{/if}}
             </div>
             {{/each}}
 
@@ -40,12 +46,53 @@
                         <textarea type="text" class="autosize" id="new-quip-text" name="new-quip-text" placeholder="{{#if greetingMode}}Try it out!{{else}}Quip it{{/if}}" maxlength="4000"></textarea>
                     </form>
                 </div>
+
+                {{#if helpOverlay }}
+                {{#if isActive 'quipbox'}}
+                    {{> quipCommands}}
+                    {{> quipShortcuts}}
+                {{/if}}
+                {{/if}}
             </div>
 
             <div id="quips-blank-bottom" class="quips-blank"></div>
 
         </div>
 
-
 </template>
 
+<template name="quipShortcuts">
+    <div class="quip-shortcuts help-overlay">
+        <div class="margin-note">
+            <div>
+                <span class="title">Shortcuts</span>
+                <i class="remove icon"></i>
+            </div>
+            <div class="keyboard-help">
+                <div class="key-help"><span class="key"><b>↑</b></span><label>Previous</label></div>
+                <div class="key-help"><span class="key"><b>↓</b></span><label>Next</label></div>
+                <div class="key-help"><span class="key">Enter</span><label>Edit / Save</label></div>
+                <div class="key-help"><span class="key">Esc</span><label>Cancel</label></div>
+                <div class="key-help"><span class="key">Home</span><label>Top</label></div>
+                <div class="key-help"><span class="key">End</span><label>Bottom</label></div>
+                <div class="key-help"><span class="key">Del</span><label>Delete</label></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="quipCommands">
+    <div class="quip-commands help-overlay">
+        <div class="margin-note">
+            <div>
+                <span class="title">Commands</span>
+                <i class="remove icon"></i>
+            </div>
+            <div class="keyboard-help">
+                <div class="key-help"><span class="key"><b>? text</b></span><label>Search</label></div>
+                <div class="key-help"><span class="key"><b>#tag</b></span><label>Add tag</label></div>
+                <div class="key-help"><span class="key"><b>?# tag</b></span><label>Find tagged</label></div>
+            </div>
+        </div>
+    </div>
+</template>

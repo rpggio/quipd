@@ -16,7 +16,7 @@ quipsController.initialize = function() {
         );
     }
   );
-  
+
   quipsController.initKeyhandler();
 
   $(quipsController.AUTOSIZE_SELECTOR).autosize();
@@ -84,6 +84,12 @@ quipsController.tagSearch = function(value) {
   Session.set('tagSearch', value);
 }
 
+quipsController.helpOverlay = function(value) {
+  if(value === undefined){
+    return Session.get('helpOverlay');
+  }
+  Session.set('helpOverlay', value);
+}
 
 quipsController.updateCount = function() {
   quipsController.quipsCount(Quips.find({}).count());

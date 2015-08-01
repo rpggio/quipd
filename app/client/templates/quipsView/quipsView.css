@@ -134,3 +134,62 @@
 #search-quit {
     margin-left: 30px;
 }
+
+.quip-shortcuts {
+    position: absolute;
+    top: 0;
+    left:100%;
+    padding-left:10px;
+    min-width: 150px;
+}
+
+.quip-commands {
+    position: absolute;
+    top: 0;
+    right:100%;
+    padding-right:10px;
+    min-width: 150px;
+}
+
+.quip-help .content {
+    /*border: 1px solid black;
+    border-radius: 5px;*/
+    padding: 5px;
+}
+
+.help-overlay {
+    opacity: 0.6;
+}
+
+.margin-note .title {
+    margin-bottom: 0px;
+    font-size:12 pt;
+    font-weight: bold;
+}
+
+.margin-note i {
+    float:right;
+}
+
+.keyboard-help .key {
+    background: linear-gradient(to bottom,#f0f0f0,#fcfcfc);
+    color: #303030;
+    font-weight: bold;
+    border-radius: 3px;
+    border: 1px solid #e0e0e0;
+    border-bottom-width: 2px;
+    padding: 2px 6px;
+    margin-right: 6px;
+    font-family: monospace;
+}
+
+.keyboard-help .key-help {
+    padding: 1px;
+    padding-left: 0px;
+}
+
+.keyboard-help .key-help label {
+    float: right;
+}
+
+

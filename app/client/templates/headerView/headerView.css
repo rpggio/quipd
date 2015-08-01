@@ -6,7 +6,7 @@
     padding: 5px;
     background: #7F7264;
     height: 50px;
-    line-height: 50px;
+    /*line-height: 50px;*/
     z-index:1;
 }
 
@@ -34,3 +34,9 @@
     white-space: nowrap;
 }
 
+#header-help {
+    position: absolute;
+    top: 10px;
+    left: 100%;
+    color: #FFFDFA;
+}

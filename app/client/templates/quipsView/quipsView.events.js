@@ -26,6 +26,14 @@ var events = {
     'click #quipbox, click #new-quip-text': function() {
       scrollList.activeElementId(quipsController.QUIPBOX_ID);
       return false;
+    },
+    'click .help-overlay .remove': function() {
+      quipsController.helpOverlay(false);
+      return false;
+    },
+    'click .help-overlay': function() {
+      // ignore
+      return false;
     }
   };
 

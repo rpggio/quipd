@@ -15,6 +15,7 @@
 #site-greeting h1 {
     font-size: 36pt;
     display: inline;
+    color: #7F7264;
 }
 
 #site-greeting .title-block {
@@ -23,9 +24,9 @@
 
 #site-greeting .counterpoint {
     font-size: 26pt;
-    font-weight: normal;
+    font-weight: bold;
     padding-left: 50px;
-    color: #5F6274;
+    color: #3B4665;
     display: inline;
 }
 

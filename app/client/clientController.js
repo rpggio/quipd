@@ -39,7 +39,13 @@ clientController.initialize = function() {
       // no quips
       && Quips.find({}).count() == 0
       || false;
-    clientController.greetingMode(greetingMode);
+    var currentGreetingMode = clientController.greetingMode();
+    if(currentGreetingMode != greetingMode){
+      if(!greetingMode){
+        quipsController.helpOverlay(true);
+      }
+      clientController.greetingMode(greetingMode);
+    }
   });
 
 }
