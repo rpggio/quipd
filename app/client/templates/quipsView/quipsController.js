@@ -42,7 +42,7 @@ quipsController.initTextAreaPasteGuard = function() {
 }
 
 quipsController.resetUserSession = function() {
-  console.info('resetting user session');
+  //console.info('resetting user session');
   Session.setDefault('quipsLimit', quipsController.QUIPS_INCREMENT);
   quipsController.quipsLimit(quipsController.QUIPS_INCREMENT)
   quipsController.areEditing(false);
@@ -123,7 +123,7 @@ quipsController.addQuip = function(quip) {
 }
 
 quipsController.updateQuip = function(id, text, tags) {
-  console.log('updateQuip', id, text, tags);
+  //console.log('updateQuip', id, text, tags);
   Meteor.call("updateQuip", id, text, tags);
   quipsController.areEditing(false);
   return false;
