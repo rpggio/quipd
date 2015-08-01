@@ -6,6 +6,10 @@ scrollList.SCROLL_ITEM_SELECTOR = '.scroll-item';
 scrollList.initialize = function(outerContainerSelector, shouldHandle) {  
 
   $(outerContainerSelector).mousewheel(function(event, d, dx, dy) {
+      if(event.ctrlKey || event.shiftKey || event.altKey || event.metaKey){
+        return;
+      }
+
       if(shouldHandle && event.target && !shouldHandle(event.target)){
         return;
       }

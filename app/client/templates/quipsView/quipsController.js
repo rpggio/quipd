@@ -270,10 +270,7 @@ quipsController.initAutoRuns = function() {
     var id = scrollList.activeElementId();
     //console.log('activeElementId: ' + id);
     quipsController.areEditing(false);
-    if(!id){
-      // default to quipbox id
-      scrollList.activeElementId(quipsController.QUIPBOX_ID);
-    } else {
+    if(id) {
       // blur quipbox when moving away
       if(id != quipsController.QUIPBOX_ID){
         $('#' + quipsController.QUIPBOX_TEXT_ID).blur();
@@ -438,6 +435,12 @@ quipsController.initKeyhandler = function() {
         case 27: // esc
           if (quipsController.areEditing()) {
             quipsController.areEditing(false);
+            e.preventDefault();
+          }
+          if(scrollList.activeElementId() == quipsController.QUIPBOX_ID){
+            $('#' + quipsController.QUIPBOX_TEXT_ID)
+              .val('')
+              .blur();
             e.preventDefault();
           }
           return;

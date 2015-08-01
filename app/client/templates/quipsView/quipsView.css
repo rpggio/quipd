@@ -59,6 +59,7 @@
     color: white;
     text-align: center;
     font-variant: small-caps;
+    cursor: pointer;
 }
 
 .quip-del {
