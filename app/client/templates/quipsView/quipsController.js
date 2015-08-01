@@ -34,9 +34,6 @@ quipsController.initTextAreaPasteGuard = function() {
     var max = element.attr('maxlength');
     var text = e.originalEvent.clipboardData.getData('text/plain');
     if(text.length > max){
-      // e.originalEvent.clipboardData.setData('Text', 'fartface');
-      // console.log(e.originalEvent.clipboardData.getData('text/plain'));
-
       element.val(text.slice(0, max));
       e.preventDefault();
       quipsController.textareaSizeUpdate();
@@ -48,8 +45,6 @@ quipsController.resetUserSession = function() {
   console.info('resetting user session');
   Session.setDefault('quipsLimit', quipsController.QUIPS_INCREMENT);
   quipsController.quipsLimit(quipsController.QUIPS_INCREMENT)
-  // for some reason, the next line breaks the showMore button upon login
-  // quipsController.updateCount();
   quipsController.areEditing(false);
   quipsController.searchPattern(null);
   quipsController.tagSearch(null);
@@ -170,30 +165,84 @@ quipsController.acceptArrowKey = function() {
   return true;
 }
 
+var tagPattern = /\#[\w\d\-\_\.]{2,140}/
+quipsController.wordIsTag = function(word){
+  return tagPattern.test(word);
+}
+
+// todo: scan with regex
 quipsController.parseLine = function(text){
   text = text.trim();
   var foundTag = false;
-  var quip = { tags: [] };
+  var tags = [];
+
+  // trailing tags
   do {
     var lastWord = Util.getLastWord(text);
     foundTag = false;
-    if(lastWord 
+    if(
+        quipsController.wordIsTag(lastWord)
         && lastWord.length < text.length 
-        && lastWord.length >= 3 
-        && lastWord[0] == '#')
-    {
-      var tag = lastWord.slice(1)
-      if(tag.length >= 2){
-        quip.tags.push(tag);
-        text = text.slice(0, -lastWord.length).trim();
-        foundTag = true;
+      )
+      {
+        var tag = lastWord.slice(1);
+        if(tag.length >= 2){
+          tags.push(tag.trim().toLowerCase());
+          text = text.slice(0, -lastWord.length).trim();
+          foundTag = true;
+        }
       }
-    }
   } while(foundTag)
 
-  quip.text = text;
+  // leading tags
+  do {
+    var firstWord = Util.getFirstWord(text);
+    foundTag = false;
+    if(
+        quipsController.wordIsTag(firstWord)
+        && firstWord.length < text.length
+      )
+      {
+        var tag = firstWord.slice(1);
+        if(tag.length >= 2){
+          tags.push(tag.trim().toLowerCase());
+          text = text.slice(firstWord.length).trim();
+          foundTag = true;
+        }
+      }
+  } while(foundTag)
+
+  text.split(' ').forEach(function(word){
+    if(quipsController.wordIsTag(word))
+    {
+      var tag = word.slice(1);
+      tags.push(tag.trim().toLowerCase());
+    }
+  }); 
+
+  text = text.trim();
+  if(!text.length){
+    return null;
+  }
+
+  var quip = {
+    text: text,
+    tags: _.uniq(tags)
+  };
 
   return quip;
+}
+
+// todo: scan with regex
+quipsController.getTags = function(text){
+  return _.chain(text.split(' '))
+    .map(function(word) {
+      return quipsController.wordIsTag(word)
+        && word.slice(1).toLowerCase();
+    })
+    .compact()
+    .uniq()
+    .value();
 }
 
 quipsController.initAutoRuns = function() {
@@ -311,9 +360,11 @@ quipsController.handleQuipboxKey = function(e) {
         // add new
         
         var quip = quipsController.parseLine(text);
-        quipsController.addQuip(quip);
-        $(e.target).val('');
-        quipsController.textareaSizeUpdate();
+        if(quip){
+          quipsController.addQuip(quip);
+          $(e.target).val('');
+          quipsController.textareaSizeUpdate();          
+        }
       }
 
       e.preventDefault();
@@ -336,7 +387,9 @@ quipsController.handleEnterKey = function(e) {
     var text = $(e.target).val();
     if (text != null && text.length) {
       var parsed = quipsController.parseLine(text);
-      quipsController.updateQuip(activeElementId, parsed.text, parsed.tags)
+      if(parsed){
+        quipsController.updateQuip(activeElementId, parsed.text, parsed.tags);
+      }
     }
   } 
 
