@@ -1,4 +1,12 @@
 
+Quips.before.insert(function(userId, quip){
+   quip.createdAt = quip.updatedAt = new Date();
+});
+
+Quips.before.update(function (userId, doc, fieldNames, modifier, options) {
+    modifier.$set = modifier.$set || {};
+    modifier.$set.updatedAt = new Date();
+});
 
 Quips.allow({  
   insert: function (userId, doc) {
@@ -34,7 +42,7 @@ Meteor.publish('quipsPub', function(limit, pattern, tag) {
   var sortParams = {
     limit: limit || 10,
     sort: {
-      createdAt: -1
+      updatedAt: -1
     }
   };
 
