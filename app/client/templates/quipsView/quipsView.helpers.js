@@ -6,7 +6,7 @@ Template.quipsView.helpers({
   quips: function() {
     return Quips.find(
       { parentId: quipsController.parentId() || null }, 
-      { sort: { order: 1 } }
+      { sort: { order: 1, updatedAt: 1 } }
     );
   },
   areMoreQuips: function() {

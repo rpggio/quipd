@@ -46,7 +46,7 @@ Meteor.publish('quipsPub', function(limit, pattern, tag) {
     }
   };
 
-  console.log([findParams, sortParams]);
+  //console.log([findParams, sortParams]);
 
   return Quips.find(findParams, sortParams);
 

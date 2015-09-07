@@ -14,13 +14,7 @@ UserRepository.convertGuestAccount = function(fromId, toId) {
       
       if(existingCount){
         console.log('Converting guest account', fromId, toId);
-
-        Threads.update(
-          {ownerId: fromId}, 
-          {
-            $set: { ownerId: toId },
-          }, 
-          { multi:true });      
+    
         Quips.update(
           {ownerId: fromId}, 
           {

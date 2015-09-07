@@ -322,13 +322,11 @@ quipsController.initAutoRuns = function() {
 
   Deps.autorun(function(){
     var searchPattern = quipsController.searchPattern();
-    //console.log('searchPattern: ', searchPattern);
     quipsController.quipsLimit(quipsController.QUIPS_INCREMENT);
   });
 
   Deps.autorun(function(){   
     var tagSearch = quipsController.tagSearch();
-    //console.log('tagSearch: ', tagSearch);
     quipsController.quipsLimit(quipsController.QUIPS_INCREMENT);
   });
 
@@ -423,9 +421,15 @@ quipsController.handleEnterKey = function(e) {
   // navigating
   else {
     if (activeElementId) {
-      quipsController.areEditing(true);
-      if (activeElementId == quipsController.QUIPBOX_ID) {
-        quipsController.focusQuipBox();
+      var activeElement = Quips.findOne(activeElementId);
+      if(activeElement && activeElement.quipCount && activeElementId != quipsController.parentId()) {
+        quipsController.parentId(activeElementId);
+      }
+      else {
+        quipsController.areEditing(true);
+        if (activeElementId == quipsController.QUIPBOX_ID) {
+          quipsController.focusQuipBox();
+        }
       }
     }
   }
@@ -487,7 +491,15 @@ quipsController.initKeyhandler = function() {
           }
           return;
         case 37: // left
-          // no-op
+          var parent = quipsController.parent();
+          if(parent) {
+            if(parent.parentId){
+              quipsController.parentId(parent.parentId);  
+            } else {
+              quipsController.parentId(null);  
+              scrollList.activeElementId(parent._id);
+            }
+          }
           return;
         case 38: // up
           if (!quipsController.areEditing()) {
@@ -498,7 +510,7 @@ quipsController.initKeyhandler = function() {
           }
           return;
         case 39: // right
-          // no-op
+          quipsController.parentId(scrollList.activeElementId());
           return;
         case 40: // down
           if (!quipsController.areEditing()) {

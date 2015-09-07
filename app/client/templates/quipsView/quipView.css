@@ -27,13 +27,17 @@
     border: 1px solid gray;
 }
 
-.threadParent {
+.quip.threadParent {
 	font-weight: bold;
 }
 
-.threadParent .quip-content {
+.quip.threadParent .quip-content {
 	font-size: 18pt;
 	padding-left: 10px;
+}
+
+.quip.threadParent .quip-ellipsis {
+    display: none;
 }
 
 .quip.hasChildren .quip-content {
@@ -84,3 +88,4 @@
 .quip-suffix {
     padding-left: 8px;
 }
+
