@@ -7,6 +7,7 @@ quipsController.QUIPBOX_TEXT_ID = 'new-quip-text';
 quipsController.AUTOSIZE_SELECTOR = 'textarea.autosize';
 
 quipsController.initialize = function() {
+
   quipsController.resetUserSession();
 
   scrollList.initialize('#body-wrapper', 
@@ -86,6 +87,18 @@ quipsController.helpOverlay = function(value) {
   Session.set('helpOverlay', value);
 }
 
+quipsController.parentId = function(value) {
+  if(value === undefined){
+    return Session.get('parentId');
+  }
+  Session.set('parentId', value);
+}
+
+quipsController.parent = function() {
+  var parentId = quipsController.parentId();
+  return parentId ? Quips.findOne(parentId) : null;
+}
+
 quipsController.updateCount = function() {
   quipsController.quipsCount(Quips.find({}).count());
 }
@@ -115,10 +128,27 @@ quipsController.addQuip = function(quip) {
     quip.guestQuip = true;
   }
 
-  Meteor.call("addQuip", quip);
+  quip.parentId = quipsController.parentId();
+
+  var asParent = quip.text[quip.text.length-1] == ':';
+  if(asParent){
+    quip.text = quip.text.slice(0,-1);
+  }
+
+  console.log('calling add quip');
+  Meteor.call("addQuip", quip, 
+    function(err, data){
+      console.log('add callback', data);
+      if(asParent) {
+        quipsController.parentId(data._id);
+      }
+    }
+  );
+
   quipsController.areEditing(false);
   quipsController.searchPattern(null);
   quipsController.tagSearch(null);
+
   scrollList.scrollToId(quipsController.QUIPBOX_ID);
 }
 

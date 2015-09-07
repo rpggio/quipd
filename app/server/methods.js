@@ -3,7 +3,7 @@ Meteor.startup(function() {
 
   return Meteor.methods({
     addQuip: function (quip) {
-      QuipRepository.add(quip);
+      return QuipRepository.add(quip);
     },
     updateQuip: function(id, text, tags){
       QuipRepository.update(id, text, tags);

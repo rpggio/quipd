@@ -17,26 +17,14 @@
             <span id="search-quit" class="context-link" title="Clear search">X</span>
             {{/if}}
 
-            {{#each quips}}
-            <div id="{{_id}}" class="quip scroll-item {{#if isActive _id}}active{{/if}}">
-                {{#if areEditing _id}} {{> quipEdit}} {{else}}
-                    <div class="quip-content {{#if hasTags}}has-tags{{/if}}">{{text}}</div>
-                    <div class="quip-tags">
-                        {{#each tags}}
-                        <span class="tag">#{{this}}</span>
-                        {{/each}}
-                    </div>
-                    <div class="quip-del context-link" title="Delete quip">X</div>
-                {{/if}}
-                <div class="quip-fade"></div>
-                <div class="quip-border"></div>
+            {{#if parent}} 
+                {{#with parent}}
+                    {{> quipView}}
+                {{/with}}
+            {{/if}}
 
-                {{#if helpOverlay }}
-                {{#if isActive _id}}
-                    {{> quipShortcuts}}
-                {{/if}}
-                {{/if}}
-            </div>
+            {{#each quips}}
+                {{> quipView}}
             {{/each}}
 
             <div id="quipbox" class="quip-draft quip scroll-item {{#if isActive 'quipbox'}}active{{/if}}">
@@ -48,10 +36,10 @@
                 </div>
 
                 {{#if helpOverlay }}
-                {{#if isActive 'quipbox'}}
-                    {{> quipCommands}}
-                    {{> quipShortcuts}}
-                {{/if}}
+                    {{#if isActive 'quipbox'}}
+                        {{> quipCommands}}
+                        {{> quipShortcuts}}
+                    {{/if}}
                 {{/if}}
             </div>
 

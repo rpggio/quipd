@@ -4,11 +4,10 @@ Template.quipsView.helpers({
     return clientController.greetingMode();
   },
   quips: function() {
-    return Quips.find({}, {
-      sort: {
-        createdAt: 1
-      }
-    });
+    return Quips.find(
+      { parentId: quipsController.parentId() || null }, 
+      { sort: { order: 1 } }
+    );
   },
   areMoreQuips: function() {
     return quipsController.areMoreQuips();
@@ -37,5 +36,8 @@ Template.quipsView.helpers({
   },
   helpOverlay: function() {
     return quipsController.helpOverlay();
+  },
+  parent: function() {
+    return quipsController.parent();
   }
 });

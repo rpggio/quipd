@@ -1,0 +1,21 @@
+<template name="quipView">
+    <div id="{{_id}}" class="quip scroll-item {{#if isActive _id}}active{{/if}} {{#if isThreadParent _id}}threadParent{{/if}}">
+        {{#if areEditing _id}} {{> quipEdit}} {{else}}
+            <div class="quip-content {{#if hasTags}}has-tags{{/if}}">{{text}}</div>
+            <div class="quip-tags">
+                {{#each tags}}
+                <span class="tag">#{{this}}</span>
+                {{/each}}
+            </div>
+            <div class="quip-del context-link" title="Delete quip">X</div>
+        {{/if}}
+        <div class="quip-fade"></div>
+        <div class="quip-border"></div>
+
+        {{#if helpOverlay }}
+            {{#if isActive _id}}
+                {{> quipShortcuts}}
+            {{/if}}
+        {{/if}}
+    </div>
+</template>

@@ -1,34 +1,6 @@
 
-
 #quips {
     line-height: 1.8em;
-}
-
-.quip {
-}
-
-.quip-content {
-    padding: 12px 15px 12px 15px;
-    font-size: 13pt;
-    overflow-y: hidden;
-}
-
-.quip-content.has-tags {
-    padding-top: 22px;
-}
-
-.quip-border {
-    position: absolute;
-    left: 0;
-    top: 0;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none
-}
-
-.active .quip-border {
-    border: 1px solid gray;
 }
 
 #new-quip textarea {
@@ -62,24 +34,6 @@
     cursor: pointer;
 }
 
-.quip-del {
-    width: 15px;
-    height: 15px;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    text-align: center;
-    vertical-align: middle;
-    display: none;
-}
-
-.quip-del:hover {
-}
-
-.quip.active .quip-del {
-    display: block;
-}
-
 #quips-blank-top {
     height: 100px;
     width: 100%;
@@ -88,29 +42,6 @@
 #quips-blank-bottom {
     min-height: 250px;
     width: 100%;
-}
-
-.quip-tags {
-    position: absolute;
-    top: 2px;
-    right: 35px;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 10pt;
-}
-
-.quip-tags .tag {
-    color: white;
-    background-color: #9D9EA7;
-    padding: 2px;
-    margin-left: 4px;
-    cursor: default;
-    opacity: 0.6;
-}
-
-.quip-tags .tag:hover {
-    text-decoration: underline;
-    cursor: pointer;
 }
 
 .context-link {
