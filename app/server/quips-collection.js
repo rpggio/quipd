@@ -42,11 +42,12 @@ Meteor.publish('quipsPub', function(limit, pattern, tag) {
   var sortParams = {
     limit: limit || 10,
     sort: {
+      order: -1,
       updatedAt: -1
     }
   };
 
-  //console.log([findParams, sortParams]);
+  console.log([findParams, sortParams]);
 
   return Quips.find(findParams, sortParams);
 

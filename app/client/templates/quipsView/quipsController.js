@@ -121,7 +121,7 @@ quipsController.areEditing = function(editing) {
   Session.set('areEditing', editing);
 }
 
-quipsController.addQuip = function(quip) {
+quipsController.addQuip = function(quip, asParent) {
   clientController.greetingMode(false);
 
   if(clientController.isGuest()){
@@ -130,15 +130,15 @@ quipsController.addQuip = function(quip) {
 
   quip.parentId = quipsController.parentId();
 
-  var asParent = quip.text[quip.text.length-1] == ':';
-  if(asParent){
-    quip.text = quip.text.slice(0,-1);
+  if(!asParent){
+    asParent = quip.text[quip.text.length-1] == ':';
+    if(asParent){
+      quip.text = quip.text.slice(0,-1);
+    }
   }
 
-  console.log('calling add quip');
   Meteor.call("addQuip", quip, 
     function(err, data){
-      console.log('add callback', data);
       if(asParent) {
         quipsController.parentId(data._id);
       }
@@ -386,7 +386,7 @@ quipsController.handleQuipboxKey = function(e) {
         
         var quip = quipsController.parseLine(text);
         if(quip){
-          quipsController.addQuip(quip);
+          quipsController.addQuip(quip, e.ctrlKey);
           $(e.target).val('');
           quipsController.textareaSizeUpdate();          
         }
@@ -411,6 +411,11 @@ quipsController.handleEnterKey = function(e) {
     }
     var text = $(e.target).val();
     if (text != null && text.length) {
+      if(e.ctrlKey){
+        quipsController.parentId(activeElementId);
+        return;
+      }
+
       var parsed = quipsController.parseLine(text);
       if(parsed){
         quipsController.updateQuip(activeElementId, parsed.text, parsed.tags);
@@ -452,6 +457,7 @@ quipsController.initKeyhandler = function() {
 
     // Show more
     else if (targetId == quipsController.SHOW_MORE_ID){
+        // todo: move this into handleEnterKey()
         if(e.which == 13){
           quipsController.showMore();
           e.preventDefault();
