@@ -1,7 +1,12 @@
 <template name="quipView">
-    <div id="{{_id}}" class="quip scroll-item {{#if isActive _id}}active{{/if}} {{#if isThreadParent _id}}threadParent{{/if}}">
+    <div id="{{_id}}" class="quip scroll-item {{#if isActive _id}}active{{/if}} {{#if isThreadParent _id}}threadParent{{else}} {{#if quipCount}}hasChildren{{/if}} {{/if}}">
         {{#if areEditing _id}} {{> quipEdit}} {{else}}
-            <div class="quip-content {{#if hasTags}}has-tags{{/if}}">{{text}}</div>
+            <div class="quip-content {{#if hasTags}}has-tags{{/if}}">{{text}}
+            {{#if quipCount}}
+                <span class="quip-suffix">&hellip;</span>
+            {{/if}}
+            </div>
+
             <div class="quip-tags">
                 {{#each tags}}
                 <span class="tag">#{{this}}</span>

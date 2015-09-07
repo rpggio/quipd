@@ -36,6 +36,10 @@
 	padding-left: 10px;
 }
 
+.quip.hasChildren .quip-content {
+    font-weight: bold;
+}
+
 .quip-del {
     width: 15px;
     height: 15px;
@@ -75,4 +79,8 @@
 .quip-tags .tag:hover {
     text-decoration: underline;
     cursor: pointer;
+}
+
+.quip-suffix {
+    padding-left: 8px;
 }
