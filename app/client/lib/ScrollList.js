@@ -3,6 +3,10 @@ scrollList = {};
 
 scrollList.SCROLL_ITEM_SELECTOR = '.scroll-item';
 
+var lastScrollMoment = moment();
+var scrollCalls = 0;
+
+
 scrollList.initialize = function(outerContainerSelector, shouldHandle) {  
 
   $(outerContainerSelector).mousewheel(function(event, d, dx, dy) {
@@ -13,14 +17,29 @@ scrollList.initialize = function(outerContainerSelector, shouldHandle) {
       if(shouldHandle && event.target && !shouldHandle(event.target)){
         return;
       }
+      
       if (dy) {
+
+        event.preventDefault();
+
+        var now = moment();
+        var diff = now.diff(lastScrollMoment);
+        
+        // Skip if scroll was too soon
+        if(diff < 50 && scrollCalls < 5) {
+          scrollCalls++;
+          return;
+        }
+
+        lastScrollMoment = now;
+        scrollCalls = 0;
+
         if (dy > 0) {
             scrollList.prev();
         }
         else {
             scrollList.next();
         }
-        event.preventDefault();
       }
   });
 

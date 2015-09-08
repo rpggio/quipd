@@ -71,6 +71,9 @@ quipsController.searchPattern = function(value) {
     return Session.get('searchPattern');
   }
   Session.set('searchPattern', value);
+  if(value) {
+    quipsController.parentId(null);
+  }
 }
 
 quipsController.tagSearch = function(value) {
@@ -78,6 +81,9 @@ quipsController.tagSearch = function(value) {
     return Session.get('tagSearch');
   }
   Session.set('tagSearch', value);
+  if(value) {
+    quipsController.parentId(null);
+  }
 }
 
 quipsController.helpOverlay = function(value) {
@@ -92,6 +98,10 @@ quipsController.parentId = function(value) {
     return Session.get('parentId');
   }
   Session.set('parentId', value);
+  if(value) {
+    quipsController.searchPattern(null);
+    quipsController.tagSearch(null);
+  }
 }
 
 quipsController.parent = function() {
@@ -427,14 +437,20 @@ quipsController.handleEnterKey = function(e) {
   else {
     if (activeElementId) {
       var activeElement = Quips.findOne(activeElementId);
+      
       if(activeElement && activeElement.quipCount && activeElementId != quipsController.parentId()) {
         quipsController.parentId(activeElementId);
+        return;
       }
-      else {
-        quipsController.areEditing(true);
-        if (activeElementId == quipsController.QUIPBOX_ID) {
-          quipsController.focusQuipBox();
-        }
+      
+      if(e.ctrlKey) {
+        quipsController.parentId(activeElementId);
+        return;
+      }
+
+      quipsController.areEditing(true);
+      if (activeElementId == quipsController.QUIPBOX_ID) {
+        quipsController.focusQuipBox();
       }
     }
   }
