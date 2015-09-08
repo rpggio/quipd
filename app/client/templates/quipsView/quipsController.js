@@ -519,8 +519,8 @@ quipsController.initKeyhandler = function() {
               quipsController.parentId(parent.parentId);  
             } else {
               quipsController.parentId(null);  
-              scrollList.activeElementId(parent._id);
             }
+            scrollList.activeElementId(parent._id);
           }
           return;
         case 38: // up

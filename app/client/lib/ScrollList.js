@@ -74,10 +74,15 @@ scrollList.activeElement = function(el) {
 
 scrollList.next = function() {
   var active = scrollList.activeElement();
-  var next = active && active.next(scrollList.SCROLL_ITEM_SELECTOR);
+  if(!active || active.length == 0){
+    return scrollList.last();
+  }
+
+  var next = active.next(scrollList.SCROLL_ITEM_SELECTOR);
   if(!next){
     return false;
   }
+  
   var id = next.attr('id');
   if(id){
     scrollList.activeElementId(id);
@@ -87,10 +92,15 @@ scrollList.next = function() {
 
 scrollList.prev = function() {
   var active = scrollList.activeElement();
+  if(!active || active.length == 0){
+    return scrollList.first();
+  }
+
   var prev = active && active.prev(scrollList.SCROLL_ITEM_SELECTOR);
   if(!prev){
     return false;
   }
+
   var id = prev.attr('id');
   if(id){
     scrollList.activeElementId(id);
@@ -99,11 +109,15 @@ scrollList.prev = function() {
 }
 
 scrollList.first = function() {
-  scrollList.activeElement($(scrollList.SCROLL_ITEM_SELECTOR).first());
+  var element = $(scrollList.SCROLL_ITEM_SELECTOR).first();
+  scrollList.activeElement(element);
+  return element;
 }
 
 scrollList.last = function() {
-  scrollList.activeElement($(scrollList.SCROLL_ITEM_SELECTOR).last());
+  var element = $(scrollList.SCROLL_ITEM_SELECTOR).last();
+  scrollList.activeElement(element);
+  return element;
 }
 
 scrollList.get = function(id) {
