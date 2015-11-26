@@ -1,0 +1,10 @@
+<template name="quips">
+	{{#each quips}}
+		<div class="quip-view">
+			{{ text }}
+		</div>
+    {{/each}}
+
+    <input class="add-quip" {{b "value: newText"}}>
+    <a {{b "click: add"}} class="ui button">Add Quip</a>
+</template>
