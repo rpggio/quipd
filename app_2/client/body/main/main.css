@@ -1,0 +1,16 @@
+
+.quip, .add-quip {
+    padding: 12px;
+    margin: 10px;
+    width: 50%;
+    min-width: 300px;
+}
+
+.quip {
+    border: 1px solid lightgray;
+}
+
+.add-quip {
+    height: 60px;
+    border: 1px solid gray;
+}
