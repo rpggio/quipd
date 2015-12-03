@@ -1,22 +1,25 @@
 Template.quips.viewmodel({
-	newText: '',
-	quips: function() {
-		return Quips.find();
-	},
-	addQuip: function() {
-		var quip = {
-			text: this.newText()
-		};
-		Quips.insert(quip);
-		this.newText('');
-	},
-	events: {
-	    'keydown .add-quip': function(event, templateInstance) {
-	    	switch (event.which) {
-		        case 13:   // enter
-		          this.addQuip();
-		          return;
-	    	}
-	   	}
+    mixin: 'focusHandler'
+
+    , quips: function() {
+        var quips = Quips.find();
+        return quips;
+    }
+    
+    , onCreated: function() {
+        this.lastQuipIndex = 0;        
+    }
+
+    , getTabIndex: function(child) {
+        var quipEditRef = this.quipEditRef;
+        if(child == quipEditRef) {
+            return this.lastQuipIndex + 1;
+        }
+        else {
+            this.lastQuipIndex++;
+            // ensure edit box has highest index
+            quipEditRef.tabIndex(this.lastQuipIndex + 1);
+            return this.lastQuipIndex;
+        }
     }
 });

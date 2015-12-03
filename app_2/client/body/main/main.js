@@ -1,10 +1,10 @@
 Template.main.viewmodel({
-  onCreated: function(template) {
-    template.subscribe('main', function() {
-      //Client.subscriptions.mainReady = true;
-    });
-  },
-  hasCategories: function () {
-    // return !!Categories.findOne();
-  }
+    ready: false
+
+    , onCreated: function(template) {
+        var self = this;
+        template.subscribe('main', function() {
+            self.ready(true);
+        });
+    }
 });

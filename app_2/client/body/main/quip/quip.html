@@ -1,5 +1,4 @@
 <template name="quip">
-	<div class="quip">
-		{{ text }}
-	</div>
+	<input class="quip can-focus" 
+        {{b "value: text, focus: focused, attr: { tabindex: tabIndex }, arrowUp: prev, arrowDown: next" }} >
 </template>
