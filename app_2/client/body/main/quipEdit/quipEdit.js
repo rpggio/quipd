@@ -3,7 +3,8 @@ Template.quipEdit.viewmodel({
     , focused: false
     , addQuip: function() {
         var quip = {
-            text: this.newText()
+            parentId: this.parent().quipId && this.parent().quipId()
+            , text: this.newText()
         };
         Quips.insert(quip);
         this.newText('');

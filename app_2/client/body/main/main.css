@@ -18,3 +18,7 @@
 .can-focus:focus {
     background-color: yellow;
 }
+
+.quipLevelIn {
+    margin-left: 30px;
+}

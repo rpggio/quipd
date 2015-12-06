@@ -1,4 +1,4 @@
-/// <reference path="../typings/meteor-basic.d.ts" />
+/// <reference path="../typings/app.ts" />
 
 function greeter(numbers: number[]) {
     var doubled = _.map(numbers, n => 2 * n);

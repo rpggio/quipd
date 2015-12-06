@@ -1,0 +1,18 @@
+<template name="verticalExplorer">
+    <div>
+        <h3>
+            {{#with thisQuip}}
+                {{> quip }}
+            {{/with}}
+        </h3>
+
+        <div class="quipLevelIn">
+            {{#each childQuips}}
+                {{> quip}}
+            {{/each}}
+
+            {{> quipEdit }}
+
+        </div>
+    </div>
+</template>
