@@ -7,3 +7,4 @@ function greeter(numbers: number[]) {
 
 greeter([2, 4]);
 
+
