@@ -1,23 +1,19 @@
 var addBinding = ViewModel.addBinding;
 
-addBinding({
-    name: 'arrowUp',
-    events: {
-        'keydown': function(bindArg, event){
-            if(event.which == 38 || event.keyCode == 38){
-                bindArg.setVmValue(event);
+var bindKey = function(name, keycode){
+    ViewModel.addBinding({
+        name: name,
+        events: {
+            'keydown': function(bindArg, event){
+                if(event.which == keycode || event.keyCode == keycode){
+                    bindArg.setVmValue(event);
+                }
             }
         }
-    }
-});
+    })    
+}
 
-addBinding({
-    name: 'arrowDown',
-    events: {
-        'keydown': function(bindArg, event){
-            if(event.which == 40 || event.keyCode == 40){
-                bindArg.setVmValue(event);
-            }
-        }
-    }
-});
+bindKey('escape', 27);
+bindKey('space', 32);
+bindKey('arrowUp', 38);
+bindKey('arrowDown', 40);

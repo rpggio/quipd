@@ -1,4 +1,4 @@
 <template name="quip">
 	<input class="quip can-focus" 
-        {{b "value: text, focus: focused, attr: { tabindex: tabIndex }, arrowUp: prev, arrowDown: next" }} >
+        {{b "value: text, enter: enterKey, space: spaceKey, escape: escapeKey, focus: focused, attr: { readonly: readonly }, arrowUp: parent.focusPrev, arrowDown: parent.focusNext" }} >
 </template>

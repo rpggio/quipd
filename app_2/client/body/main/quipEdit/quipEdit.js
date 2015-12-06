@@ -1,6 +1,6 @@
 Template.quipEdit.viewmodel({
-    mixin: 'focusable'
-    , newText: ''
+    newText: ''
+    , focused: false
     , addQuip: function() {
         var quip = {
             text: this.newText()

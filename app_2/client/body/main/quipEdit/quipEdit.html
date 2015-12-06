@@ -1,6 +1,6 @@
 <template name="quipEdit">
-    <div>
+    <div class="">
         <input class="add-quip can-focus" 
-            {{b "value: newText, focus: focused, attr: { tabindex: tabIndex }, arrowUp: prev, arrowDown: next"}} >
+            {{b "value: newText, focus: focused, arrowUp: parent.focusPrev, arrowDown: parent.focusNext, enter: addQuip"}} >
     </div>
 </template>
