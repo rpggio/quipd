@@ -28,3 +28,4 @@ msavin:mongol
 mizzao:jquery-ui
 meteortypescript:compiler
 meteortypescript:typescript-libs
+iron:router

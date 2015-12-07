@@ -1,4 +1,4 @@
-/// <reference path="../../typings/app.ts" />
+/// <reference path="../typings/app.ts" />
 
 interface QuipData {
   _id?: string;
