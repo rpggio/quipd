@@ -13,6 +13,7 @@ var bindKey = function(name, keycode){
     })    
 }
 
+bindKey('backspace', 8);
 bindKey('escape', 27);
 bindKey('space', 32);
 bindKey('arrowUp', 38);

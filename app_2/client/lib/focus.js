@@ -1,13 +1,15 @@
 ViewModel.mixin({
     focus: {
-        onRendered: function() {
+
+        focusFirst: function() {
+            var tabbables = $(":tabbable").first().focus();
         }
 
-        , focusPrev: function(event) {
+        , focusPrev: function() {
             this.changeFocus(false);
         }
 
-        , focusNext: function(event) {
+        , focusNext: function() {
             this.changeFocus(true);
         }
 

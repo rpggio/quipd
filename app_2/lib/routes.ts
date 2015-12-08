@@ -4,10 +4,19 @@ Router.configure({
     layoutTemplate: 'App'
 });
 
-Router.route('/', {
-    template: 'quipStream'
-});
+Router.route('/'
+    , function() { 
+        if (!!Meteor.userId() || Meteor.loggingIn()) {
+            this.redirect('quips');
+        } else {
+            this.render('landing');
+        }
+    }
+);
 
-Router.route('/quip/:quipId', function() {
-    this.render('quipStream');
-});
+Router.route('quips'
+    , {
+        path: '/quips/:quipId?'
+        , template: 'quipStream'
+    }
+);

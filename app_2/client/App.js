@@ -1,8 +1,11 @@
 Template.app.viewmodel({
+    userQuipsReady: false
 
-    onCreated: function(template) {
+    , onCreated: function(template) {
         var self = this;
-        template.subscribe(Publication.UserQuips);
+        template.subscribe(Publication.UserQuips, function() {
+            self.userQuipsReady(true);
+        });
     }
 
 });

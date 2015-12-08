@@ -1,5 +1,6 @@
 <template name="quipStream">
-    <div class="twelve wide column">
+    <div class="twelve wide column"
+        {{b "escape: onEscape" }} >
         <h3>
             {{#with thisQuip}}
                 {{> quip }}
@@ -11,7 +12,7 @@
                 {{> quip}}
             {{/each}}
 
-            {{> quipEdit }}
+            {{> quipEdit ref='quipEditRef' }}
 
         </div>
     </div>

@@ -12,10 +12,13 @@ Template.quip.viewmodel({
         return !this.editMode();
     }
 
-    , enterKey: function() {
+    , enterKey: function(event) {
         var self = this;
 
+        event.preventDefault();
+
         if(!this.editMode()){
+            this.openTarget();
             return;
         }
 
@@ -52,6 +55,24 @@ Template.quip.viewmodel({
         if(this.editMode()){
             this.text.reset();
             this.editMode(false);
+        }
+    }
+
+    , onDblClick: function() {
+        this.openTarget();
+    }
+
+    , onBackspace: function() {
+        if(!this.editMode()){
+            this.openParent();
+        }
+    }
+
+    , openTarget: function() {
+        var id = this._id();
+        if(id){
+            Router.go('quips', {quipId: id});
+            this.parent().quipId(id);
         }
     }
 });
