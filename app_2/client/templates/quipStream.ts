@@ -23,6 +23,10 @@ Template['quipStream'].viewmodel(function(data) {
             return thisQuip && thisQuip.parentId;
         }
 
+        , parentQuip: function() {
+            return Quips.findOne(this.parentId());
+        }
+
         , thisQuip: function() {
             var quipId = this.quipId();
             return quipId && Quips.findOne(quipId);

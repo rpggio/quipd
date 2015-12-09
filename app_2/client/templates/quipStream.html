@@ -1,13 +1,20 @@
 <template name="quipStream">
-    <div class="twelve wide column"
+    <div class="quipStream twelve wide column"
         {{b "escape: onEscape" }} >
-        <h3>
-            {{#with thisQuip}}
-                {{> quip }}
-            {{/with}}
-        </h3>
 
-        <div class="quipLevelIn">
+        {{#with parentQuip}}
+            <div class="parent">
+                {{> quip }}
+            </div>
+        {{/with}}
+
+        {{#with thisQuip}}
+            <div class="subject">
+                {{> quip }}
+            </div>
+        {{/with}}
+
+        <div class="childQuips">
             {{#each childQuips}}
                 {{> quip}}
             {{/each}}
