@@ -1,6 +1,5 @@
 
 .quip, .add-quip {
-    padding: 12px;
     margin: 10px;
     width: 50%;
     min-width: 300px;
@@ -8,6 +7,27 @@
 
 .quip {
     border: 1px solid lightgray;
+    padding: 12px;
+}
+
+.quip .textContent {
+    font-size: 1.2em;
+    border: none;
+    width: 90%;
+    word-wrap: break-word;
+    overflow: hidden;
+    resize: none;
+    -ms-overflow-style: none;
+    height: auto;
+}
+
+.quip .textContent:focus {
+    outline-color: transparent;
+}
+
+.quip.focused {
+    border-width: 2px;
+    border-color: black;
 }
 
 .add-quip {
@@ -15,22 +35,26 @@
     border: 1px solid gray;
 }
 
-.can-focus:focus {
-    background-color: yellow;
-}
-
 .childQuips {
     margin-left: 40px;
 }
 
-.quipStream .parent {
+.quipStream .parent .quip .textContent {
     font-size: 1.2em;
     font-weight: bold;
 }
 
-.quipStream .subject {
-    font-size: 2em;
+.quipStream .subject .quip .textContent {
+    font-size: 1.8em;
+    line-height: 1.6em;
     font-weight: bold;
-    margin-left: 20px;
     text-decoration: underline;
+}
+
+.quip .moreEllipsis {
+    font-size: 2em;
+    line-height: 0.2em;
+    height: 0.6em;
+    margin-left: 7px;
+    color: lightgray;
 }

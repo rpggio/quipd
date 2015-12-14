@@ -1,4 +1,12 @@
 <template name="quip">
-	<input class="quip can-focus" 
-        {{b "value: text, enter: enterKey, space: spaceKey, escape: escapeKey, focus: focused, attr: { readonly: readonly }, arrowUp: parent.focusPrev, arrowDown: parent.focusNext, dblclick: onDblClick, backspace: onBackspace" }} >
+    <div class="quip"
+        {{b "tab: onTab, class: { focused: focused }"}}>
+    	<textarea
+            rows="1"
+            class="textContent"  
+            {{b "value: text, enter: enterKey, space: spaceKey, escape: escapeKey, focus: focused, attr: { readonly: readonly }, arrowUp: parent.focusPrev, arrowDown: parent.focusNext, click: onClick, dblclick: onDblClick" }} ></textarea>
+        <div 
+            class="moreEllipsis" 
+            {{b "if: firstChild"}} >...</div>
+    </div>
 </template>

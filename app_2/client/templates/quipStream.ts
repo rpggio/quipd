@@ -36,7 +36,7 @@ Template['quipStream'].viewmodel(function(data) {
             return Quips.find({ parentId: this.quipId() });
         }
 
-        , onEscape: function() {
+        , onShiftTab: function() {
             var parentId = this.parentId();
             if(this.quipId() != parentId){
                 Router.go('quips', { quipId: parentId });
