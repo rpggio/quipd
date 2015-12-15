@@ -1,46 +1,38 @@
-
-Template['quipStream'].viewmodel(function(data) {
+Template['quipStream'].viewmodel(function (data) {
     return {
-        mixin: 'focus'
-        , quipId: null
-
-        , onCreated: function() {
+        mixin: 'focus',
+        quipId: null,
+        onCreated: function () {
             this.quipId(Router.current().params.quipId);
-        }
-
-        , onRendered: function() {
+        },
+        onRendered: function () {
             this.quipEditRef.focused(true);
-        }
-
-        , autorun: function() {
+        },
+        autorun: function () {
             this.quipId.depend();
             this.quipEditRef.focused(true);
-        }
-        
-        , parentId: function() {
+        },
+        parentId: function () {
             var thisQuip = this.thisQuip();
             return thisQuip && thisQuip.parentId;
-        }
-
-        , parentQuip: function() {
+        },
+        parentQuip: function () {
             return Quips.findOne(this.parentId());
-        }
-
-        , thisQuip: function() {
+        },
+        thisQuip: function () {
             var quipId = this.quipId();
             return quipId && Quips.findOne(quipId);
-        } 
-
-        , childQuips: function() {
+        },
+        childQuips: function () {
             return Quips.find({ parentId: this.quipId() });
-        }
-
-        , onShiftTab: function() {
+        },
+        onShiftTab: function () {
             var parentId = this.parentId();
-            if(this.quipId() != parentId){
+            if (this.quipId() != parentId) {
                 Router.go('quips', { quipId: parentId });
                 this.quipId(parentId);
             }
         }
     };
 });
+//# sourceMappingURL=quipStream.js.map

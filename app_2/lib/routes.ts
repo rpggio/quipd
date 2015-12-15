@@ -1,4 +1,4 @@
-/// <reference path="../typings/app.ts" />
+/// <reference path="../typings/meteor/ironrouter.d.ts" />
 
 Router.configure({
     layoutTemplate: 'App'

@@ -1,3 +1,6 @@
+
+Server = {};
+
 Server.allow = {
   ownerId: {
     insert: function (userId, doc) {

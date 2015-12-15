@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "ES3",
+        "module": "commonjs",
+        "declaration": false,
+        "sourceMap": true,
+        "sourceRoot": "app_2"
+    },
+    "exclude": [
+        "app_2/.meteor",
+        "node_modules"
+    ]
+}

@@ -26,7 +26,7 @@ accounts-ui
 accounts-google
 msavin:mongol
 mizzao:jquery-ui
-meteortypescript:compiler
 meteortypescript:typescript-libs
 iron:router
 copleykj:jquery-autosize
+dataflows:typescript-utils

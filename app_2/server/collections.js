@@ -1,3 +1,6 @@
+
+
+
 Quips.allow(Server.allow.ownerId);
 
 Quips.before.insert(function(userId, doc){
