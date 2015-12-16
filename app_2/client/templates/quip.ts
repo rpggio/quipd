@@ -1,114 +1,150 @@
-var Quip = (function () {
-    function Quip() {
+
+class Quip 
+    implements IViewModel, Focusable, FocusStructure {
+
+    isFocused: ReactiveVar<boolean>;
+    editMode: ReactiveVar<boolean>;
+    _id: ReactiveVar<string>;
+    text: ReactiveVar<string>;
+
+    constructor(){
         this.isFocused = null;
         this.editMode = null;
         this._id = null;
         this.text = null;
     }
-    Quip.prototype.onCreated = function () {
-    };
-    Quip.prototype.onRendered = function () {
+
+    public onCreated() {
+    }
+
+    public onRendered() {
         this.textareaSetup();
-    };
-    Quip.prototype.getFirstFocusable = function () {
-        throw "not implemented";
-    };
-    Quip.prototype.getNextFocusable = function (current, direction) {
-        throw "not implemented";
-    };
-    Quip.prototype.textareaSetup = function () {
+    }
+
+    getFirstFocusable(): Focusable {
+          throw "not implemented"
+    }
+
+    getNextFocusable(current: Focusable, direction: Direction)
+        : Focusable {
+          throw "not implemented"
+    }
+
+    textareaSetup() {
         var thisTemplateSel = $(this.templateInstance.firstNode);
+
         // prevent carriage return within textarea bleh      
         thisTemplateSel.children('textarea.textContent')
-            .keydown(function (e) {
-            if (e.keyCode == 13 && !e.shiftKey) {
-                e.preventDefault();
-                return false;
-            }
-        });
-        var textarea = thisTemplateSel.children('textarea');
+            .keydown(function(e) {
+                if (e.keyCode == 13 && !e.shiftKey) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+        var textarea: any = thisTemplateSel.children('textarea');
         textarea.autosize();
-    };
-    Quip.prototype.autorun = function () {
+    }
+
+    autorun() {
         if (!this.isFocused()) {
             this.editMode(false);
         }
-    };
-    Quip.prototype.readonly = function () {
+    }
+
+    readonly() {
         return !this.editMode();
-    };
-    Quip.prototype.enterKey = function (event) {
+    }
+
+    enterKey(event) {
         var self = this;
+
         if (this.editMode()) {
             event.preventDefault();
             if (this.text()) {
                 var id = this._id();
                 if (id) {
-                    Quips.update(id, { $set: { text: this.text() } }, function (error, updates) {
-                        if (error) {
-                            console.error(error);
+                    Quips.update(
+                        id,
+                        { $set: { text: this.text() } },
+                        function(error, updates) {
+                            if (error) {
+                                console.error(error);
+                            } else {
+                                self.editMode(false);
+                            }
                         }
-                        else {
-                            self.editMode(false);
-                        }
-                    });
-                }
-                else {
+                    );
+                } else {
                     Quips.insert(this.data());
                 }
             }
             this.editMode(false);
             return false;
         }
-    };
-    Quip.prototype.onTab = function (event) {
+    }
+
+    onTab(event) {
         event.preventDefault();
         this.openTarget();
         return false;
-    };
-    Quip.prototype.spaceKey = function (event) {
+    }
+
+    spaceKey(event) {
         if (!this.editMode()) {
             this.editMode(true);
             event.preventDefault();
+
             // workaround for caret not showing at first
-            var textElement = $(this.templateInstance.firstNode)
+            var textElement = <HTMLInputElement>$(this.templateInstance.firstNode)
                 .children('.textContent')
                 .get(0);
-            Meteor.setTimeout(function () {
+                
+            Meteor.setTimeout(() => {
                 var value = textElement.value;
                 textElement.value = '';
                 textElement.value = value;
             }, 0);
         }
-    };
-    Quip.prototype.escapeKey = function (event) {
+    }
+
+    escapeKey(event) {
         if (this.editMode()) {
             // shift-tab not working
             this.text.reset();
             this.editMode(false);
             event.preventDefault();
         }
-    };
-    Quip.prototype.onClick = function (event) {
+    }
+
+    onClick(event) {
         this.isFocused(true);
         event.preventDefault();
-    };
-    Quip.prototype.onDblClick = function (event) {
+    }
+
+    onDblClick(event) {
         this.openTarget();
         event.preventDefault();
-    };
-    Quip.prototype.openTarget = function () {
+    }
+
+    openTarget() {
         var id = this._id();
         if (id) {
             Router.go('quips', { quipId: id });
-            var parent = this.parent();
+            var parent: any = this.parent();
             parent.quipId(id);
         }
-    };
-    Quip.prototype.firstChild = function () {
+    }
+
+    firstChild() {
         return Quips.findOne({ parentId: this._id() });
-    };
-    return Quip;
-})();
+    }
+    
+    parent: () => IViewModel;
+    children: () => IViewModel[];
+    templateInstance: Blaze.TemplateInstance;
+    data: () => any;
+}
+
+
 Template['quip'].viewmodel(new Quip());
-//# sourceMappingURL=quip.js.map

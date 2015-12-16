@@ -1,46 +1,49 @@
 
-Template['quipStream'].viewmodel(function(data) {
-    return {
-        mixin: 'focus'
-        , quipId: null
+class QuipStream extends FocusContainer {
 
-        , onCreated: function() {
-            this.quipId(Router.current().params.quipId);
-        }
+    mixin = 'focus';
+    quipId = null;
+    quipEditRef;
 
-        , onRendered: function() {
-            this.quipEditRef.focused(true);
-        }
+    onCreated(){
+        this.quipId(Router.current().params.quipId);
+    }
 
-        , autorun: function() {
-            this.quipId.depend();
-            this.quipEditRef.focused(true);
-        }
+    onRendered() {
+        this.quipEditRef.focused(true);
+    }
+
+    autorun() {
+        this.quipId.depend();
+        this.quipEditRef.focused(true);
+    }
         
-        , parentId: function() {
-            var thisQuip = this.thisQuip();
-            return thisQuip && thisQuip.parentId;
-        }
+    parentId() {
+        var thisQuip = this.thisQuip();
+        return thisQuip && thisQuip.parentId;
+    }
 
-        , parentQuip: function() {
-            return Quips.findOne(this.parentId());
-        }
+    parentQuip() {
+        return Quips.findOne(this.parentId());
+    }
 
-        , thisQuip: function() {
-            var quipId = this.quipId();
-            return quipId && Quips.findOne(quipId);
-        } 
+    thisQuip() : QuipData {
+        var quipId = this.quipId();
+        return quipId && Quips.findOne(quipId);
+    } 
 
-        , childQuips: function() {
-            return Quips.find({ parentId: this.quipId() });
-        }
+    childQuips() {
+        return Quips.find({ parentId: this.quipId() });
+    }
 
-        , onShiftTab: function() {
-            var parentId = this.parentId();
-            if(this.quipId() != parentId){
-                Router.go('quips', { quipId: parentId });
-                this.quipId(parentId);
-            }
+    onShiftTab() {
+        var parentId = this.parentId();
+        if (this.quipId() != parentId) {
+            Router.go('quips', { quipId: parentId });
+            this.quipId(parentId);
         }
-    };
-});
+    }
+
+}
+
+Template['quipStream'].viewmodel(new QuipStream());

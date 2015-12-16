@@ -12,7 +12,6 @@ var bindKey = function(name, keycode, options){
                 }
                 if(event.which == keycode || event.keyCode == keycode){
                     bindArg.setVmValue(event);
-                    console.log('returning false', event);
                     return false;
                 }
             }
