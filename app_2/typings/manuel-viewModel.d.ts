@@ -7,8 +7,9 @@ interface ViewModelStatic {
 }
 
 interface IViewModel {   
+    vmId: number;
     parent(): IViewModel;
-    children(): IViewModel[];
+    children(name?: string): IViewModel[];
     templateInstance: Blaze.TemplateInstance;
     data();
 }
