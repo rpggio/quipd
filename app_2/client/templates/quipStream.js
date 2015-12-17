@@ -12,13 +12,14 @@ var QuipStream = (function (_super) {
     }
     QuipStream.prototype.onCreated = function () {
         this.quipId(Router.current().params.quipId);
+        _super.prototype.init.call(this);
     };
     QuipStream.prototype.onRendered = function () {
-        this.quipEditRef.focused(true);
+        //this.quipEditRef.focused(true);
     };
     QuipStream.prototype.autorun = function () {
         this.quipId.depend();
-        this.quipEditRef.focused(true);
+        //this.quipEditRef.focused(true);
     };
     QuipStream.prototype.parentId = function () {
         var thisQuip = this.thisQuip();

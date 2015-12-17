@@ -1,22 +1,39 @@
 
-class QuipStream extends FocusContainer {
+class QuipStream {
 
     mixin = 'focus';
     quipId = null;
     quipEditRef;
+    children;
+    focusId: ReactiveVar<string>;
+
+    constructor() {
+        this.focusId = null;
+    }
 
     onCreated(){
         this.quipId(Router.current().params.quipId);
     }
 
     onRendered() {
-        this.quipEditRef.focused(true);
+        //this.quipEditRef.focused(true);
     }
 
-    autorun() {
-        this.quipId.depend();
-        this.quipEditRef.focused(true);
-    }
+    autorun = [
+        function(): void {
+            this.quipId.depend();
+            //this.quipEditRef.focused(true);
+        }
+        // ,
+        // function(): void {
+        //     this.children = this.children();
+        // },
+        // function(): void {
+        //     if(this.children){
+        //         this.children.depend();
+        //     }
+        // }
+    ]
         
     parentId() {
         var thisQuip = this.thisQuip();

@@ -11,10 +11,24 @@ var Quip = (function () {
         this.textareaSetup();
     };
     Quip.prototype.getFirstFocusable = function () {
-        throw "not implemented";
+        return this;
     };
     Quip.prototype.getNextFocusable = function (current, direction) {
-        throw "not implemented";
+        if (current == this) {
+            switch (direction) {
+                case Direction.Down:
+                    var quipChildren = this.children('quip');
+                    return quipChildren && quipChildren[0];
+                default: return null;
+            }
+        }
+        switch (direction) {
+            case Direction.Down:
+                return FocusNav.next(this, 'quip', current);
+            case Direction.Up:
+                return FocusNav.prev(this, 'quip', current);
+            default: return null;
+        }
     };
     Quip.prototype.textareaSetup = function () {
         var thisTemplateSel = $(this.templateInstance.firstNode);

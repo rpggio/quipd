@@ -1,5 +1,5 @@
 
-class Quip 
+class Quip
     implements IViewModel, Focusable, FocusStructure {
 
     isFocused: ReactiveVar<boolean>;
@@ -7,7 +7,7 @@ class Quip
     _id: ReactiveVar<string>;
     text: ReactiveVar<string>;
 
-    constructor(){
+    constructor() {
         this.isFocused = null;
         this.editMode = null;
         this._id = null;
@@ -22,12 +22,27 @@ class Quip
     }
 
     getFirstFocusable(): Focusable {
-          throw "not implemented"
+        return this;
     }
 
     getNextFocusable(current: Focusable, direction: Direction)
         : Focusable {
-          throw "not implemented"
+        if (current == this) {
+            switch (direction) {
+                case Direction.Down:
+                    var quipChildren = this.children('quip');
+                    return quipChildren && <Focusable>quipChildren[0];
+                default: return null;
+            }
+        }
+        
+        switch (direction) {
+            case Direction.Down:
+                return FocusNav.next(this, 'quip', current);
+            case Direction.Up:
+                return FocusNav.prev(this, 'quip', current);
+            default: return null;
+        }
     }
 
     textareaSetup() {
@@ -99,7 +114,7 @@ class Quip
             var textElement = <HTMLInputElement>$(this.templateInstance.firstNode)
                 .children('.textContent')
                 .get(0);
-                
+
             Meteor.setTimeout(() => {
                 var value = textElement.value;
                 textElement.value = '';
@@ -139,9 +154,10 @@ class Quip
     firstChild() {
         return Quips.findOne({ parentId: this._id() });
     }
-    
+
+    vmId: number;
     parent: () => IViewModel;
-    children: () => IViewModel[];
+    children: (string?) => IViewModel[];
     templateInstance: Blaze.TemplateInstance;
     data: () => any;
 }

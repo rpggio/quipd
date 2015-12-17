@@ -8,20 +8,20 @@ interface FocusStructure extends IViewModel {
     getNextFocusable(current: Focusable, direction: Direction): Focusable;
 }
 
-class FocusContainer {
+abstract class FocusContainer {
 
     static IsFocusStructure(obj: any): boolean {
         return obj.hasOwnProperty('getNextFocusable');
     }
 
-    currentFocus: any = null;
+    currentFocus: ReactiveVar<Focusable>;
 
-    private currentFocus_get(): Focusable {
-        return this.currentFocus();
+    constructor(){
+         this.currentFocus = null;
     }
 
-    private currentFocus_set(value: Focusable) {
-        this.currentFocus(value);
+    public onCreated() {
+        
     }
 
     public init() {
@@ -36,7 +36,7 @@ class FocusContainer {
                     var structure = <FocusStructure>vm;
                     var focusable = structure.getFirstFocusable();
                     if (focusable) {
-                        this.currentFocus_set(focusable);
+                        this.currentFocus(focusable);
                         return true;
                     }
                 }
@@ -60,7 +60,7 @@ class FocusContainer {
     }
 
     private changeFocus(direction: Direction) {
-        var current = this.currentFocus_get();
+        var current = this.currentFocus();
 
         if (!current) {
             return;
@@ -106,6 +106,60 @@ class ViewModelHelper {
     }
 }
 
+class FocusNav {
+
+    public static next(parent: IViewModel, name?: string, from?: IViewModel) 
+        : Focusable 
+    {
+        return FocusNav.step(parent, true, name, from);
+    }
+    
+    public static prev(parent: IViewModel, name?: string, from?: IViewModel) 
+        : Focusable 
+    {
+        return FocusNav.step(parent, false, name, from);
+    }
+    
+    private static step(parent: IViewModel, forward: boolean, 
+        name?: string, from?: IViewModel) 
+        : Focusable 
+    {
+        // todo: check that children really are focusable
+        var children = <Focusable[]>parent.children(name);
+        
+        if(!children.length){
+            return null;   
+        }
+        
+        if(from == null){
+            if(forward){
+                return children[0];
+            }
+            else {
+                return children[children.length - 1];
+            }
+        }
+
+        var previous: Focusable;
+        for(var i = 0, c = children.length; i < c; i++){
+            var child = children[i];
+            
+            if(forward && previous.vmId == from.vmId){
+                return child;
+            }
+            
+            if(!forward && child.vmId == from.vmId){
+                return previous
+            }
+            
+            previous = child; 
+        }
+        
+        return null;
+    }  
+}
+
 this.FocusContainer = FocusContainer;
+this.FocusNav = FocusNav;
 
 ViewModel.mixin({ FocusContainer: new FocusContainer() });
