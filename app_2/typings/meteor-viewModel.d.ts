@@ -67,6 +67,13 @@ interface ViewModelImpl {
     vmId: number;
     parent(): ViewModelImpl;
     children(): ViewModelImpl[];
+    children(name: string): ViewModelImpl[];
     templateInstance: Blaze.TemplateInstance;
     data(): any;
 }
+
+interface ViewModelStatic{
+    mixin(mapping: Object);
+}
+
+declare var ViewModel: ViewModelStatic;

@@ -15,8 +15,6 @@ class QuipStream extends ViewModelBase {
     // }
 
     onRendered(x) {
-        this.focusId("aaa");
-        console.log(this, x);
         //this.quipEditRef.focused(true);
     }
     

@@ -24,8 +24,6 @@ var QuipStream = (function (_super) {
     //     //this.quipId(Router.current().params.quipId);
     // }
     QuipStream.prototype.onRendered = function (x) {
-        this.focusId("aaa");
-        console.log(this, x);
         //this.quipEditRef.focused(true);
     };
     // autorun = [

@@ -17,8 +17,9 @@ class QuipView extends ViewModelBase {
     constructor(context) {
         super();
         
-        this['_id'] = context._id;
-        this['parentId'] = context.parentId;
+        var self = <any>this;
+        self._id = context._id;
+        self.parentId = context.parentId;
         
         //this.context = context;
         
@@ -47,7 +48,7 @@ class QuipView extends ViewModelBase {
     }
     
     public onRendered() {
-        console.log('rendered', this);
+        //console.log('rendered', this);
         //this.textareaSetup();
     }
 
