@@ -17,7 +17,6 @@ es5-shim                # ECMAScript 5 compatibility for older browsers.
 ecmascript              # Enable ECMAScript2015+ syntax in app code
 
 insecure                # Allow all DB writes from clients (for prototyping)
-manuel:viewmodel
 semantic:ui
 flemay:less-autoprefixer
 matb33:collection-hooks
@@ -30,3 +29,5 @@ meteortypescript:typescript-libs
 iron:router
 copleykj:jquery-autosize
 dataflows:typescript-utils
+reactive-var
+manuel:viewmodel

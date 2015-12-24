@@ -4,3 +4,9 @@ Meteor.publish(Publication.UserQuips, function(){
     Quips.find({ ownerId: this.userId })
   ];
 });
+
+// Meteor.publish(Publication.UserQuips, function(){
+//   return [
+//     Quips.find()
+//   ];
+// });

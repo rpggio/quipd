@@ -1,66 +1,87 @@
+class QuipStream extends ViewModelBase {
 
-class QuipStream {
+    focusId: Reactive<string> = null; 
+    quipId: Reactive<string> = null;
+    
+    //focus = FocusController.instance; 
 
-    mixin = 'focus';
-    quipId = null;
-    quipEditRef;
-    children;
-    focusId: ReactiveVar<string>;
-
-    constructor() {
-        this.focusId = null;
+    constructor(context: any){
+        super();
+        console.log('QuipStream.ctor', context);
     }
 
-    onCreated(){
-        this.quipId(Router.current().params.quipId);
-    }
+    // onCreated(){
+    //     //this.quipId(Router.current().params.quipId);
+    // }
 
-    onRendered() {
+    onRendered(x) {
+        this.focusId("aaa");
+        console.log(this, x);
         //this.quipEditRef.focused(true);
     }
-
+    
     autorun = [
-        function(): void {
-            this.quipId.depend();
-            //this.quipEditRef.focused(true);
+        function() {
+            console.log(this.focusId());
         }
-        // ,
-        // function(): void {
-        //     this.children = this.children();
-        // },
-        // function(): void {
-        //     if(this.children){
-        //         this.children.depend();
-        //     }
-        // }
-    ]
-        
-    parentId() {
-        var thisQuip = this.thisQuip();
-        return thisQuip && thisQuip.parentId;
-    }
-
-    parentQuip() {
-        return Quips.findOne(this.parentId());
-    }
-
-    thisQuip() : QuipData {
-        var quipId = this.quipId();
-        return quipId && Quips.findOne(quipId);
-    } 
-
-    childQuips() {
-        return Quips.find({ parentId: this.quipId() });
-    }
-
-    onShiftTab() {
-        var parentId = this.parentId();
-        if (this.quipId() != parentId) {
-            Router.go('quips', { quipId: parentId });
-            this.quipId(parentId);
+        , function() {
+            console.log(this.children());
         }
+    ];
+
+    // autorun = [
+    //     function(): void {
+    //         this.quipId.depend();
+    //         //this.quipEditRef.focused(true);
+    //     }
+    // ];
+    
+    // focusDown(){
+    //     console.log('focusDown', this);
+    //     //var focusId = this.focus.focusId();
+    //     var focusId = this.focusId.get();
+    //     if(!focusId){
+    //         return;
+    //     }
+    //     var focused = Quips.findOne(focusId);
+    //     if(focused){
+    //         console.log('focused', focused);
+    //     }
+    // }
+    
+    // parentId() {
+    //     var thisQuip = this.thisQuip();
+    //     return thisQuip && thisQuip.parentId;
+    // }
+
+    // parentQuip() {
+    //     return Quips.findOne(this.parentId());
+    // }
+
+    // thisQuip() : QuipData {
+    //     var quipId = this.quipId.get();
+    //     return quipId && Quips.findOne(quipId);
+    // } 
+
+    quips() {
+        return Quips.find({parentId: null});
     }
+
+    // onShiftTab() {
+    //     var parentId = this.parentId();
+    //     if (this.quipId.get() != parentId) {
+    //         Router.go('quips', { quipId: parentId });
+    //         this.quipId.set(parentId);
+    //     }
+    // }
 
 }
 
-Template['quipStream'].viewmodel(new QuipStream());
+// Template['quipStream'].onRendered(function (x) {
+//   console.log(this, x); 
+// });
+
+Template['quipStream'].viewmodel(
+    function(context) { return new QuipStream(context); }
+);
+

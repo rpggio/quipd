@@ -5,44 +5,65 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var QuipStream = (function (_super) {
     __extends(QuipStream, _super);
-    function QuipStream() {
-        _super.apply(this, arguments);
-        this.mixin = 'focus';
+    //focus = FocusController.instance; 
+    function QuipStream(context) {
+        _super.call(this);
+        this.focusId = null;
         this.quipId = null;
+        this.autorun = [
+            function () {
+                console.log(this.focusId());
+            },
+            function () {
+                console.log(this.children());
+            }
+        ];
+        console.log('QuipStream.ctor', context);
     }
-    QuipStream.prototype.onCreated = function () {
-        this.quipId(Router.current().params.quipId);
-        _super.prototype.init.call(this);
-    };
-    QuipStream.prototype.onRendered = function () {
+    // onCreated(){
+    //     //this.quipId(Router.current().params.quipId);
+    // }
+    QuipStream.prototype.onRendered = function (x) {
+        this.focusId("aaa");
+        console.log(this, x);
         //this.quipEditRef.focused(true);
     };
-    QuipStream.prototype.autorun = function () {
-        this.quipId.depend();
-        //this.quipEditRef.focused(true);
-    };
-    QuipStream.prototype.parentId = function () {
-        var thisQuip = this.thisQuip();
-        return thisQuip && thisQuip.parentId;
-    };
-    QuipStream.prototype.parentQuip = function () {
-        return Quips.findOne(this.parentId());
-    };
-    QuipStream.prototype.thisQuip = function () {
-        var quipId = this.quipId();
-        return quipId && Quips.findOne(quipId);
-    };
-    QuipStream.prototype.childQuips = function () {
-        return Quips.find({ parentId: this.quipId() });
-    };
-    QuipStream.prototype.onShiftTab = function () {
-        var parentId = this.parentId();
-        if (this.quipId() != parentId) {
-            Router.go('quips', { quipId: parentId });
-            this.quipId(parentId);
-        }
+    // autorun = [
+    //     function(): void {
+    //         this.quipId.depend();
+    //         //this.quipEditRef.focused(true);
+    //     }
+    // ];
+    // focusDown(){
+    //     console.log('focusDown', this);
+    //     //var focusId = this.focus.focusId();
+    //     var focusId = this.focusId.get();
+    //     if(!focusId){
+    //         return;
+    //     }
+    //     var focused = Quips.findOne(focusId);
+    //     if(focused){
+    //         console.log('focused', focused);
+    //     }
+    // }
+    // parentId() {
+    //     var thisQuip = this.thisQuip();
+    //     return thisQuip && thisQuip.parentId;
+    // }
+    // parentQuip() {
+    //     return Quips.findOne(this.parentId());
+    // }
+    // thisQuip() : QuipData {
+    //     var quipId = this.quipId.get();
+    //     return quipId && Quips.findOne(quipId);
+    // } 
+    QuipStream.prototype.quips = function () {
+        return Quips.find({ parentId: null });
     };
     return QuipStream;
-})(FocusContainer);
-Template['quipStream'].viewmodel(new QuipStream());
+})(ViewModelBase);
+// Template['quipStream'].onRendered(function (x) {
+//   console.log(this, x); 
+// });
+Template['quipStream'].viewmodel(function (context) { return new QuipStream(context); });
 //# sourceMappingURL=quipStream.js.map

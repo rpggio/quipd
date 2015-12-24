@@ -58,9 +58,10 @@ less@2.5.1
 livedata@1.0.15
 localstorage@1.0.5
 logging@1.0.8
+manuel:isdev@1.0.0
 manuel:reactivearray@1.0.5
-manuel:viewmodel@2.3.0
-manuel:viewmodel-debug@2.2.1
+manuel:viewmodel@2.5.3
+manuel:viewmodel-debug@2.4.0
 matb33:collection-hooks@0.8.1
 meteor@1.1.10
 meteor-base@1.0.1

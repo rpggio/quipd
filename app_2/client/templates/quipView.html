@@ -1,0 +1,15 @@
+<template name="quipView">
+    <div class="quip"
+    >
+    	<textarea
+            rows="1"
+            class="textContent"  
+            {{b 'value: text'}} ></textarea>
+        
+        <div class="childQuips">
+        {{#each childQuips}}
+                {{> quipView }}
+        {{/each}}
+        </div>
+    </div>
+</template>

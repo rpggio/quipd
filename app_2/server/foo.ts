@@ -11,4 +11,16 @@ function greeter(numbers: number[]) {
 
 greeter([2, 4]);
 
+function logg(a, b): any{
+        console.log('logg', a, b);
+}
 
+class NutBurger {
+    @logg
+    eat(){
+        console.log('eat');        
+    }
+}
+
+var b = new NutBurger();
+b.eat();

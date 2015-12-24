@@ -1,25 +1,12 @@
 <template name="quipStream">
     <div class="quipStream twelve wide column"
-        {{b "tab: onTab, shift-tab: onShiftTab, arrowUp: focusUp, arrowDown: focusDown" }} >
-
-        {{#with parentQuip}}
-            <div class="parent">
-                {{> quip }}
-            </div>
-        {{/with}}
-
-        {{#with thisQuip}}
-            <div class="subject">
-                {{> quip }}
-            </div>
-        {{/with}}
-
-        <div class="childQuips">
-            {{#each childQuips}}
-                {{> quip}}
+         >
+        <div class="streamQuips">
+            {{#each quips}}
+                {{> quipView}}
             {{/each}}
 
-            {{> quipEdit ref='quipEditRef' }}
+            {{> quipEdit }}
 
         </div>
     </div>
