@@ -77,6 +77,7 @@ interface ViewModelImpl {
 
 interface ViewModelStatic{
     mixin(mapping: Object);
+    persist: boolean;
 }
 
 declare var ViewModel: ViewModelStatic;

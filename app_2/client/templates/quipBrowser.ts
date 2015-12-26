@@ -1,7 +1,6 @@
 class QuipBrowser extends FocusContainer {
 
-    focusId: Reactive<string> = null; 
-    quipId: Reactive<string> = null;
+    pageQuipId: Reactive<string> = null;
     
     constructor(context: any){
         super();
@@ -9,7 +8,7 @@ class QuipBrowser extends FocusContainer {
     }
 
     onCreated(){
-        this.quipId(Router.current().params.quipId);
+        this.pageQuipId(Router.current().params.quipId);
     }
 
     onRendered() {
@@ -17,6 +16,7 @@ class QuipBrowser extends FocusContainer {
         // initialize focus navigation
         this.init();
         
+        // catch navigation events at document level
         $(document).keydown(e => {
             switch(e.which){
                 case KeyCodes.ArrowDown:
@@ -29,15 +29,18 @@ class QuipBrowser extends FocusContainer {
             return true;
         });
     }
-    
+      
     // thisQuip() : QuipData {
     //     var quipId = this.quipId.get();
     //     return quipId && Quips.findOne(quipId);
     // } 
 
     quip() {
-        console.log('browser.quipId', this.quipId());
-        return Quips.findOne(this.quipId());
+        return Quips.findOne(this.pageQuipId());
+    }
+    
+    quips(){
+        return Quips.find({parentId: null});
     }
 
     // onShiftTab() {

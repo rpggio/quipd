@@ -8,4 +8,4 @@ var KeyCodes;
     KeyCodes[KeyCodes["ArrowDown"] = 40] = "ArrowDown";
 })(KeyCodes || (KeyCodes = {}));
 this.KeyCodes = KeyCodes;
-//# sourceMappingURL=keys.js.map
+//# sourceMappingURL=keyCodes.js.map
