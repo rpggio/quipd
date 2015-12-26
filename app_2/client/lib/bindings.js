@@ -5,6 +5,7 @@ var bindKey = function(name, keycode, options){
         name: name,
         events: {
             'keydown': function(bindArg, event, options){
+                console.log('keydown', event.which);
                 if(options && options.shiftKey){
                     if(!event.shiftKey) {
                         return;

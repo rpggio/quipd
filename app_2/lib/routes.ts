@@ -7,16 +7,23 @@ Router.configure({
 Router.route('/'
     , function() { 
         if (!!Meteor.userId() || Meteor.loggingIn()) {
-            this.redirect('quips');
+            this.redirect('quipStream');
         } else {
             this.render('landing');
         }
     }
 );
 
-Router.route('quips'
+Router.route('/quips/:quipId'
     , {
-        path: '/quips/:quipId?'
+        name: 'quipBrowser'
+        , template: 'quipBrowser'
+    }
+);
+
+Router.route('/quips'
+    , {
+        name: 'quipStream'
         , template: 'quipStream'
     }
 );

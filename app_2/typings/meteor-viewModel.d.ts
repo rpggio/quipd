@@ -63,11 +63,14 @@ interface Reactive<T>{
     (T);
 }
 
+declare type ViewModelPredicate = (childVm: ViewModelImpl) => boolean;
+
 interface ViewModelImpl {
     vmId: number;
     parent(): ViewModelImpl;
     children(): ViewModelImpl[];
     children(name: string): ViewModelImpl[];
+    children(predicate: ViewModelPredicate): ViewModelImpl[];
     templateInstance: Blaze.TemplateInstance;
     data(): any;
 }

@@ -1,0 +1,13 @@
+<template name="quipBrowser">
+    <div class="quipStream twelve wide column"
+        {{b '' }} >
+        <div class="streamQuips">
+            {{#with quip}}
+                {{> quipView}}
+            {{/with}}
+
+            {{> quipEdit }}
+
+        </div>
+    </div>
+</template>

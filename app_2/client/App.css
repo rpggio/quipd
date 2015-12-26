@@ -25,11 +25,6 @@
     outline-color: transparent;
 }
 
-.quip.focused {
-    border-width: 2px;
-    border-color: black;
-}
-
 .add-quip {
     height: 60px;
     border: 1px solid gray;
@@ -58,4 +53,8 @@
 .childQuips {
     border-left: 1px solid gray;
     padding-left: 4px;
+}
+
+.quip.focused > .thisContent {
+    border: 2px solid black;
 }

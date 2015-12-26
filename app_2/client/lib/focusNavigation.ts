@@ -1,46 +1,71 @@
 
+
 interface Focusable extends ViewModelImpl {
     isFocused : Reactive<boolean>;
 }
 
 interface FocusStructure extends ViewModelImpl {
     getFirstFocusable(): Focusable;
-    getNextFocusable(current: Focusable, direction: Direction): Focusable;
+    getNextFocusable(source: Focusable|any, direction: Direction): Focusable;
 }
 
-abstract class FocusContainer {
+/**
+ * Implements focus navigation operations for use with contained elements.
+ * Contained elements should implement Focusable and/or FocusStructure
+ * to utilize navigation.
+ */
+abstract class FocusContainer extends ViewModelBase {
 
-    static IsFocusStructure(obj: any): boolean {
-        return obj.hasOwnProperty('getNextFocusable');
+    static asFocusable(element: ViewModelImpl): Focusable {
+        return element.hasOwnProperty('isFocused')
+            ? <Focusable>element
+            : null;
+        ;
     }
 
-    currentFocus: Reactive<Focusable>;
+    static asFocusStructure(element: ViewModelImpl): FocusStructure {
+        return element.hasOwnProperty('getNextFocusable')
+            ? <FocusStructure>element
+            : null;
+        ;
+    }
+
+    currentFocus: Reactive<Focusable> = null;
 
     constructor(){
-         this.currentFocus = null;
-    }
-
-    public onCreated() {
-        
+        super();
     }
 
     public init() {
-        this.focusTop();
+        this.templateInstance.autorun(() => {
+           if(this.children) {
+                this.children().depend();
+                if(!this.currentFocus()) {
+                    this.focusInitial(); 
+                }
+           }
+        });
     }
 
-    public focusTop() {
-        var self: any = this;
-        ViewModelHelper.find(self,
+    public focusInitial(direction = Direction.Down) {
+        console.log('focusInitial', direction);
+
+        let initial = <Focusable>ViewModelHelper.findDownward(this,
             vm => {
-                if (FocusContainer.IsFocusStructure(vm)) {
-                    var structure = <FocusStructure>vm;
-                    var focusable = structure.getFirstFocusable();
-                    if (focusable) {
-                        this.currentFocus(focusable);
-                        return true;
-                    }
+                let focusable = FocusContainer.asFocusable(vm);
+                if(focusable) {
+                    return true;
                 }
+                let structure = FocusContainer.asFocusStructure(vm);
+                if(structure){
+                    return !!structure.getNextFocusable(null, direction);
+                }
+                return false;
             });
+        if(initial){
+            this.setFocus(initial);
+        }
+        return;
     }
 
     public focusUp() {
@@ -59,37 +84,72 @@ abstract class FocusContainer {
         this.changeFocus(Direction.Right);
     }
 
+    /**
+     * Walk up tree to find a structure node that knows what 
+     * the next focusable should be. Once a focusable is found,
+     * set focus to that element.  
+     */
     private changeFocus(direction: Direction) {
-        var current = this.currentFocus();
-
-        if (!current) {
-            return;
+        //console.log('changeFocus', Direction[direction]);
+        
+        let current = this.currentFocus();
+        
+        if(!current){
+            this.focusInitial(direction);
         }
 
-        var structure: FocusStructure = this.findFocusStructure(current);
-        if (structure) {
-            var focusTo: Focusable = structure.getNextFocusable(current, direction);
-            if (focusTo) {
-                current.isFocused(false);
-                focusTo.isFocused(true);
-                this.currentFocus(focusTo);
+        // Start with current as both sourceNode and decisionNode
+        let sourceNode: ViewModelImpl = current;
+        let decisionNode: ViewModelImpl = current;
+        
+        do {
+            // Evaluate decision node
+            let structure: FocusStructure = FocusContainer.asFocusStructure(decisionNode);
+            if(structure){
+                let next = structure.getNextFocusable(sourceNode, direction);
+                if(next){
+                    
+                    // Navigate downwards here to find lowest-level match?
+                    // This can mean jumping from high-level node 
+                    // directly to a deep node..  
+                    
+                    // Set focus to the final
+                    this.setFocus(next);
+                    return;
+                }
+            }
+            
+            // If first cycle
+            if(sourceNode == decisionNode){
+                // walk the decision node upwards
+                decisionNode = sourceNode.parent();
+            } else {
+                // walk both decision and source nodes upwards
+                sourceNode = decisionNode; 
+                decisionNode = decisionNode.parent();
             }
         }
+        while(decisionNode && sourceNode);
     }
 
-    private findFocusStructure(start: Focusable): FocusStructure {
-        var current: ViewModelImpl = start;
-        while (current && !FocusContainer.IsFocusStructure(current)) {
-            current = current.parent();
+    private setFocus(to: Focusable){
+        //console.log('setting focus', to);
+        
+        var current = this.currentFocus();
+        if(current){
+            current.isFocused(false);
         }
-        return <FocusStructure>current;
+        if(to) {
+            to.isFocused(true);
+            this.currentFocus(to);
+        }
     }
 }
 
 enum Direction { Up, Right, Down, Left };
 
 class ViewModelHelper {
-    static find(viewModel: ViewModelImpl,
+    static findDownward(viewModel: ViewModelImpl,
         criteria: (element: ViewModelImpl) => boolean): ViewModelImpl {
         var current: ViewModelImpl = viewModel;
         if (criteria(current)) {
@@ -98,7 +158,7 @@ class ViewModelHelper {
         var children = current.children();
         for (var i = 0, len = children.length; i < len; i++) {
             var child = children[i];
-            var found = ViewModelHelper.find(child, criteria);
+            var found = ViewModelHelper.findDownward(child, criteria);
             if (found) {
                 return found;
             }
@@ -106,60 +166,5 @@ class ViewModelHelper {
     }
 }
 
-class FocusNav {
-
-    public static next(parent: ViewModelImpl, name?: string, from?: ViewModelImpl) 
-        : Focusable 
-    {
-        return FocusNav.step(parent, true, name, from);
-    }
-    
-    public static prev(parent: ViewModelImpl, name?: string, from?: ViewModelImpl) 
-        : Focusable 
-    {
-        return FocusNav.step(parent, false, name, from);
-    }
-    
-    private static step(parent: ViewModelImpl, forward: boolean, 
-        name?: string, from?: ViewModelImpl) 
-        : Focusable 
-    {
-        // todo: check that children really are focusable
-        var children = <Focusable[]>parent.children(name);
-        
-        if(!children.length){
-            return null;   
-        }
-        
-        if(from == null){
-            if(forward){
-                return children[0];
-            }
-            else {
-                return children[children.length - 1];
-            }
-        }
-
-        var previous: Focusable;
-        for(var i = 0, c = children.length; i < c; i++){
-            var child = children[i];
-            
-            if(forward && previous.vmId == from.vmId){
-                return child;
-            }
-            
-            if(!forward && child.vmId == from.vmId){
-                return previous
-            }
-            
-            previous = child; 
-        }
-        
-        return null;
-    }  
-}
-
 this.FocusContainer = FocusContainer;
-this.FocusNav = FocusNav;
-
-//ViewModel.mixin({ FocusContainer: new FocusContainer() });
+this.Direction = Direction;

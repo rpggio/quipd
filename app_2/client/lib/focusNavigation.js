@@ -1,28 +1,60 @@
-var FocusContainer = (function () {
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Implements focus navigation operations for use with contained elements.
+ * Contained elements should implement Focusable and/or FocusStructure
+ * to utilize navigation.
+ */
+var FocusContainer = (function (_super) {
+    __extends(FocusContainer, _super);
     function FocusContainer() {
+        _super.call(this);
         this.currentFocus = null;
     }
-    FocusContainer.IsFocusStructure = function (obj) {
-        return obj.hasOwnProperty('getNextFocusable');
+    FocusContainer.asFocusable = function (element) {
+        return element.hasOwnProperty('isFocused')
+            ? element
+            : null;
+        ;
     };
-    FocusContainer.prototype.onCreated = function () {
+    FocusContainer.asFocusStructure = function (element) {
+        return element.hasOwnProperty('getNextFocusable')
+            ? element
+            : null;
+        ;
     };
     FocusContainer.prototype.init = function () {
-        this.focusTop();
-    };
-    FocusContainer.prototype.focusTop = function () {
         var _this = this;
-        var self = this;
-        ViewModelHelper.find(self, function (vm) {
-            if (FocusContainer.IsFocusStructure(vm)) {
-                var structure = vm;
-                var focusable = structure.getFirstFocusable();
-                if (focusable) {
-                    _this.currentFocus(focusable);
-                    return true;
+        this.templateInstance.autorun(function () {
+            if (_this.children) {
+                _this.children().depend();
+                if (!_this.currentFocus()) {
+                    _this.focusInitial();
                 }
             }
         });
+    };
+    FocusContainer.prototype.focusInitial = function (direction) {
+        if (direction === void 0) { direction = Direction.Down; }
+        console.log('focusInitial', direction);
+        var initial = ViewModelHelper.findDownward(this, function (vm) {
+            var focusable = FocusContainer.asFocusable(vm);
+            if (focusable) {
+                return true;
+            }
+            var structure = FocusContainer.asFocusStructure(vm);
+            if (structure) {
+                return !!structure.getNextFocusable(null, direction);
+            }
+            return false;
+        });
+        if (initial) {
+            this.setFocus(initial);
+        }
+        return;
     };
     FocusContainer.prototype.focusUp = function () {
         this.changeFocus(Direction.Up);
@@ -36,30 +68,59 @@ var FocusContainer = (function () {
     FocusContainer.prototype.focusRight = function () {
         this.changeFocus(Direction.Right);
     };
+    /**
+     * Walk up tree to find a structure node that knows what
+     * the next focusable should be. Once a focusable is found,
+     * set focus to that element.
+     */
     FocusContainer.prototype.changeFocus = function (direction) {
+        //console.log('changeFocus', Direction[direction]);
         var current = this.currentFocus();
         if (!current) {
-            return;
+            this.focusInitial(direction);
         }
-        var structure = this.findFocusStructure(current);
-        if (structure) {
-            var focusTo = structure.getNextFocusable(current, direction);
-            if (focusTo) {
-                current.isFocused(false);
-                focusTo.isFocused(true);
-                this.currentFocus(focusTo);
+        // Start with current as both sourceNode and decisionNode
+        var sourceNode = current;
+        var decisionNode = current;
+        do {
+            // Evaluate decision node
+            var structure = FocusContainer.asFocusStructure(decisionNode);
+            if (structure) {
+                var next = structure.getNextFocusable(sourceNode, direction);
+                if (next) {
+                    // Navigate downwards here to find lowest-level match?
+                    // This can mean jumping from high-level node 
+                    // directly to a deep node..  
+                    // Set focus to the final
+                    this.setFocus(next);
+                    return;
+                }
             }
-        }
+            // If first cycle
+            if (sourceNode == decisionNode) {
+                // walk the decision node upwards
+                decisionNode = sourceNode.parent();
+            }
+            else {
+                // walk both decision and source nodes upwards
+                sourceNode = decisionNode;
+                decisionNode = decisionNode.parent();
+            }
+        } while (decisionNode && sourceNode);
     };
-    FocusContainer.prototype.findFocusStructure = function (start) {
-        var current = start;
-        while (current && !FocusContainer.IsFocusStructure(current)) {
-            current = current.parent();
+    FocusContainer.prototype.setFocus = function (to) {
+        //console.log('setting focus', to);
+        var current = this.currentFocus();
+        if (current) {
+            current.isFocused(false);
         }
-        return current;
+        if (to) {
+            to.isFocused(true);
+            this.currentFocus(to);
+        }
     };
     return FocusContainer;
-})();
+})(ViewModelBase);
 var Direction;
 (function (Direction) {
     Direction[Direction["Up"] = 0] = "Up";
@@ -71,7 +132,7 @@ var Direction;
 var ViewModelHelper = (function () {
     function ViewModelHelper() {
     }
-    ViewModelHelper.find = function (viewModel, criteria) {
+    ViewModelHelper.findDownward = function (viewModel, criteria) {
         var current = viewModel;
         if (criteria(current)) {
             return current;
@@ -79,7 +140,7 @@ var ViewModelHelper = (function () {
         var children = current.children();
         for (var i = 0, len = children.length; i < len; i++) {
             var child = children[i];
-            var found = ViewModelHelper.find(child, criteria);
+            var found = ViewModelHelper.findDownward(child, criteria);
             if (found) {
                 return found;
             }
@@ -87,45 +148,6 @@ var ViewModelHelper = (function () {
     };
     return ViewModelHelper;
 })();
-var FocusNav = (function () {
-    function FocusNav() {
-    }
-    FocusNav.next = function (parent, name, from) {
-        return FocusNav.step(parent, true, name, from);
-    };
-    FocusNav.prev = function (parent, name, from) {
-        return FocusNav.step(parent, false, name, from);
-    };
-    FocusNav.step = function (parent, forward, name, from) {
-        // todo: check that children really are focusable
-        var children = parent.children(name);
-        if (!children.length) {
-            return null;
-        }
-        if (from == null) {
-            if (forward) {
-                return children[0];
-            }
-            else {
-                return children[children.length - 1];
-            }
-        }
-        var previous;
-        for (var i = 0, c = children.length; i < c; i++) {
-            var child = children[i];
-            if (forward && previous.vmId == from.vmId) {
-                return child;
-            }
-            if (!forward && child.vmId == from.vmId) {
-                return previous;
-            }
-            previous = child;
-        }
-        return null;
-    };
-    return FocusNav;
-})();
 this.FocusContainer = FocusContainer;
-this.FocusNav = FocusNav;
-//ViewModel.mixin({ FocusContainer: new FocusContainer() });
+this.Direction = Direction;
 //# sourceMappingURL=focusNavigation.js.map

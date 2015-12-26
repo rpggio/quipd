@@ -1,4 +1,6 @@
-class QuipView extends ViewModelBase {
+class QuipView
+    extends ViewModelBase 
+    implements Focusable, FocusStructure {
 
     editMode:Reactive<boolean> = null;
     _id:Reactive<string> = null;
@@ -6,6 +8,8 @@ class QuipView extends ViewModelBase {
     grandParentId:Reactive<string> = null;
     text:Reactive<string> = null;
     level:Reactive<number> = null;
+    isFocused : Reactive<boolean> = null;
+    focusIndex: Reactive<number> = null;
     
     //context:any;
     
@@ -17,9 +21,10 @@ class QuipView extends ViewModelBase {
     constructor(context) {
         super();
         
-        var self = <any>this;
-        self._id = context._id;
-        self.parentId = context.parentId;
+        //var self = <any>this;
+        //self._id = context._id;
+        //self.parentId = context.parentId;
+        
         
         //this.context = context;
         
@@ -43,13 +48,62 @@ class QuipView extends ViewModelBase {
     childQuips() {
         var id = this._id();
         if(id && this.level() < 10){
-            return Quips.find({parentId: id});
+            var quips = Quips.find({parentId: id}).fetch();
+            let focusIndex = 0;
+            quips.forEach(q => (<any>q).focusIndex = focusIndex++);
+            return quips;
         }
     }
     
     public onRendered() {
-        //console.log('rendered', this);
+        
+        // console.log('rendered [', this.text(), 
+        //     '] child of [', 
+        //     this.parent() 
+        //     && (<any>this.parent()).text 
+        //     && (<any>this.parent()).text());
+            
+        var view = <any>this.templateInstance.view;
         //this.textareaSetup();
+    }
+
+    getFirstFocusable(): Focusable {
+        return this.getQuipAtFocusIndex(0);
+    };
+    
+    getNextFocusable(current: QuipView, direction: Direction): Focusable {
+        if(current == this){
+            switch(direction){
+                case Direction.Down:
+                    return this.getQuipAtFocusIndex(0);
+                default: return null;
+            }
+        }
+        
+        if(current.parentId() != this._id()){
+            // not under this quip
+            return null;
+        }
+        
+        let focusIndex = current.focusIndex();
+        
+        let increment: number;
+        switch(direction){
+            case Direction.Up:
+                return focusIndex == 0
+                    ? this
+                    : this.getQuipAtFocusIndex(current.focusIndex() - 1);
+            case Direction.Down:
+                return this.getQuipAtFocusIndex(current.focusIndex() + 1);
+            default: return null;
+        }
+    }
+
+    getQuipAtFocusIndex(focusIndex: number): Focusable{
+        return <Focusable>_.first(
+            this.children(c => {
+                return (<any>c).focusIndex() == focusIndex;
+            }));
     }
 
     // textareaSetup() {

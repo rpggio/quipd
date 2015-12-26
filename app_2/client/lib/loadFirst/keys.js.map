@@ -1,0 +1,1 @@
+{"version":3,"file":"keys.js","sourceRoot":"app_2/","sources":["client/lib/loadFirst/keys.ts"],"names":["KeyCodes"],"mappings":"AACA,IAAK,QAOJ;AAPD,WAAK,QAAQ;IACTA,iDAAaA,CAAAA;IACbA,qCAAOA,CAAAA;IACPA,4CAAWA,CAAAA;IACXA,0CAAUA,CAAAA;IACVA,8CAAYA,CAAAA;IACZA,kDAAcA,CAAAA;AAClBA,CAACA,EAPI,QAAQ,KAAR,QAAQ,QAOZ;AAED,IAAI,CAAC,QAAQ,GAAG,QAAQ,CAAC"}
