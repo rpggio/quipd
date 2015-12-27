@@ -9,11 +9,12 @@
                 {{b 'value: text'}} ></textarea>
         </div>
         
-        <div class="childQuips">
-        {{#each childQuips}}
-                {{> quipView }}
-        {{/each}}
-        </div>
-        
+        {{#if showChildren}}
+            <div class="childQuips">
+            {{#each childQuips}}
+                    {{> quipView }}
+            {{/each}}
+            </div>
+        {{/if}}
     </div>
 </template>

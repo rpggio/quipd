@@ -10,72 +10,47 @@ class QuipView
     level:Reactive<number> = null;
     isFocused : Reactive<boolean> = null;
     focusIndex: Reactive<number> = null;
+    showChildren: Reactive<boolean> = null;
     
-    //context:any;
-    
-    // _id = ViewModel.makeReactiveProperty<string>(null);
-    // text = ViewModel.makeReactiveProperty<string>(null);
-
-    //focus: FocusController; 
-
     constructor(context) {
         super();
         
-        //var self = <any>this;
-        //self._id = context._id;
-        //self.parentId = context.parentId;
-        
-        
-        //this.context = context;
-        
-        // var helpers = {};
-        // for (var prop in this) {
-        //     helpers[prop] = function() {
-        //         return this[prop];
-        //     }
-        // }
-        // Template["quipView"].helpers(helpers);
+        var self = <any>this;
+        self.showChildren = true;
     }
 
     public onCreated() {
-        
-        // this._id(this.context._id);
-        // this.parentId(this.context.parentId);
-        
-        //this.focus = FocusController.instance;
+    }
+
+    public onRendered() {
     }
     
     childQuips() {
         var id = this._id();
-        if(id && this.level() < 10){
-            var quips = Quips.find({parentId: id}).fetch();
-            let focusIndex = 0;
-            quips.forEach(q => (<any>q).focusIndex = focusIndex++);
-            return quips;
-        }
+        return Quips.find({parentId: id});
+        // var id = this._id();
+        // if(id && this.level() < 10){
+        //     var quips = Quips.find({parentId: id}).fetch();
+        //     let focusIndex = 0;
+        //     quips.forEach(q => (<any>q).focusIndex = focusIndex++);
+        //     return quips;
+        // }
     }
     
-    public onRendered() {
-        
-        // console.log('rendered [', this.text(), 
-        //     '] child of [', 
-        //     this.parent() 
-        //     && (<any>this.parent()).text 
-        //     && (<any>this.parent()).text());
-            
-        var view = <any>this.templateInstance.view;
-        //this.textareaSetup();
-    }
-
     getFirstFocusable(): Focusable {
-        return this.getQuipAtFocusIndex(0);
+        return <Focusable>_.first(this.children());
     };
     
     getNextFocusable(current: QuipView, direction: Direction): Focusable {
+        if(!this.showChildren()){
+            return null;
+        }
+        
         if(current == this){
             switch(direction){
                 case Direction.Down:
-                    return this.getQuipAtFocusIndex(0);
+                    return <Focusable>_.first(this.children());
+                    //return this.getQuipAtFocusIndex(0);
                 default: return null;
             }
         }
@@ -90,21 +65,25 @@ class QuipView
         let increment: number;
         switch(direction){
             case Direction.Up:
-                return focusIndex == 0
-                    ? this
-                    : this.getQuipAtFocusIndex(current.focusIndex() - 1);
+                return FocusNav.getAdjacent(this.children('quipView'), current, false);
+            
+                // return focusIndex == 0
+                //     ? this
+                //     : this.getQuipAtFocusIndex(current.focusIndex() - 1);
             case Direction.Down:
-                return this.getQuipAtFocusIndex(current.focusIndex() + 1);
+                return FocusNav.getAdjacent(this.children('quipView'), current, true);
+            
+                //return this.getQuipAtFocusIndex(current.focusIndex() + 1);
             default: return null;
         }
     }
 
-    getQuipAtFocusIndex(focusIndex: number): Focusable{
-        return <Focusable>_.first(
-            this.children(c => {
-                return (<any>c).focusIndex() == focusIndex;
-            }));
-    }
+    // getQuipAtFocusIndex(focusIndex: number): Focusable{
+    //     return <Focusable>_.first(
+    //         this.children(c => {
+    //             return (<any>c).focusIndex() == focusIndex;
+    //         }));
+    // }
 
     // textareaSetup() {
     //     var thisTemplateSel = $(this.templateInstance.firstNode);

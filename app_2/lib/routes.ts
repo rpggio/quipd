@@ -14,7 +14,7 @@ Router.route('/'
     }
 );
 
-Router.route('/quips/:quipId?'
+Router.route('/quips/:quipId'
     , {
         name: 'quipBrowser'
         , template: 'quipBrowser'

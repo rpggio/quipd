@@ -2,19 +2,15 @@
     <div class="quipStream twelve wide column"
         {{b '' }} >
         <div class="streamQuips">
-            {{#if pageQuipId}}
+            {{#if openQuipId}}
                 {{#with quip}}
                     {{> quipView}}
                 {{/with}}
             {{else}}
-                <div class="childQuips">
                 {{#each quips}}
-                    {{> quipView }}
+                    {{>quipView withContext showChildren=false}}
                 {{/each}}
-                </div>
             {{/if}}
-            
-            
 
             {{> quipEdit }}
 

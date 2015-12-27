@@ -5,10 +5,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var QuipView = (function (_super) {
     __extends(QuipView, _super);
-    //context:any;
-    // _id = ViewModel.makeReactiveProperty<string>(null);
-    // text = ViewModel.makeReactiveProperty<string>(null);
-    //focus: FocusController; 
     function QuipView(context) {
         _super.call(this);
         this.editMode = null;
@@ -19,6 +15,13 @@ var QuipView = (function (_super) {
         this.level = null;
         this.isFocused = null;
         this.focusIndex = null;
+        this.showChildren = null;
+        // getQuipAtFocusIndex(focusIndex: number): Focusable{
+        //     return <Focusable>_.first(
+        //         this.children(c => {
+        //             return (<any>c).focusIndex() == focusIndex;
+        //         }));
+        // }
         // textareaSetup() {
         //     var thisTemplateSel = $(this.templateInstance.firstNode);
         //     // prevent carriage return within textarea bleh      
@@ -37,50 +40,37 @@ var QuipView = (function (_super) {
                 this.level(this.parent().level + 1);
             },
         ];
-        //var self = <any>this;
-        //self._id = context._id;
-        //self.parentId = context.parentId;
-        //this.context = context;
-        // var helpers = {};
-        // for (var prop in this) {
-        //     helpers[prop] = function() {
-        //         return this[prop];
-        //     }
-        // }
-        // Template["quipView"].helpers(helpers);
+        var self = this;
+        self.showChildren = true;
     }
     QuipView.prototype.onCreated = function () {
-        // this._id(this.context._id);
-        // this.parentId(this.context.parentId);
-        //this.focus = FocusController.instance;
+    };
+    QuipView.prototype.onRendered = function () {
     };
     QuipView.prototype.childQuips = function () {
         var id = this._id();
-        if (id && this.level() < 10) {
-            var quips = Quips.find({ parentId: id }).fetch();
-            var focusIndex = 0;
-            quips.forEach(function (q) { return q.focusIndex = focusIndex++; });
-            return quips;
-        }
-    };
-    QuipView.prototype.onRendered = function () {
-        // console.log('rendered [', this.text(), 
-        //     '] child of [', 
-        //     this.parent() 
-        //     && (<any>this.parent()).text 
-        //     && (<any>this.parent()).text());
-        var view = this.templateInstance.view;
-        //this.textareaSetup();
+        return Quips.find({ parentId: id });
+        // var id = this._id();
+        // if(id && this.level() < 10){
+        //     var quips = Quips.find({parentId: id}).fetch();
+        //     let focusIndex = 0;
+        //     quips.forEach(q => (<any>q).focusIndex = focusIndex++);
+        //     return quips;
+        // }
     };
     QuipView.prototype.getFirstFocusable = function () {
-        return this.getQuipAtFocusIndex(0);
+        return _.first(this.children());
     };
     ;
     QuipView.prototype.getNextFocusable = function (current, direction) {
+        if (!this.showChildren()) {
+            return null;
+        }
         if (current == this) {
             switch (direction) {
                 case Direction.Down:
-                    return this.getQuipAtFocusIndex(0);
+                    return _.first(this.children());
+                //return this.getQuipAtFocusIndex(0);
                 default: return null;
             }
         }
@@ -92,18 +82,15 @@ var QuipView = (function (_super) {
         var increment;
         switch (direction) {
             case Direction.Up:
-                return focusIndex == 0
-                    ? this
-                    : this.getQuipAtFocusIndex(current.focusIndex() - 1);
+                return FocusNav.getAdjacent(this.children('quipView'), current, false);
+            // return focusIndex == 0
+            //     ? this
+            //     : this.getQuipAtFocusIndex(current.focusIndex() - 1);
             case Direction.Down:
-                return this.getQuipAtFocusIndex(current.focusIndex() + 1);
+                return FocusNav.getAdjacent(this.children('quipView'), current, true);
+            //return this.getQuipAtFocusIndex(current.focusIndex() + 1);
             default: return null;
         }
-    };
-    QuipView.prototype.getQuipAtFocusIndex = function (focusIndex) {
-        return _.first(this.children(function (c) {
-            return c.focusIndex() == focusIndex;
-        }));
     };
     return QuipView;
 })(ViewModelBase);

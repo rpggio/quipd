@@ -3,6 +3,35 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var FocusNav = (function () {
+    function FocusNav() {
+    }
+    FocusNav.getAdjacent = function (items, from, forward) {
+        var len = items.length;
+        if (len === 0) {
+            return null;
+        }
+        if (len === 1) {
+            var item_1 = items[0];
+            return from === item_1
+                ? null
+                : item_1;
+        }
+        var previous;
+        for (var i = 0; i < len; i++) {
+            var child = items[i];
+            if (forward && previous === from) {
+                return child;
+            }
+            if (!forward && child === from) {
+                return previous;
+            }
+            previous = child;
+        }
+        return null;
+    };
+    return FocusNav;
+})();
 /**
  * Implements focus navigation operations for use with contained elements.
  * Contained elements should implement Focusable and/or FocusStructure
@@ -43,13 +72,16 @@ var FocusContainer = (function (_super) {
         var initial = ViewModelHelper.findDownward(this, function (vm) {
             var focusable = FocusContainer.asFocusable(vm);
             if (focusable) {
-                return true;
+                console.log('returning focusable', focusable);
+                return focusable;
             }
             var structure = FocusContainer.asFocusStructure(vm);
             if (structure) {
-                return !!structure.getNextFocusable(null, direction);
+                var next = structure.getNextFocusable(null, direction);
+                console.log('returning focusable', next);
+                return next;
             }
-            return false;
+            return null;
         });
         if (initial) {
             this.setFocus(initial);
@@ -96,6 +128,7 @@ var FocusContainer = (function (_super) {
                     return;
                 }
             }
+            //let priorSourceNode: ViewModelImpl;
             // If first cycle
             if (sourceNode == decisionNode) {
                 // walk the decision node upwards
@@ -103,8 +136,9 @@ var FocusContainer = (function (_super) {
             }
             else {
                 // walk both decision and source nodes upwards
+                //priorSourceNode = sourceNode;
                 sourceNode = decisionNode;
-                decisionNode = decisionNode.parent();
+                decisionNode = FocusContainer.asFocusStructure(decisionNode.parent());
             }
         } while (decisionNode && sourceNode);
     };
@@ -132,15 +166,16 @@ var Direction;
 var ViewModelHelper = (function () {
     function ViewModelHelper() {
     }
-    ViewModelHelper.findDownward = function (viewModel, criteria) {
+    ViewModelHelper.findDownward = function (viewModel, selector) {
         var current = viewModel;
-        if (criteria(current)) {
-            return current;
+        var selected = selector(current);
+        if (selected) {
+            return selected;
         }
         var children = current.children();
         for (var i = 0, len = children.length; i < len; i++) {
             var child = children[i];
-            var found = ViewModelHelper.findDownward(child, criteria);
+            var found = ViewModelHelper.findDownward(child, selector);
             if (found) {
                 return found;
             }
@@ -148,6 +183,7 @@ var ViewModelHelper = (function () {
     };
     return ViewModelHelper;
 })();
+this.FocusNav = FocusNav;
 this.FocusContainer = FocusContainer;
 this.Direction = Direction;
 //# sourceMappingURL=focusNavigation.js.map

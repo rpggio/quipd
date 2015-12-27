@@ -1,6 +1,6 @@
 class QuipBrowser extends FocusContainer {
 
-    pageQuipId: Reactive<string> = null;
+    openQuipId: Reactive<string> = null;
     
     constructor(context: any){
         super();
@@ -8,11 +8,11 @@ class QuipBrowser extends FocusContainer {
     }
 
     onCreated(){
-        this.pageQuipId(Router.current().params.quipId);
+        this.openQuipId(Router.current().params.quipId);
     }
 
     onRendered() {
-        
+              
         // initialize focus navigation
         this.init();
         
@@ -36,12 +36,38 @@ class QuipBrowser extends FocusContainer {
     // } 
 
     quip() {
-        return Quips.findOne(this.pageQuipId());
+        return Quips.findOne(this.openQuipId());
     }
     
     quips(){
         return Quips.find({parentId: null});
     }
+
+    public getNextFocusable(source: Focusable|any, direction: Direction)
+        : Focusable {
+
+        if(this.openQuipId()) {
+            // can only navigate upwards to top element
+            return direction === Direction.Up
+                ? this.children('quipView')[0]
+                : null;
+        }
+
+        // if no selection, or selection is root quip
+        if(!source || !source.parentId()) {
+            switch(direction){
+                case Direction.Up:
+                    return FocusNav.getAdjacent(
+                        this.children('quipView'), source, false);
+                case Direction.Down:
+                    return FocusNav.getAdjacent(
+                        this.children('quipView'), source, true);
+            }
+        }
+        
+        return null;
+    }
+
 
     // onShiftTab() {
     //     var parentId = this.parentId();

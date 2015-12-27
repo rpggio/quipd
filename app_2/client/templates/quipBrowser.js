@@ -7,10 +7,10 @@ var QuipBrowser = (function (_super) {
     __extends(QuipBrowser, _super);
     function QuipBrowser(context) {
         _super.call(this);
-        this.pageQuipId = null;
+        this.openQuipId = null;
     }
     QuipBrowser.prototype.onCreated = function () {
-        this.pageQuipId(Router.current().params.quipId);
+        this.openQuipId(Router.current().params.quipId);
     };
     QuipBrowser.prototype.onRendered = function () {
         var _this = this;
@@ -34,10 +34,28 @@ var QuipBrowser = (function (_super) {
     //     return quipId && Quips.findOne(quipId);
     // } 
     QuipBrowser.prototype.quip = function () {
-        return Quips.findOne(this.pageQuipId());
+        return Quips.findOne(this.openQuipId());
     };
     QuipBrowser.prototype.quips = function () {
         return Quips.find({ parentId: null });
+    };
+    QuipBrowser.prototype.getNextFocusable = function (source, direction) {
+        if (this.openQuipId()) {
+            // can only navigate upwards to top element
+            return direction === Direction.Up
+                ? this.children('quipView')[0]
+                : null;
+        }
+        // if no selection, or selection is root quip
+        if (!source || !source.parentId()) {
+            switch (direction) {
+                case Direction.Up:
+                    return FocusNav.getAdjacent(this.children('quipView'), source, false);
+                case Direction.Down:
+                    return FocusNav.getAdjacent(this.children('quipView'), source, true);
+            }
+        }
+        return null;
     };
     return QuipBrowser;
 })(FocusContainer);
