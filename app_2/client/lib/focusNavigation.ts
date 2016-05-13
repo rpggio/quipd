@@ -1,11 +1,11 @@
 
 
-interface Focusable extends ViewModelImpl {
-    isFocused : Reactive<boolean>;
-    focusIndex: Reactive<number>;
+interface Focusable extends IViewModel {
+    isFocused : ReactiveValue<boolean>;
+    focusIndex: ReactiveValue<number>;
 }
 
-interface FocusStructure extends ViewModelImpl {
+interface FocusStructure extends IViewModel {
     getNextFocusable(source: Focusable|any, direction: Direction): Focusable;
 }
 
@@ -51,21 +51,21 @@ abstract class FocusContainer
     extends ViewModelBase
     implements FocusStructure {
 
-    static asFocusable(element: ViewModelImpl): Focusable {
+    static asFocusable(element: IViewModel): Focusable {
         return element.hasOwnProperty('isFocused')
             ? <Focusable>element
             : null;
         ;
     }
 
-    static asFocusStructure(element: ViewModelImpl): FocusStructure {
+    static asFocusStructure(element: IViewModel): FocusStructure {
         return element.hasOwnProperty('getNextFocusable')
             ? <FocusStructure>element
             : null;
         ;
     }
 
-    currentFocus: Reactive<Focusable> = null;
+    currentFocus: ReactiveValue<Focusable> = null;
 
     constructor(){
         super();
@@ -130,7 +130,7 @@ abstract class FocusContainer
      * set focus to that element.  
      */
     private changeFocus(direction: Direction) {
-        //console.log('changeFocus', Direction[direction]);
+        console.log('changeFocus', Direction[direction]);
         
         let current = this.currentFocus();
         
@@ -139,24 +139,30 @@ abstract class FocusContainer
         }
 
         // Start with current as both sourceNode and decisionNode
-        let sourceNode: ViewModelImpl = current;
-        let decisionNode: ViewModelImpl = current;
+        let sourceNode: IViewModel = current;
+        let decisionNode: IViewModel = current;
+        let didAscend = false;
         
         do {
             // Evaluate decision node
             let structure: FocusStructure = FocusContainer.asFocusStructure(decisionNode);
-            if(structure){
-                let next = structure.getNextFocusable(sourceNode, direction);
-                if(next){
-                    
-                    // Navigate downwards here to find lowest-level match?
-                    // This can mean jumping from high-level node 
-                    // directly to a deep node..  
-                    
-                    // Set focus to the final
-                    this.setFocus(next);
-                    return;
+            let foundTarget: Focusable;
+            let target: Focusable;
+
+            // Check for focusable result at this level.
+            // If we did ascend previously, walk back down the tree.
+            do {
+                target = structure.getNextFocusable(sourceNode, direction);
+                if(target){
+                    foundTarget = target;
+                    structure = FocusContainer.asFocusStructure(target);                
                 }
+            }
+            while(didAscend && target && structure)
+            
+            if(foundTarget){
+                this.setFocus(foundTarget);
+                return;
             }
             
             // If first cycle
@@ -169,6 +175,8 @@ abstract class FocusContainer
                 decisionNode = FocusContainer.asFocusStructure(
                     decisionNode.parent());
             }
+            
+            didAscend = true;
         }
         while(decisionNode && sourceNode);
     }
@@ -190,9 +198,9 @@ abstract class FocusContainer
 enum Direction { Up, Right, Down, Left };
 
 class ViewModelHelper {
-    static findDownward(viewModel: ViewModelImpl,
-        selector: (element: ViewModelImpl) => ViewModelImpl): ViewModelImpl {
-        let current: ViewModelImpl = viewModel;
+    static findDownward(viewModel: IViewModel,
+        selector: (element: IViewModel) => IViewModel): IViewModel {
+        let current: IViewModel = viewModel;
         let selected = selector(current);
         if (selected) {
             return selected;

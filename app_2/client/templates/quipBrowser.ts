@@ -1,6 +1,6 @@
 class QuipBrowser extends FocusContainer {
 
-    openQuipId: Reactive<string> = null;
+    openQuipId: ReactiveValue<string> = null;
     
     constructor(context: any){
         super();

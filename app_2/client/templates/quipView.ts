@@ -2,15 +2,15 @@ class QuipView
     extends ViewModelBase 
     implements Focusable, FocusStructure {
 
-    editMode:Reactive<boolean> = null;
-    _id:Reactive<string> = null;
-    parentId:Reactive<string> = null;
-    grandParentId:Reactive<string> = null;
-    text:Reactive<string> = null;
-    level:Reactive<number> = null;
-    isFocused : Reactive<boolean> = null;
-    focusIndex: Reactive<number> = null;
-    showChildren: Reactive<boolean> = null;
+    editMode:ReactiveValue<boolean> = null;
+    _id:ReactiveValue<string> = null;
+    parentId:ReactiveValue<string> = null;
+    grandParentId:ReactiveValue<string> = null;
+    text:ReactiveValue<string> = null;
+    level:ReactiveValue<number> = null;
+    isFocused : ReactiveValue<boolean> = null;
+    focusIndex: ReactiveValue<number> = null;
+    showChildren: ReactiveValue<boolean> = null;
     
     constructor(context) {
         super();

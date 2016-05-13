@@ -1,0 +1,10 @@
+<div>
+    <parties-form></parties-form>
+  <ul>
+    <li *ngFor="#party of parties">
+      {{party.name}}
+      <p>{{party.description}}</p>
+      <p>{{party.location}}</p>
+    </li>
+  </ul>
+</div>

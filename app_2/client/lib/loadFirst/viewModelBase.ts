@@ -1,10 +1,10 @@
 
 
 
-abstract class ViewModelBase implements ViewModelImpl {
+abstract class ViewModelBase implements IViewModel {
     
     vmId: number;
-    parent: () => ViewModelImpl;     
+    parent: () => IViewModel;     
     children: (arg?: string|ViewModelPredicate) => any;
     templateInstance: Blaze.TemplateInstance;
     data: () => any;

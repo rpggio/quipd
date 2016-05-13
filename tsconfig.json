@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-        "target": "ES3",
         "module": "commonjs",
         "declaration": false,
         "sourceMap": true,
-        "sourceRoot": "app_2"
+        "sourceRoot": "app_2",
+        "experimentalDecorators": true
     },
     "exclude": [
         "app_2/.meteor",

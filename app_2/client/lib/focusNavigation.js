@@ -106,7 +106,7 @@ var FocusContainer = (function (_super) {
      * set focus to that element.
      */
     FocusContainer.prototype.changeFocus = function (direction) {
-        //console.log('changeFocus', Direction[direction]);
+        console.log('changeFocus', Direction[direction]);
         var current = this.currentFocus();
         if (!current) {
             this.focusInitial(direction);
@@ -114,21 +114,25 @@ var FocusContainer = (function (_super) {
         // Start with current as both sourceNode and decisionNode
         var sourceNode = current;
         var decisionNode = current;
+        var didAscend = false;
         do {
             // Evaluate decision node
             var structure = FocusContainer.asFocusStructure(decisionNode);
-            if (structure) {
-                var next = structure.getNextFocusable(sourceNode, direction);
-                if (next) {
-                    // Navigate downwards here to find lowest-level match?
-                    // This can mean jumping from high-level node 
-                    // directly to a deep node..  
-                    // Set focus to the final
-                    this.setFocus(next);
-                    return;
+            var foundTarget = void 0;
+            var target = void 0;
+            // Check for focusable result at this level.
+            // If we did ascend previously, walk back down the tree.
+            do {
+                target = structure.getNextFocusable(sourceNode, direction);
+                if (target) {
+                    foundTarget = target;
+                    structure = FocusContainer.asFocusStructure(target);
                 }
+            } while (didAscend && target && structure);
+            if (foundTarget) {
+                this.setFocus(foundTarget);
+                return;
             }
-            //let priorSourceNode: ViewModelImpl;
             // If first cycle
             if (sourceNode == decisionNode) {
                 // walk the decision node upwards
@@ -136,10 +140,10 @@ var FocusContainer = (function (_super) {
             }
             else {
                 // walk both decision and source nodes upwards
-                //priorSourceNode = sourceNode;
                 sourceNode = decisionNode;
                 decisionNode = FocusContainer.asFocusStructure(decisionNode.parent());
             }
+            didAscend = true;
         } while (decisionNode && sourceNode);
     };
     FocusContainer.prototype.setFocus = function (to) {
